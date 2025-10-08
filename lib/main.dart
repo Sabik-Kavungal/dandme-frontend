@@ -1,14 +1,10 @@
-import 'package:a/screens/auth/login.dart';
-import 'package:a/widgets/role_based_layout.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:a/viewModels/authVM.dart';
-import 'package:a/viewModels/organization_vm.dart';
-import 'package:a/viewModels/clinic_vm.dart';
-import 'package:a/viewModels/doctor_vm.dart';
-import 'package:a/services/token_refresh_service.dart';
+import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:a/core/services/token_refresh_service.dart';
+import 'package:a/core/config/app_router.dart';
+import 'package:a/core/config/app_providers.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -17,37 +13,26 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
-  // Initialize AuthVM and load tokens
-  final authVM = AuthViewModel();
-  await authVM.initialize();
+  // Initialize AuthViewModel and load tokens
+  final authViewModel = AuthViewModel();
+  await authViewModel.initialize();
 
-  runApp(AeroServeApp(authVM: authVM));
+  runApp(AeroServeApp(authViewModel: authViewModel));
 }
 
 class AeroServeApp extends StatelessWidget {
-  final AuthViewModel authVM;
+  final AuthViewModel authViewModel;
 
-  const AeroServeApp({super.key, required this.authVM});
+  const AeroServeApp({super.key, required this.authViewModel});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AuthViewModel>.value(value: authVM),
-        ChangeNotifierProvider<OrganizationViewModel>(
-          create: (context) => OrganizationViewModel(),
-        ),
-        ChangeNotifierProvider<ClinicViewModel>(
-          create: (context) => ClinicViewModel(),
-        ),
-        ChangeNotifierProvider<DoctorViewModel>(
-          create: (context) => DoctorViewModel(),
-        ),
-      ],
+      providers: AppProviders.getProviders(authViewModel: authViewModel),
       child: Consumer<AuthViewModel>(
         builder: (context, authVM, child) {
           return TokenRefreshManager(
-            child: MaterialApp(
+            child: MaterialApp.router(
               title: 'AeroServe',
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
@@ -55,10 +40,7 @@ class AeroServeApp extends StatelessWidget {
                 textTheme: GoogleFonts.poppinsTextTheme(),
                 scaffoldBackgroundColor: const Color(0xFFF8F8F8),
               ),
-              // 👉 If authenticated → RoleBasedLayout, else Login
-              home: authVM.isAuthenticated
-                  ? const RoleBasedLayout()
-                  : LoginScreen(),
+              routerConfig: AppRouter.router,
             ),
           );
         },

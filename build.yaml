@@ -1,10 +1,33 @@
 targets:
   $default:
+    sources:
+      - lib/**
+      - $package$
     builders:
       source_gen:combining_builder:
         options:
           build_extensions:
-            "^lib/models/{{}}.dart": "lib/gen/{{}}.g.dart"
+            '^lib/modules/appointment/models/{{}}.dart': 'lib/modules/appointment/gen/{{}}.g.dart'
+            '^lib/modules/auth/models/{{}}.dart': 'lib/modules/auth/gen/{{}}.g.dart'
+            '^lib/modules/clinic/models/{{}}.dart': 'lib/modules/clinic/gen/{{}}.g.dart'
+            '^lib/modules/doctor/models/{{}}.dart': 'lib/modules/doctor/gen/{{}}.g.dart'
+            '^lib/modules/organization/models/{{}}.dart': 'lib/modules/organization/gen/{{}}.g.dart'
+            '^lib/modules/patient/models/{{}}.dart': 'lib/modules/patient/gen/{{}}.g.dart'
+            '^lib/modules/superadmin/models/{{}}.dart': 'lib/modules/superadmin/gen/{{}}.g.dart'
+      
+      freezed:
+        options:
+          build_extensions:
+            '^lib/modules/appointment/models/{{}}.dart': 'lib/modules/appointment/gen/{{}}.freezed.dart'
+            '^lib/modules/auth/models/{{}}.dart': 'lib/modules/auth/gen/{{}}.freezed.dart'
+            '^lib/modules/clinic/models/{{}}.dart': 'lib/modules/clinic/gen/{{}}.freezed.dart'
+            '^lib/modules/doctor/models/{{}}.dart': 'lib/modules/doctor/gen/{{}}.freezed.dart'
+            '^lib/modules/organization/models/{{}}.dart': 'lib/modules/organization/gen/{{}}.freezed.dart'
+            '^lib/modules/patient/models/{{}}.dart': 'lib/modules/patient/gen/{{}}.freezed.dart'
+            '^lib/modules/superadmin/models/{{}}.dart': 'lib/modules/superadmin/gen/{{}}.freezed.dart'
+          union_key: 'type'
+          union_value_case: 'none'
+      
       json_serializable:
         options:
           any_map: false
@@ -19,9 +42,4 @@ targets:
           field_rename: none
           generic_argument_factories: false
           ignore_unannotated: false
-          include_if_null: false
-
-      freezed:
-        options:
-          build_extensions:
-            "^lib/models/{{}}.dart": "lib/gen/{{}}.freezed.dart"    
+          include_if_null: false    

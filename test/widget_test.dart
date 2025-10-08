@@ -5,11 +5,11 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:a/main.dart';
-import 'package:a/viewModels/authVM.dart';
 
 void main() {
   testWidgets('App loads without crashing', (WidgetTester tester) async {
@@ -21,7 +21,7 @@ void main() {
     await authVM.initialize();
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(AeroServeApp(authVM: authVM));
+    await tester.pumpWidget(AeroServeApp(authViewModel: authVM));
 
     // Verify that the app loads (should show login screen since not authenticated)
     expect(find.text('Sign In'), findsOneWidget);
