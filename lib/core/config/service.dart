@@ -6,8 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class ServiceRepo {
-final String authBaseUrl = "http://172.20.10.7:8080/api"; // Authentication API
-final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
+  final String authBaseUrl =
+      "http://172.20.10.7:8080/api"; // Authentication API
+  final String orgBaseUrl = "http://172.20.10.7:8081/api"; // Organization API
+  final String appointmentsBaseUrl =
+      "http://localhost:8082/api/v1"; // Appointments Microservice
 
   final LocalDatabaseService db = LocalDatabaseService();
 
@@ -17,9 +20,19 @@ final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
     Map<String, dynamic>? body,
     String? token,
     bool useOrgApi = false, // Default to auth API
+    bool useAppointmentsApi = false, // Use appointments microservice
     BuildContext? context, // For token refresh
   }) async {
-    final baseUrl = useOrgApi ? orgBaseUrl : authBaseUrl;
+    // Determine which base URL to use
+    final String baseUrl;
+    if (useAppointmentsApi) {
+      baseUrl = appointmentsBaseUrl;
+    } else if (useOrgApi) {
+      baseUrl = orgBaseUrl;
+    } else {
+      baseUrl = authBaseUrl;
+    }
+
     final url = Uri.parse('$baseUrl/$endpoint');
 
     final headers = {
@@ -54,6 +67,15 @@ final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
               )
               .timeout(const Duration(seconds: 15));
           break;
+        case 'PATCH':
+          response = await http
+              .patch(
+                url,
+                headers: headers,
+                body: body != null ? jsonEncode(body) : null,
+              )
+              .timeout(const Duration(seconds: 15));
+          break;
         case 'DELETE':
           response = await http
               .delete(url, headers: headers)
@@ -63,7 +85,9 @@ final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
           throw Exception("Unsupported HTTP method: $method");
       }
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
+      // Handle successful responses (2xx) and partial content (207)
+      if ((response.statusCode >= 200 && response.statusCode < 300) ||
+          response.statusCode == 207) {
         return response.body.isNotEmpty ? jsonDecode(response.body) : null;
       } else if (response.statusCode == 401) {
         print('Unauthorized request (401): ${response.body}');
@@ -111,6 +135,15 @@ final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
                       )
                       .timeout(const Duration(seconds: 15));
                   break;
+                case 'PATCH':
+                  retryResponse = await http
+                      .patch(
+                        url,
+                        headers: newHeaders,
+                        body: body != null ? jsonEncode(body) : null,
+                      )
+                      .timeout(const Duration(seconds: 15));
+                  break;
                 case 'DELETE':
                   retryResponse = await http
                       .delete(url, headers: newHeaders)
@@ -133,6 +166,29 @@ final String orgBaseUrl  = "http://172.20.10.7:8081/api"; // Organization API
           }
         }
 
+        return null;
+      } else if (response.statusCode == 400) {
+        // Handle 400 Bad Request - may contain useful error details (e.g., validation errors, partial failures)
+        print('Request failed with status 400: ${response.body}');
+        // Try to parse response body as it may contain structured error information
+        try {
+          if (response.body.isNotEmpty) {
+            return jsonDecode(response.body);
+          }
+        } catch (e) {
+          print('Failed to parse 400 response body: $e');
+        }
+        return null;
+      } else if (response.statusCode == 500) {
+        // Handle 500 Internal Server Error - return error response so caller can extract error message
+        print('Request failed with status 500: ${response.body}');
+        try {
+          if (response.body.isNotEmpty) {
+            return jsonDecode(response.body);
+          }
+        } catch (e) {
+          print('Failed to parse 500 response body: $e');
+        }
         return null;
       } else {
         print(

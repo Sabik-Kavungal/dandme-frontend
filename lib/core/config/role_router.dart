@@ -4,7 +4,7 @@ import 'package:a/modules/organization/views/organization_admin_module_view.dart
 import 'package:a/modules/patient/views/patient_module_view.dart';
 import 'package:a/modules/doctor/views/doctor_module_view.dart';
 import 'package:a/modules/patient/views/pharmacist_module_view.dart';
-import 'package:a/modules/appointment/views/appointment_module_view.dart';
+
 import 'package:a/modules/clinic/views/clinic_module_view.dart';
 import 'package:a/core/constants/app_constants.dart';
 import 'package:a/core/config/app_router.dart';
@@ -25,7 +25,7 @@ class RoleRouter {
       case 'pharmacist':
         return const PharmacistModuleView();
       default:
-        return const AppointmentModuleView();
+        return const ClinicModuleView();
     }
   }
 

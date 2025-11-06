@@ -247,7 +247,7 @@ class ClinicViewModel extends ChangeNotifier {
     }
   }
 
-  /// Add clinic-doctor link with simple API format
+  /// Add clinic-doctor link with simple API format (without fees)
   Future<bool> addClinicDoctorLinkSimple(
     String clinicId,
     String doctorId,
@@ -284,6 +284,93 @@ class ClinicViewModel extends ChangeNotifier {
         return true;
       } else {
         _setError('Failed to add clinic-doctor link');
+        return false;
+      }
+    } catch (e) {
+      _setError(AppHelpers.getErrorMessage(e));
+      return false;
+    } finally {
+      _setLinking(false);
+    }
+  }
+
+  /// Add clinic-doctor link with fees
+  Future<bool> addClinicDoctorLinkWithFees(
+    CreateClinicDoctorLinkWithFees linkData,
+    BuildContext context,
+  ) async {
+    _setLinking(true);
+    _clearError();
+
+    try {
+      final token = await _getAccessToken(context);
+      if (token == null) {
+        _setError('Authentication required. Please login again.');
+        return false;
+      }
+
+      final response = await _service.requist(
+        'organizations/clinic-doctor-links',
+        method: 'POST',
+        body: linkData.toJson(),
+        useOrgApi: true, // Use organization API
+        token: token,
+        context: context,
+      );
+
+      print('Clinic-Doctor Link with Fees creation request: ${linkData.toJson()}');
+
+      if (response != null) {
+        print('Clinic-Doctor Link with Fees creation response: $response');
+        // Refresh the links list
+        await fetchClinicDoctorLinks(context);
+        return true;
+      } else {
+        _setError('Failed to add clinic-doctor link');
+        return false;
+      }
+    } catch (e) {
+      _setError(AppHelpers.getErrorMessage(e));
+      return false;
+    } finally {
+      _setLinking(false);
+    }
+  }
+
+  /// Update clinic-doctor link fees
+  Future<bool> updateClinicDoctorLinkFees(
+    String linkId,
+    UpdateClinicDoctorLinkFees updateData,
+    BuildContext context,
+  ) async {
+    _setLinking(true);
+    _clearError();
+
+    try {
+      final token = await _getAccessToken(context);
+      if (token == null) {
+        _setError('Authentication required. Please login again.');
+        return false;
+      }
+
+      final response = await _service.requist(
+        'organizations/clinic-doctor-links/$linkId',
+        method: 'PUT',
+        body: updateData.toJson(),
+        useOrgApi: true, // Use organization API
+        token: token,
+        context: context,
+      );
+
+      print('Update Clinic-Doctor Link Fees request: ${updateData.toJson()}');
+
+      if (response != null) {
+        print('Update Clinic-Doctor Link Fees response: $response');
+        // Refresh the links list
+        await fetchClinicDoctorLinks(context);
+        return true;
+      } else {
+        _setError('Failed to update clinic-doctor link fees');
         return false;
       }
     } catch (e) {

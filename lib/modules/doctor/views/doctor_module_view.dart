@@ -85,11 +85,6 @@ class _DoctorModuleViewState extends State<DoctorModuleView> {
                   tooltip: 'Quick Actions',
                 ),
               ],
-              customFloatingActionButton: FloatingActionButton(
-                onPressed: () => _addNewPatient(context),
-                backgroundColor: AppConstants.primaryColor,
-                child: const Icon(Icons.person_add, color: Colors.white),
-              ),
               onLogout: () => _handleLogout(context),
             ),
             selectedIndex: _selectedIndex,
@@ -129,14 +124,6 @@ class _DoctorModuleViewState extends State<DoctorModuleView> {
     );
   }
 
-  void _addNewPatient(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Add New Patient'),
-        backgroundColor: AppConstants.primaryColor,
-      ),
-    );
-  }
 
   void _handleLogout(BuildContext context) {
     showDialog(

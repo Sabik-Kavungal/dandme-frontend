@@ -1,3 +1,4 @@
+import 'package:a/modules/clinic/views/appointments/new_appointment_view_refactored.dart';
 import 'package:flutter/material.dart';
 import 'package:a/core/responsive/universal_responsive_layout.dart';
 import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
@@ -8,10 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:a/core/config/navigation_helper.dart';
 
 import 'clinic_admin_dashboard_view.dart';
-import 'appointments/appointments_dashboard_view.dart';
+import 'appointments/appointments_dashboard_view_refactored.dart';
 import 'clinic_settings_view.dart';
 import 'doctor_details_content.dart';
-import 'package:a/modules/appointment/views/new_appointment_view.dart';
 
 class ClinicModuleView extends StatefulWidget {
   const ClinicModuleView({super.key});
@@ -150,16 +150,6 @@ class _ClinicModuleViewState extends State<ClinicModuleView> {
                   index: 6,
                 ),
               ],
-              customFloatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  // Navigate to new appointment screen
-                  setState(() {
-                    _selectedIndex = 2; // Navigate to New Appointment screen
-                  });
-                },
-                backgroundColor: AppConstants.primaryColor,
-                child: const Icon(Icons.add, color: Colors.white),
-              ),
               onLogout: () => _handleLogout(context),
             ),
             selectedIndex: _selectedIndex,

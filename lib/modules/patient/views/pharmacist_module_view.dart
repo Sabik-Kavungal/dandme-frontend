@@ -60,11 +60,6 @@ class _PharmacistModuleViewState extends State<PharmacistModuleView> {
             tooltip: 'Quick Actions',
           ),
         ],
-        customFloatingActionButton: FloatingActionButton(
-          onPressed: () => _addPrescription(context),
-          backgroundColor: AppConstants.secondaryColor,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
         onLogout: () => _handleLogout(context),
       ),
       selectedIndex: _selectedIndex,
@@ -101,14 +96,6 @@ class _PharmacistModuleViewState extends State<PharmacistModuleView> {
     );
   }
 
-  void _addPrescription(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Add New Prescription'),
-        backgroundColor: AppConstants.secondaryColor,
-      ),
-    );
-  }
 
   void _handleLogout(BuildContext context) {
     showDialog(

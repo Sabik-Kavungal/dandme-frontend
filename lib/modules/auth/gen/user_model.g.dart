@@ -51,6 +51,9 @@ _$UserRoleImpl _$$UserRoleImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String?,
       name: json['name'] as String?,
       permissions: json['permissions'] as Map<String, dynamic>?,
+      clinicId: json['clinic_id'] as String?,
+      organizationId: json['organization_id'] as String?,
+      serviceId: json['service_id'] as String?,
     );
 
 Map<String, dynamic> _$$UserRoleImplToJson(_$UserRoleImpl instance) =>
@@ -58,6 +61,9 @@ Map<String, dynamic> _$$UserRoleImplToJson(_$UserRoleImpl instance) =>
       if (instance.id case final value?) 'id': value,
       if (instance.name case final value?) 'name': value,
       if (instance.permissions case final value?) 'permissions': value,
+      if (instance.clinicId case final value?) 'clinic_id': value,
+      if (instance.organizationId case final value?) 'organization_id': value,
+      if (instance.serviceId case final value?) 'service_id': value,
     };
 
 _$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
@@ -75,6 +81,9 @@ _$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
           .toList(),
       tokenType: json['tokenType'] as String?,
       username: json['username'] as String?,
+      organizationId: json['organizationId'] as String?,
+      clinicId: json['clinicId'] as String?,
+      serviceId: json['serviceId'] as String?,
     );
 
 Map<String, dynamic> _$$LoginResponseImplToJson(_$LoginResponseImpl instance) =>
@@ -91,6 +100,9 @@ Map<String, dynamic> _$$LoginResponseImplToJson(_$LoginResponseImpl instance) =>
         'roles': value,
       if (instance.tokenType case final value?) 'tokenType': value,
       if (instance.username case final value?) 'username': value,
+      if (instance.organizationId case final value?) 'organizationId': value,
+      if (instance.clinicId case final value?) 'clinicId': value,
+      if (instance.serviceId case final value?) 'serviceId': value,
     };
 
 _$TokenModelImpl _$$TokenModelImplFromJson(Map<String, dynamic> json) =>

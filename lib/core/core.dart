@@ -27,5 +27,3 @@ export 'widgets/session_management_widget.dart';
 // Responsive
 export 'responsive/universal_responsive_layout.dart';
 
-// Repositories
-export 'repositories/appointment_repository.dart';

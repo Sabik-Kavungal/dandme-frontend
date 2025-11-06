@@ -15,7 +15,6 @@ import 'package:a/modules/organization/views/organization_admin_module_view.dart
 import 'package:a/modules/patient/views/patient_module_view.dart';
 import 'package:a/modules/doctor/views/doctor_module_view.dart';
 import 'package:a/modules/patient/views/pharmacist_module_view.dart';
-import 'package:a/modules/appointment/views/appointment_module_view.dart';
 import 'package:a/modules/clinic/views/clinic_module_view.dart';
 
 // SuperAdmin specific views
@@ -33,25 +32,12 @@ import 'package:a/modules/superadmin/views/organizations/organization_details_vi
 import 'package:a/modules/superadmin/views/users/users_management_view.dart'
     as users;
 
-// Clinic specific views
+// Clinic specific views (includes appointment management)
 import 'package:a/modules/clinic/views/clinic_admin_dashboard_view.dart';
-import 'package:a/modules/clinic/views/appointments/appointments_dashboard_view.dart';
-import 'package:a/modules/clinic/views/appointments/new_appointment_view.dart';
+import 'package:a/modules/clinic/views/appointments/appointments_dashboard_view_refactored.dart';
+import 'package:a/modules/clinic/views/appointments/new_appointment_view_refactored.dart';
 import 'package:a/modules/clinic/views/appointments/appointment_details_view.dart';
-import 'package:a/modules/clinic/views/appointments/payment_confirmation_modal_view.dart';
-import 'package:a/modules/clinic/views/appointments/reschedule_modal_view.dart';
-
-// Appointment specific views
-import 'package:a/modules/appointment/views/appointments_dashboard_view.dart'
-    as appointment;
-import 'package:a/modules/appointment/views/new_appointment_view.dart'
-    as appointment;
-import 'package:a/modules/appointment/views/appointment_details_view.dart'
-    as appointment;
-import 'package:a/modules/appointment/views/payment_confirmation_modal_view.dart'
-    as appointment;
-import 'package:a/modules/appointment/views/reschedule_modal_view.dart'
-    as appointment;
+import 'package:a/modules/clinic/views/doctor_details_content.dart';
 
 // Doctor specific views
 import 'package:a/modules/doctor/views/doctor_dashboard_view.dart';
@@ -62,15 +48,20 @@ import 'package:a/modules/organization/views/organization_admin_dashboard_view.d
 // Patient specific views
 import 'package:a/modules/patient/views/pharmacist_dashboard_view.dart';
 
+// Intro/Landing page
+import 'package:a/views/intro_page.dart';
+
 /// Centralized router configuration using go_router
 class AppRouter {
   static final GoRouter _router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
     redirect: (context, state) {
-      final authViewModel = Provider.of<AuthViewModel>(context, listen: true);
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
-      // If user is not authenticated and not on login page, redirect to login
-      if (!authViewModel.isAuthenticated && state.uri.path != '/login') {
+      // Allow access to intro page and login without authentication
+      if (!authViewModel.isAuthenticated &&
+          state.uri.path != '/login' &&
+          state.uri.path != '/') {
         return '/login';
       }
 
@@ -89,6 +80,13 @@ class AppRouter {
       return null; // No redirect needed
     },
     routes: [
+      // Intro/Landing page (public, no auth required)
+      GoRoute(
+        path: '/',
+        name: 'intro',
+        builder: (context, state) => const IntroPage(),
+      ),
+
       // Authentication routes
       GoRoute(
         path: '/login',
@@ -204,7 +202,7 @@ class AppRouter {
         name: 'clinic',
         builder: (context, state) => const ClinicModuleView(),
         routes: [
-          // Clinic specific routes
+          // Clinic specific routes (includes appointment management)
           GoRoute(
             path: 'dashboard',
             name: 'clinic-dashboard',
@@ -228,35 +226,12 @@ class AppRouter {
               return AppointmentDetailsScreen(appointmentId: appointmentId);
             },
           ),
-        ],
-      ),
-
-      GoRoute(
-        path: '/appointment',
-        name: 'appointment',
-        builder: (context, state) => const AppointmentModuleView(),
-        routes: [
-          // Appointment specific routes
           GoRoute(
-            path: 'dashboard',
-            name: 'appointment-dashboard',
-            builder: (context, state) =>
-                const appointment.AppointmentsDashboard(),
-          ),
-          GoRoute(
-            path: 'new',
-            name: 'appointment-new',
-            builder: (context, state) =>
-                const appointment.NewAppointmentScreen(),
-          ),
-          GoRoute(
-            path: ':id',
-            name: 'appointment-details',
+            path: 'doctor-details/:doctorId',
+            name: 'clinic-doctor-details',
             builder: (context, state) {
-              final appointmentId = state.pathParameters['id']!;
-              return appointment.AppointmentDetailsScreen(
-                appointmentId: appointmentId,
-              );
+              final doctorId = state.pathParameters['doctorId']!;
+              return Scaffold(body: DoctorDetailsContent(doctorId: doctorId));
             },
           ),
         ],
@@ -358,7 +333,7 @@ class AppRouter {
       case 'pharmacist':
         return '/pharmacist';
       default:
-        return '/appointment';
+        return '/clinic'; // Default to clinic module for appointment management
     }
   }
 
@@ -398,19 +373,19 @@ class AppRouter {
     context.go('/$module/$screen');
   }
 
-  /// Navigate to appointment details
+  /// Navigate to appointment details (uses clinic module)
   static void goToAppointmentDetails(
     BuildContext context,
     String appointmentId, {
-    String module = 'appointment',
+    String module = 'clinic',
   }) {
     context.go('/$module/appointments/$appointmentId');
   }
 
-  /// Navigate to new appointment
+  /// Navigate to new appointment (uses clinic module)
   static void goToNewAppointment(
     BuildContext context, {
-    String module = 'appointment',
+    String module = 'clinic',
   }) {
     context.go('/$module/appointments/new');
   }

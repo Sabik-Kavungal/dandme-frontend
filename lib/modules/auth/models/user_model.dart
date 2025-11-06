@@ -122,6 +122,10 @@ class UserRole with _$UserRole {
     String? id,
     String? name,
     Map<String, dynamic>? permissions,
+    // Add role-based IDs from backend
+    @JsonKey(name: "clinic_id") String? clinicId,
+    @JsonKey(name: "organization_id") String? organizationId,
+    @JsonKey(name: "service_id") String? serviceId,
   }) = _UserRole;
 
   const UserRole._();
@@ -165,6 +169,10 @@ class LoginResponse with _$LoginResponse {
     List<UserRole>? roles,
     String? tokenType,
     String? username,
+    // Add role-based IDs
+    String? organizationId,
+    String? clinicId,
+    String? serviceId,
   }) = _LoginResponse;
 
   const LoginResponse._();
@@ -177,6 +185,17 @@ class LoginResponse with _$LoginResponse {
     final extractedRole = roles?.isNotEmpty == true ? roles!.first.name : null;
     final extractedRoleId = roles?.isNotEmpty == true ? roles!.first.id : null;
 
+    // Extract role-based IDs from the roles array
+    final extractedClinicId = roles?.isNotEmpty == true
+        ? roles!.first.clinicId
+        : null;
+    final extractedOrganizationId = roles?.isNotEmpty == true
+        ? roles!.first.organizationId
+        : null;
+    final extractedServiceId = roles?.isNotEmpty == true
+        ? roles!.first.serviceId
+        : null;
+
     return UserModel(
       id: id,
       firstName: firstName,
@@ -186,6 +205,10 @@ class LoginResponse with _$LoginResponse {
       phone: phone,
       role: extractedRole,
       roleId: extractedRoleId,
+      // Use extracted IDs from roles first, fallback to top-level if available
+      organizationId: extractedOrganizationId ?? organizationId,
+      clinicId: extractedClinicId ?? clinicId,
+      serviceId: extractedServiceId ?? serviceId,
     );
   }
 

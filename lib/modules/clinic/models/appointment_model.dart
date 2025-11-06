@@ -4,16 +4,119 @@ part '../gen/appointment_model.freezed.dart';
 part '../gen/appointment_model.g.dart';
 
 @freezed
+class AppointmentDetails with _$AppointmentDetails {
+  const factory AppointmentDetails({
+    String? id,
+    @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+    dynamic tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    @JsonKey(name: "duration_minutes") int? durationMinutes,
+    @JsonKey(name: "session_type") String? sessionType,
+    String? status,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "payment_method") String? paymentMethod,
+    String? notes,
+    @JsonKey(name: "cancellation_reason") String? cancellationReason,
+    @JsonKey(name: "slot_details") SlotDetails? slotDetails,
+    @JsonKey(name: "created_at") String? createdAt,
+    @JsonKey(name: "updated_at") String? updatedAt,
+    // Flat structure from API
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "clinic_patient_id") String? clinicPatientId,
+    // Nested objects (for compatibility)
+    PatientDetails? patient,
+    DoctorDetails? doctor,
+    ClinicDetails? clinic,
+  }) = _AppointmentDetails;
+
+  factory AppointmentDetails.fromJson(Map<String, dynamic> json) =>
+      _$AppointmentDetailsFromJson(json);
+}
+
+@freezed
+class PatientDetails with _$PatientDetails {
+  const factory PatientDetails({
+    String? name,
+    String? phone,
+    String? email,
+    int? age,
+    String? gender,
+  }) = _PatientDetails;
+
+  factory PatientDetails.fromJson(Map<String, dynamic> json) =>
+      _$PatientDetailsFromJson(json);
+}
+
+@freezed
+class DoctorDetails with _$DoctorDetails {
+  const factory DoctorDetails({String? id, String? name}) = _DoctorDetails;
+
+  factory DoctorDetails.fromJson(Map<String, dynamic> json) =>
+      _$DoctorDetailsFromJson(json);
+}
+
+@freezed
+class DepartmentDetails with _$DepartmentDetails {
+  const factory DepartmentDetails({String? id, String? name}) =
+      _DepartmentDetails;
+
+  factory DepartmentDetails.fromJson(Map<String, dynamic> json) =>
+      _$DepartmentDetailsFromJson(json);
+}
+
+@freezed
+class ClinicDetails with _$ClinicDetails {
+  const factory ClinicDetails({String? id, String? name}) = _ClinicDetails;
+
+  factory ClinicDetails.fromJson(Map<String, dynamic> json) =>
+      _$ClinicDetailsFromJson(json);
+}
+
+@freezed
+class SlotDetails with _$SlotDetails {
+  const factory SlotDetails({
+    @JsonKey(name: "slot_id") String? slotId,
+    @JsonKey(name: "slot_status") String? slotStatus,
+    @JsonKey(name: "slot_start_time") String? slotStartTime,
+    @JsonKey(name: "slot_end_time") String? slotEndTime,
+    @JsonKey(name: "slot_date") String? slotDate,
+    @JsonKey(name: "slot_full_time") String? slotFullTime,
+    @JsonKey(name: "session_name") String? sessionName,
+  }) = _SlotDetails;
+
+  factory SlotDetails.fromJson(Map<String, dynamic> json) =>
+      _$SlotDetailsFromJson(json);
+}
+
+@freezed
 class Appointment with _$Appointment {
   const factory Appointment({
     String? id,
+    @JsonKey(name: "token_number") int? tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    String? status,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "created_at") String? createdAt,
+
+    // Legacy fields for backward compatibility
     String? appointmentId,
     String? patientId,
     String? doctorId,
-    String? department,
-    String? consultationType,
-    String? status,
-    String? feeStatus,
     String? appointmentDate,
     String? appointmentTime,
     String? bookedOn,
@@ -27,6 +130,17 @@ class Appointment with _$Appointment {
 
   factory Appointment.fromJson(Map<String, dynamic> json) =>
       _$AppointmentFromJson(json);
+}
+
+@freezed
+class AppointmentListResponse with _$AppointmentListResponse {
+  const factory AppointmentListResponse({
+    required List<Appointment> appointments,
+    @JsonKey(name: "total_count") int? totalCount,
+  }) = _AppointmentListResponse;
+
+  factory AppointmentListResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppointmentListResponseFromJson(json);
 }
 
 @freezed
@@ -62,6 +176,7 @@ class Doctor with _$Doctor {
     String? id,
     String? firstName,
     String? lastName,
+    String? fullName,
     String? email,
     String? phone,
     String? department,
@@ -116,6 +231,120 @@ class AppointmentSummary with _$AppointmentSummary {
 
   factory AppointmentSummary.fromJson(Map<String, dynamic> json) =>
       _$AppointmentSummaryFromJson(json);
+}
+
+@freezed
+class SimpleAppointment with _$SimpleAppointment {
+  const factory SimpleAppointment({
+    required String id,
+    @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,
+    @JsonKey(name: 'clinic_id') required String clinicId,
+    @JsonKey(name: 'doctor_id') required String doctorId,
+    @JsonKey(name: 'booking_number') required String bookingNumber,
+    @JsonKey(name: 'token_number') required int tokenNumber,
+    @JsonKey(name: 'appointment_date') required String appointmentDate,
+    @JsonKey(name: 'appointment_time') required String appointmentTime,
+    @JsonKey(name: 'duration_minutes') int? durationMinutes,
+    @JsonKey(name: 'consultation_type') required String consultationType,
+    String? reason,
+    required String status,
+    @JsonKey(name: 'fee_amount') double? feeAmount,
+    @JsonKey(name: 'payment_status') String? paymentStatus,
+    @JsonKey(name: 'payment_mode') String? paymentMode,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  }) = _SimpleAppointment;
+
+  factory SimpleAppointment.fromJson(Map<String, dynamic> json) =>
+      _$SimpleAppointmentFromJson(json);
+}
+
+@freezed
+class SimpleAppointmentResponse with _$SimpleAppointmentResponse {
+  const factory SimpleAppointmentResponse({
+    required String message,
+    required SimpleAppointment appointment,
+
+    // ✅ NEW: Follow-up information
+    FollowUpInfo? followUp,
+    @JsonKey(name: 'clinic_patient_update')
+    ClinicPatientUpdate? clinicPatientUpdate,
+
+    // ✅ NEW: Appointment type flags
+    @JsonKey(name: 'is_regular_appointment') bool? isRegularAppointment,
+    @JsonKey(name: 'followup_granted') bool? followupGranted,
+    @JsonKey(name: 'followup_message') String? followupMessage,
+    @JsonKey(name: 'followup_valid_until') String? followupValidUntil,
+
+    // ✅ NEW: Free follow-up flags
+    @JsonKey(name: 'is_free_followup') bool? isFreeFollowup,
+    @JsonKey(name: 'followup_type') String? followupType,
+    @JsonKey(name: 'follow_up_info') FollowUpInfo? followUpInfo,
+
+    // ✅ NEW: Renewal options
+    RenewalOptions? renewalOptions,
+  }) = _SimpleAppointmentResponse;
+
+  factory SimpleAppointmentResponse.fromJson(Map<String, dynamic> json) =>
+      _$SimpleAppointmentResponseFromJson(json);
+}
+
+/// ✅ NEW: Follow-up information model
+@freezed
+class FollowUpInfo with _$FollowUpInfo {
+  const factory FollowUpInfo({
+    String? id,
+    @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
+    @JsonKey(name: 'clinic_id') String? clinicId,
+    @JsonKey(name: 'patient_name') String? patientName,
+    @JsonKey(name: 'doctor_id') String? doctorId,
+    @JsonKey(name: 'doctor_name') String? doctorName,
+    @JsonKey(name: 'department_id') String? departmentId,
+    @JsonKey(name: 'department_name') String? departmentName,
+    @JsonKey(name: 'source_appointment_id') String? sourceAppointmentId,
+    @JsonKey(name: 'follow_up_status') String? followUpStatus,
+    @JsonKey(name: 'is_free') bool? isFree,
+    @JsonKey(name: 'valid_from') String? validFrom,
+    @JsonKey(name: 'valid_until') String? validUntil,
+    @JsonKey(name: 'days_remaining') int? daysRemaining,
+    @JsonKey(name: 'used_appointment_id') String? usedAppointmentId,
+    @JsonKey(name: 'used_at') String? usedAt,
+    @JsonKey(name: 'renewed_at') String? renewedAt,
+    @JsonKey(name: 'renewed_by_appointment_id') String? renewedByAppointmentId,
+    @JsonKey(name: 'appointment_slot_type') String? appointmentSlotType,
+    @JsonKey(name: 'follow_up_type') String? followUpType,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  }) = _FollowUpInfo;
+
+  factory FollowUpInfo.fromJson(Map<String, dynamic> json) =>
+      _$FollowUpInfoFromJson(json);
+}
+
+/// ✅ NEW: Clinic patient update information
+@freezed
+class ClinicPatientUpdate with _$ClinicPatientUpdate {
+  const factory ClinicPatientUpdate({
+    @JsonKey(name: 'current_followup_status') String? currentFollowupStatus,
+    @JsonKey(name: 'last_appointment_id') String? lastAppointmentId,
+    @JsonKey(name: 'last_followup_id') String? lastFollowupId,
+  }) = _ClinicPatientUpdate;
+
+  factory ClinicPatientUpdate.fromJson(Map<String, dynamic> json) =>
+      _$ClinicPatientUpdateFromJson(json);
+}
+
+/// ✅ NEW: Renewal options
+@freezed
+class RenewalOptions with _$RenewalOptions {
+  const factory RenewalOptions({
+    @JsonKey(name: 'can_renew') bool? canRenew,
+    String? message,
+    @JsonKey(name: 'previous_followup_id') String? previousFollowupId,
+  }) = _RenewalOptions;
+
+  factory RenewalOptions.fromJson(Map<String, dynamic> json) =>
+      _$RenewalOptionsFromJson(json);
 }
 
 @freezed
@@ -190,4 +419,15 @@ class Prescription with _$Prescription {
 
   factory Prescription.fromJson(Map<String, dynamic> json) =>
       _$PrescriptionFromJson(json);
+}
+
+// ✅ Helper function to handle token_number as both int and string
+dynamic _tokenNumberFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is String) {
+    return int.tryParse(value) ??
+        value; // Try to parse, return original if fails
+  }
+  return value;
 }

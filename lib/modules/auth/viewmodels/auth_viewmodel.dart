@@ -100,12 +100,29 @@ class AuthViewModel extends ChangeNotifier {
   /// Save tokens and user data to local storage
   Future<void> _saveAuthData() async {
     try {
+      print('');
+      print(
+        '╔═══════════════════════════════════════════════════════════════╗',
+      );
+      print('║     SAVING AUTH DATA TO LOCAL DATABASE                       ║');
+      print(
+        '╚═══════════════════════════════════════════════════════════════╝',
+      );
+
       final box = await _db.openBox<dynamic>("token");
 
       // Save tokens
       await _db.toDb(box, "accessToken", _tokens?.accessToken);
       await _db.toDb(box, "refreshToken", _tokens?.refreshToken);
       await _db.toDb(box, "userId", _tokens?.userId);
+
+      print('💾 TOKENS SAVED:');
+      print('   ├─ accessToken: ${_tokens?.accessToken?.substring(0, 30)}...');
+      print(
+        '   ├─ refreshToken: ${_tokens?.refreshToken?.substring(0, 30)}...',
+      );
+      print('   └─ userId: ${_tokens?.userId}');
+      print('');
 
       // Save user data
       if (_user != null) {
@@ -119,8 +136,30 @@ class AuthViewModel extends ChangeNotifier {
         await _db.toDb(box, "userOrganizationId", _user!.organizationId);
         await _db.toDb(box, "userClinicId", _user!.clinicId);
         await _db.toDb(box, "userServiceId", _user!.serviceId);
+
+        print('👤 USER DATA SAVED:');
+        print('   ├─ userRole: ${_user!.role}');
+        print('   ├─ userRoleId: ${_user!.roleId}');
+        print('   ├─ userFirstName: ${_user!.firstName}');
+        print('   ├─ userLastName: ${_user!.lastName}');
+        print('   ├─ userEmail: ${_user!.email}');
+        print('   ├─ userUsername: ${_user!.username}');
+        print('   ├─ userPhone: ${_user!.phone}');
+        print('   ├─ userOrganizationId: ${_user!.organizationId}');
+        print(
+          '   ├─ 🏥 userClinicId: ${_user!.clinicId} ${_user!.clinicId == null ? "❌ NULL" : "✅"}',
+        );
+        print('   └─ userServiceId: ${_user!.serviceId}');
+      } else {
+        print('⚠️  USER DATA IS NULL - NOT SAVED');
       }
+
+      print('');
+      print('✅ Auth data saved successfully to local database');
+      print('═══════════════════════════════════════════════════════════════');
+      print('');
     } catch (e) {
+      print('❌ Error saving auth data to local database: $e');
       // Don't rethrow to prevent login failure due to storage issues
     }
   }
@@ -244,10 +283,65 @@ class AuthViewModel extends ChangeNotifier {
       );
 
       if (response != null) {
-        print('Login response received: $response');
+        print('');
+        print(
+          '╔═══════════════════════════════════════════════════════════════╗',
+        );
+        print(
+          '║     LOGIN API RESPONSE RECEIVED                               ║',
+        );
+        print(
+          '╚═══════════════════════════════════════════════════════════════╝',
+        );
+        print('📋 Full response:');
+        print(response);
+        print('');
+
         final loginResponse = LoginResponse.fromJson(response);
-        print('LoginResponse parsed: ${loginResponse.toJson()}');
+        print('✅ LoginResponse parsed successfully');
+        print('📋 LoginResponse JSON: ${loginResponse.toJson()}');
+        print('');
+        print('🔍 CHECKING LOGIN RESPONSE FIELDS:');
+        print('   ├─ id: ${loginResponse.id}');
+        print('   ├─ firstName: ${loginResponse.firstName}');
+        print('   ├─ lastName: ${loginResponse.lastName}');
+        print('   ├─ email: ${loginResponse.email}');
+        print('   ├─ username: ${loginResponse.username}');
+        print('   ├─ phone: ${loginResponse.phone}');
+        print(
+          '   ├─ 🏢 organizationId (top-level): ${loginResponse.organizationId} ${loginResponse.organizationId == null ? "❌ NULL" : "✅"}',
+        );
+        print(
+          '   ├─ 🏥 clinicId (top-level): ${loginResponse.clinicId} ${loginResponse.clinicId == null ? "❌ NULL" : "✅"}',
+        );
+        print(
+          '   ├─ 🔧 serviceId (top-level): ${loginResponse.serviceId} ${loginResponse.serviceId == null ? "❌ NULL" : "✅"}',
+        );
+        print(
+          '   └─ roles: ${loginResponse.roles?.map((r) => r.name).join(", ")}',
+        );
+
+        if (loginResponse.roles != null && loginResponse.roles!.isNotEmpty) {
+          print('');
+          print('🔍 CHECKING ROLE-BASED IDs (from roles array):');
+          for (var i = 0; i < loginResponse.roles!.length; i++) {
+            final role = loginResponse.roles![i];
+            print('   Role ${i + 1} (${role.name}):');
+            print(
+              '      ├─ 🏢 organizationId: ${role.organizationId} ${role.organizationId == null ? "❌ NULL" : "✅"}',
+            );
+            print(
+              '      ├─ 🏥 clinicId: ${role.clinicId} ${role.clinicId == null ? "❌ NULL" : "✅"}',
+            );
+            print(
+              '      └─ 🔧 serviceId: ${role.serviceId} ${role.serviceId == null ? "❌ NULL" : "✅"}',
+            );
+          }
+        }
+
+        print('');
         print('LoginResponse isValid: ${loginResponse.isValid}');
+        print('');
 
         if (loginResponse.isValid) {
           // Validate role before proceeding
@@ -260,9 +354,11 @@ class AuthViewModel extends ChangeNotifier {
           _user = loginResponse.toUserModel();
           _loginResponse = loginResponse;
 
-          print('Tokens set: ${_tokens?.toJson()}');
-          print('User set: ${_user?.toJson()}');
-          print('isAuthenticated: $isAuthenticated');
+          print('🔑 Tokens set: ${_tokens?.toJson()}');
+          print('👤 User set: ${_user?.toJson()}');
+          print('🏥 User clinicId from UserModel: ${_user?.clinicId}');
+          print('✅ isAuthenticated: $isAuthenticated');
+          print('');
 
           // Save to persistent storage
           await _saveAuthData();
@@ -625,7 +721,7 @@ class AuthViewModel extends ChangeNotifier {
       case 'pharmacist':
         return '/pharmacist';
       default:
-        return '/appointment'; // Default fallback
+        return '/clinic'; // Default to clinic module (includes appointments)
     }
   }
 
@@ -656,31 +752,31 @@ class AuthViewModel extends ChangeNotifier {
 
   /// Check organization admin route access
   bool _canOrganizationAdminAccessRoute(String route) {
-    const allowedRoutes = ['/organization', '/profile', '/appointment'];
+    const allowedRoutes = ['/organization', '/profile', '/clinic'];
     return allowedRoutes.any((allowedRoute) => route.startsWith(allowedRoute));
   }
 
   /// Check clinic admin route access
   bool _canClinicAdminAccessRoute(String route) {
-    const allowedRoutes = ['/clinic', '/profile', '/appointment'];
+    const allowedRoutes = ['/clinic', '/profile'];
     return allowedRoutes.any((allowedRoute) => route.startsWith(allowedRoute));
   }
 
   /// Check doctor route access
   bool _canDoctorAccessRoute(String route) {
-    const allowedRoutes = ['/doctor', '/profile', '/appointment'];
+    const allowedRoutes = ['/doctor', '/profile', '/clinic'];
     return allowedRoutes.any((allowedRoute) => route.startsWith(allowedRoute));
   }
 
   /// Check patient route access
   bool _canPatientAccessRoute(String route) {
-    const allowedRoutes = ['/patient', '/profile', '/appointment'];
+    const allowedRoutes = ['/patient', '/profile', '/clinic'];
     return allowedRoutes.any((allowedRoute) => route.startsWith(allowedRoute));
   }
 
   /// Check pharmacist route access
   bool _canPharmacistAccessRoute(String route) {
-    const allowedRoutes = ['/pharmacist', '/profile', '/appointment'];
+    const allowedRoutes = ['/pharmacist', '/profile', '/clinic'];
     return allowedRoutes.any((allowedRoute) => route.startsWith(allowedRoute));
   }
 

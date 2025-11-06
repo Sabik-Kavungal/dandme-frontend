@@ -5,6 +5,7 @@ import 'package:a/modules/superadmin/views/dashboard/super_admin_dashboard_view.
 import 'package:a/modules/superadmin/views/doctors/doctors_list_view.dart';
 import 'package:a/modules/superadmin/views/organizations/organizations_list_view.dart';
 import 'package:a/modules/superadmin/views/users/users_management_view.dart';
+import 'package:a/modules/superadmin/views/departments/departments_list_view.dart';
 import 'package:a/core/config/navigation_helper.dart';
 
 class SuperAdminModuleView extends StatefulWidget {
@@ -26,6 +27,7 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
           SuperAdminDashboardScreen(),
           OrganizationsManagementScreen(),
           ClinicsManagementScreen(),
+          DepartmentsManagementScreen(),
           DoctorsManagementScreen(),
           UsersManagementScreen(),
           SystemSettingsScreen(),
@@ -36,15 +38,16 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
           ModuleNavItem(title: 'Dashboard', icon: Icons.dashboard, index: 0),
           ModuleNavItem(title: 'Organizations', icon: Icons.business, index: 1),
           ModuleNavItem(title: 'Clinics', icon: Icons.local_hospital, index: 2),
+          ModuleNavItem(title: 'Departments', icon: Icons.category, index: 3),
           ModuleNavItem(
             title: 'Doctors',
             icon: Icons.medical_services,
-            index: 3,
+            index: 4,
           ),
-          ModuleNavItem(title: 'Users', icon: Icons.people, index: 4),
-          ModuleNavItem(title: 'Settings', icon: Icons.settings, index: 5),
-          ModuleNavItem(title: 'Reports', icon: Icons.bar_chart, index: 6),
-          ModuleNavItem(title: 'Audit Log', icon: Icons.history, index: 7),
+          ModuleNavItem(title: 'Users', icon: Icons.people, index: 5),
+          ModuleNavItem(title: 'Settings', icon: Icons.settings, index: 6),
+          ModuleNavItem(title: 'Reports', icon: Icons.bar_chart, index: 7),
+          ModuleNavItem(title: 'Audit Log', icon: Icons.history, index: 8),
         ],
         customHeaderActions: [
           IconButton(
@@ -63,11 +66,6 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
             tooltip: 'Quick Actions',
           ),
         ],
-        customFloatingActionButton: FloatingActionButton(
-          onPressed: () => _showCreateMenu(context),
-          backgroundColor: Colors.red,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
         onLogout: () => _handleLogout(context),
       ),
       selectedIndex: _selectedIndex,
@@ -103,49 +101,6 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
             child: const Text('Close'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showCreateMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Create New',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.business, color: Colors.blue),
-              title: const Text('Organization'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                NavigationHelper.goToAddOrganization(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.local_hospital, color: Colors.green),
-              title: const Text('Clinic'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                NavigationHelper.goToAddClinic(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.medical_services, color: Colors.orange),
-              title: const Text('Doctor'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                NavigationHelper.goToAddDoctor(context);
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -202,6 +157,15 @@ class ClinicsManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ClinicsListScreen(); // Use existing clinics list
+  }
+}
+
+class DepartmentsManagementScreen extends StatelessWidget {
+  const DepartmentsManagementScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const DepartmentsListView(); // Use departments list
   }
 }
 

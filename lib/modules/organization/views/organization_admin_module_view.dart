@@ -57,11 +57,6 @@ class _OrganizationAdminModuleViewState extends State<OrganizationAdminModuleVie
             tooltip: 'Org Tools',
           ),
         ],
-        customFloatingActionButton: FloatingActionButton(
-          onPressed: () => _showCreateMenu(context),
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
         onLogout: () => _handleLogout(context),
       ),
       selectedIndex: _selectedIndex,
@@ -83,49 +78,6 @@ class _OrganizationAdminModuleViewState extends State<OrganizationAdminModuleVie
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Organization Tools')));
-  }
-
-  void _showCreateMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Create New',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.local_hospital, color: Colors.green),
-              title: const Text('Clinic'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                // Navigate to add clinic
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.medical_services, color: Colors.orange),
-              title: const Text('Doctor'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                // Navigate to add doctor
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person_add, color: Colors.blue),
-              title: const Text('Staff Member'),
-              onTap: () {
-                NavigationHelper.goBack(context);
-                // Navigate to add staff
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   void _handleLogout(BuildContext context) {

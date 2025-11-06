@@ -1,3 +1,4 @@
+import 'package:a/modules/clinic/models/clinic_doctor_link_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
@@ -20,6 +21,13 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
   DoctorModel? _selectedDoctor;
   final List<String> _selectedClinics = [];
   String _searchQuery = '';
+
+  // Fee controllers
+  final TextEditingController consultationFeeOfflineController = TextEditingController();
+  final TextEditingController consultationFeeOnlineController = TextEditingController();
+  final TextEditingController followUpFeeController = TextEditingController();
+  final TextEditingController followUpDaysController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
 
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
@@ -54,6 +62,11 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    consultationFeeOfflineController.dispose();
+    consultationFeeOnlineController.dispose();
+    followUpFeeController.dispose();
+    followUpDaysController.dispose();
+    notesController.dispose();
     super.dispose();
   }
 
@@ -643,6 +656,108 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                       );
                                     },
                                   ),
+                                  const SizedBox(height: 24),
+
+                                  // Fee Information Section
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: const Color(
+                                              0xFFF59E0B,
+                                            ).withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.attach_money,
+                                            color: Color(0xFFF59E0B),
+                                            size: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Consultation Fees',
+                                          style: TextStyle(
+                                            fontSize: isMobile ? 14 : 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF333333),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Consultation Fee Offline
+                                  _buildTextField(
+                                    label: 'Offline Consultation Fee',
+                                    hint: 'Enter offline consultation fee (₹)',
+                                    controller: consultationFeeOfflineController,
+                                    validator: (value) => _validateRequired(value, 'Offline consultation fee'),
+                                    required: true,
+                                    icon: Icons.business,
+                                    keyboardType: TextInputType.number,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Consultation Fee Online
+                                  _buildTextField(
+                                    label: 'Online Consultation Fee',
+                                    hint: 'Enter online consultation fee (₹)',
+                                    controller: consultationFeeOnlineController,
+                                    validator: (value) => _validateRequired(value, 'Online consultation fee'),
+                                    required: true,
+                                    icon: Icons.videocam,
+                                    keyboardType: TextInputType.number,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Follow-up Fee
+                                  _buildTextField(
+                                    label: 'Follow-up Fee',
+                                    hint: 'Enter follow-up consultation fee (₹)',
+                                    controller: followUpFeeController,
+                                    validator: (value) => _validateRequired(value, 'Follow-up fee'),
+                                    required: true,
+                                    icon: Icons.refresh,
+                                    keyboardType: TextInputType.number,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Follow-up Days
+                                  _buildTextField(
+                                    label: 'Follow-up Validity (Days)',
+                                    hint: 'Enter follow-up validity in days',
+                                    controller: followUpDaysController,
+                                    validator: (value) => _validateRequired(value, 'Follow-up days'),
+                                    required: true,
+                                    icon: Icons.calendar_today,
+                                    keyboardType: TextInputType.number,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Notes
+                                  _buildTextField(
+                                    label: 'Notes (Optional)',
+                                    hint: 'Enter any additional notes',
+                                    controller: notesController,
+                                    validator: null,
+                                    required: false,
+                                    icon: Icons.note,
+                                    maxLines: 3,
+                                    isMobile: isMobile,
+                                  ),
                                   const SizedBox(height: 32),
 
                                   // Action Buttons
@@ -765,7 +880,114 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
     }
   }
 
+  // Validation helper
+  String? _validateRequired(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    if (double.tryParse(value.trim()) == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
+
+  // Build text field widget
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required String? Function(String?)? validator,
+    required bool required,
+    required IconData icon,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+    required bool isMobile,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: isMobile ? 13 : 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF333333),
+              ),
+            ),
+            if (required) ...[
+              const SizedBox(width: 4),
+              const Text(
+                '*',
+                style: TextStyle(
+                  color: Color(0xFFDC2626),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          style: const TextStyle(fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: const Color(0xFFB3B3B3),
+              fontSize: isMobile ? 13 : 14,
+            ),
+            prefixIcon: Icon(icon, size: 20, color: const Color(0xFF666666)),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: maxLines > 1 ? 16 : 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: Color(0xFF8B5CF6),
+                width: 1.5,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFDC2626)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: Color(0xFFDC2626),
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            errorStyle: const TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _createLinks(BuildContext context) async {
+    // Validate form first
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     final clinicVM = Provider.of<ClinicViewModel>(context, listen: false);
 
     // Validate doctor has required IDs
@@ -785,6 +1007,23 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
           content: Text(
             'Error: Selected doctor does not have a valid Doctor ID',
           ),
+          backgroundColor: Color(0xFFDC2626),
+        ),
+      );
+      return;
+    }
+
+    // Parse fee values
+    final consultationFeeOffline = double.tryParse(consultationFeeOfflineController.text.trim());
+    final consultationFeeOnline = double.tryParse(consultationFeeOnlineController.text.trim());
+    final followUpFee = double.tryParse(followUpFeeController.text.trim());
+    final followUpDays = int.tryParse(followUpDaysController.text.trim());
+
+    if (consultationFeeOffline == null || consultationFeeOnline == null || 
+        followUpFee == null || followUpDays == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error: Please enter valid fee amounts and follow-up days'),
           backgroundColor: Color(0xFFDC2626),
         ),
       );
@@ -811,9 +1050,19 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
         continue;
       }
 
-      final success = await clinicVM.addClinicDoctorLinkSimple(
-        clinic.id!, // clinic_id for API
-        _selectedDoctor!.drid!, // doctor_id for API
+      // Create link data with fees
+      final linkData = CreateClinicDoctorLinkWithFees(
+        clinicId: clinic.id!,
+        doctorId: _selectedDoctor!.drid!,
+        consultationFeeOffline: consultationFeeOffline,
+        consultationFeeOnline: consultationFeeOnline,
+        followUpFee: followUpFee,
+        followUpDays: followUpDays,
+        notes: notesController.text.trim().isEmpty ? null : notesController.text.trim(),
+      );
+
+      final success = await clinicVM.addClinicDoctorLinkWithFees(
+        linkData,
         context,
       );
 

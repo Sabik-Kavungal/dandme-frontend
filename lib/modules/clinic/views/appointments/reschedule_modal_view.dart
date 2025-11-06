@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
 
 class RescheduleModal extends StatefulWidget {
   final String? appointmentId;
@@ -11,16 +15,24 @@ class RescheduleModal extends StatefulWidget {
 
 class _RescheduleModalState extends State<RescheduleModal>
     with SingleTickerProviderStateMixin {
-  String selectedDepartment = 'Orthology';
-  String selectedDoctor = 'Dr. Arun Krishna';
-  String selectedTimeSlot = '04:30 PM';
-  String selectedDate = '16,July';
+  late NewAppointmentViewModel _viewModel;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
+    _viewModel = NewAppointmentViewModel(
+      Provider.of<AuthViewModel>(context, listen: false),
+    );
+
+    // Initialize the viewmodel and load appointment data
+    _viewModel.initialize().then((_) {
+      if (widget.appointmentId != null) {
+        _viewModel.loadAppointmentForReschedule(widget.appointmentId!);
+      }
+    });
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -39,6 +51,7 @@ class _RescheduleModalState extends State<RescheduleModal>
   @override
   void dispose() {
     _animationController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -231,213 +244,272 @@ class _RescheduleModalState extends State<RescheduleModal>
   }
 
   Widget _buildFormContent(bool isMobile) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Select Department
-        _buildSectionTitle('Select Department'),
-        const SizedBox(height: 8),
-        _buildDropdown(selectedDepartment, (value) {
-          setState(() {
-            selectedDepartment = value!;
-          });
-        }),
-        const SizedBox(height: 20),
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<NewAppointmentViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        // Select Doctor
-        _buildSectionTitle('Select Doctor'),
-        const SizedBox(height: 8),
-        _buildDropdown(selectedDoctor, (value) {
-          setState(() {
-            selectedDoctor = value!;
-          });
-        }),
-        const SizedBox(height: 20),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Select Department
+              _buildSectionTitle('Select Department'),
+              const SizedBox(height: 8),
+              _buildDepartmentDropdown(viewModel),
+              const SizedBox(height: 20),
 
-        // Reason or Add Notes
-        _buildSectionTitle('Reason or Add Notes'),
-        const SizedBox(height: 8),
-        Container(
-          height: 80,
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE0E0E0)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const TextField(
-            decoration: InputDecoration(
-              hintText: 'Add Patient Note',
-              hintStyle: TextStyle(color: Color(0xFF999999)),
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(12),
-            ),
-            maxLines: 3,
-          ),
-        ),
-        const SizedBox(height: 24),
+              // Select Doctor
+              _buildSectionTitle('Select Doctor'),
+              const SizedBox(height: 8),
+              _buildDoctorDropdown(viewModel),
+              const SizedBox(height: 20),
 
-        // Available Slots
-        _buildSectionTitle('Available Slots'),
-        const SizedBox(height: 16),
-
-        // Date Selector
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFE0E0E0)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    selectedDate,
-                    style: const TextStyle(color: Color(0xFF333333)),
+              // Reason or Add Notes
+              _buildSectionTitle('Reason or Add Notes'),
+              const SizedBox(height: 8),
+              Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFE0E0E0)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Add Patient Note',
+                    hintStyle: TextStyle(color: Color(0xFF999999)),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(12),
                   ),
-                  const SizedBox(width: 8),
-                  const Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: Color(0xFF666666),
+                  maxLines: 3,
+                  controller: TextEditingController(
+                    text: viewModel.patientNotes,
+                  ),
+                  onChanged: viewModel.setPatientNotes,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Available Slots
+              _buildSectionTitle('Available Slots'),
+              const SizedBox(height: 16),
+
+              // Date Selector
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          viewModel.selectedDate,
+                          style: const TextStyle(color: Color(0xFF333333)),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: Color(0xFF666666),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  // Legend
+                  Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4A90E2),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Current Slot',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF666666),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE0E0E0),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Available Slots',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF666666),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFDE7E7),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Booked Slots',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF666666),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-            const Spacer(),
-            // Legend
-            Row(
-              children: [
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE0E0E0),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Text(
-                  'Available Slots',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF666666)),
-                ),
-                const SizedBox(width: 16),
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFDE7E7),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Text(
-                  'Booked Slots',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF666666)),
-                ),
-                const SizedBox(width: 16),
-                IconButton(
+              const SizedBox(height: 20),
+
+              // Time Slots
+              _buildTimeSlotsSection(viewModel),
+              const SizedBox(height: 20),
+
+              // Add More Appointment Button
+              Center(
+                child: OutlinedButton.icon(
                   onPressed: () {},
-                  icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-
-        // Morning Slots
-        _buildTimeSlotSection('Morning Slots', [
-          '09:00 AM',
-          '09:30 AM',
-          '10:00 AM',
-          '10:30 AM',
-          '11:00 AM',
-          '11:30 AM',
-        ]),
-        const SizedBox(height: 16),
-
-        // Afternoon Slots
-        _buildTimeSlotSection('Afternoon Slots', [
-          '12:00 PM',
-          '12:30 PM',
-          '01:00 PM',
-          '01:30 PM',
-          '02:00 PM',
-          '02:30 PM',
-          '03:00 PM',
-          '03:30 PM',
-          '04:00 PM',
-          '04:30 PM',
-        ]),
-        const SizedBox(height: 20),
-
-        // Add More Appointment Button
-        Center(
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF333333),
-              side: const BorderSide(color: Color(0xFFE0E0E0)),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            icon: const Icon(Icons.add, size: 16),
-            label: const Text('Add More Appointment'),
-          ),
-        ),
-        const SizedBox(height: 24),
-
-        // Action Buttons
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: _closePanel,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF333333),
-                  side: const BorderSide(color: Color(0xFFE0E0E0)),
-                  padding: EdgeInsets.symmetric(vertical: isMobile ? 14 : 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF333333),
+                    side: const BorderSide(color: Color(0xFFE0E0E0)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  icon: const Icon(Icons.add, size: 16),
+                  label: const Text('Add More Appointment'),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Save logic here
-                  _closePanel();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(vertical: isMobile ? 14 : 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 24),
+
+              // Action Buttons
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _closePanel,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF333333),
+                        side: const BorderSide(color: Color(0xFFE0E0E0)),
+                        padding: EdgeInsets.symmetric(
+                          vertical: isMobile ? 14 : 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: viewModel.isCreating
+                          ? null
+                          : () async {
+                              if (widget.appointmentId != null) {
+                                final success = await viewModel
+                                    .rescheduleAppointment(
+                                      widget.appointmentId!,
+                                    );
+                                if (success && mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Appointment rescheduled successfully',
+                                      ),
+                                      backgroundColor: Color(0xFF10B981),
+                                    ),
+                                  );
+                                  _closePanel();
+                                } else if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(viewModel.error),
+                                      backgroundColor: const Color(0xFFDC2626),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: EdgeInsets.symmetric(
+                          vertical: isMobile ? 14 : 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: viewModel.isCreating
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Save',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -452,7 +524,7 @@ class _RescheduleModalState extends State<RescheduleModal>
     );
   }
 
-  Widget _buildDropdown(String value, Function(String?) onChanged) {
+  Widget _buildDepartmentDropdown(NewAppointmentViewModel viewModel) {
     return Container(
       height: 44,
       decoration: BoxDecoration(
@@ -462,22 +534,22 @@ class _RescheduleModalState extends State<RescheduleModal>
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: value,
-          onChanged: onChanged,
+          value: viewModel.selectedDepartment.isNotEmpty
+              ? viewModel.selectedDepartment
+              : null,
+          onChanged: (value) {
+            if (value != null) {
+              viewModel.setDepartment(value);
+            }
+          },
           padding: const EdgeInsets.symmetric(horizontal: 12),
           isExpanded: true,
-          items: [
-            if (value == 'Orthology')
-              const DropdownMenuItem(
-                value: 'Orthology',
-                child: Text('Orthology'),
-              ),
-            if (value == 'Dr. Arun Krishna')
-              const DropdownMenuItem(
-                value: 'Dr. Arun Krishna',
-                child: Text('Dr. Arun Krishna'),
-              ),
-          ],
+          items: viewModel.departments.map((department) {
+            return DropdownMenuItem(
+              value: department.name ?? '',
+              child: Text(department.name ?? ''),
+            );
+          }).toList(),
           icon: const Icon(
             Icons.keyboard_arrow_down,
             color: Color(0xFF666666),
@@ -489,7 +561,72 @@ class _RescheduleModalState extends State<RescheduleModal>
     );
   }
 
-  Widget _buildTimeSlotSection(String title, List<String> slots) {
+  Widget _buildDoctorDropdown(NewAppointmentViewModel viewModel) {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFE0E0E0)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: viewModel.selectedDoctor.isNotEmpty
+              ? viewModel.selectedDoctor
+              : null,
+          onChanged: (value) {
+            if (value != null) {
+              viewModel.setDoctor(value);
+            }
+          },
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          isExpanded: true,
+          items: viewModel.doctors.map((doctor) {
+            final doctorName = '${doctor.firstName} ${doctor.lastName}';
+            return DropdownMenuItem(value: doctorName, child: Text(doctorName));
+          }).toList(),
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            color: Color(0xFF666666),
+            size: 20,
+          ),
+          style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeSlotsSection(NewAppointmentViewModel viewModel) {
+    final morningSlots = viewModel.morningSlots;
+    final afternoonSlots = viewModel.afternoonSlots;
+
+    if (morningSlots.isEmpty && afternoonSlots.isEmpty) {
+      return const Center(
+        child: Text(
+          'No available slots for selected date',
+          style: TextStyle(color: Color(0xFF666666)),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        if (morningSlots.isNotEmpty) ...[
+          _buildTimeSlotSection('Morning Slots', morningSlots, viewModel),
+          const SizedBox(height: 16),
+        ],
+        if (afternoonSlots.isNotEmpty) ...[
+          _buildTimeSlotSection('Afternoon Slots', afternoonSlots, viewModel),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTimeSlotSection(
+    String title,
+    List<DoctorTimeSlotResponse> slots,
+    NewAppointmentViewModel viewModel,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -509,48 +646,50 @@ class _RescheduleModalState extends State<RescheduleModal>
             itemCount: slots.length,
             itemBuilder: (context, index) {
               final slot = slots[index];
-              final isSelected = slot == selectedTimeSlot;
-              final isBooked = ['12:30 PM', '04:00 PM'].contains(slot);
-              final isUnavailable = [
-                '11:00 AM',
-                '11:30 AM',
-                '01:00 PM',
-                '03:00 PM',
-                '03:30 PM',
-              ].contains(slot);
+              final formattedTime = _formatTimeForDisplay(slot.startTime);
+
+              // Check if this slot is selected (by ID to be precise)
+              final isSelected = viewModel.selectedSlotId == slot.id;
+
+              final availableSpots = slot.availableSpots;
+              final isBooked = availableSpots <= 0;
 
               Color backgroundColor;
               Color textColor;
               Color subTextColor;
+              String statusText;
 
               if (isSelected) {
-                backgroundColor = Colors.black;
+                // Selected slot (auto-selected or user-selected) - BLUE
+                backgroundColor = const Color(0xFF4A90E2); // Blue for selected
                 textColor = Colors.white;
                 subTextColor = Colors.white70;
+                statusText = 'Current Slot';
               } else if (isBooked) {
+                // Booked by others (red)
                 backgroundColor = const Color(0xFFFFEBEE);
                 textColor = const Color(0xFFD32F2F);
                 subTextColor = const Color(0xFFEF5350);
-              } else if (isUnavailable) {
-                backgroundColor = const Color(0xFFF5F5F5);
-                textColor = const Color(0xFF9E9E9E);
-                subTextColor = const Color(0xFFBDBDBD);
+                statusText = 'Booked';
               } else {
+                // Available slots (green)
                 backgroundColor = const Color(0xFFE8F5E8);
                 textColor = const Color(0xFF2E7D32);
                 subTextColor = const Color(0xFF66BB6A);
+                statusText = 'Available';
               }
 
               return Container(
                 width: 90,
                 margin: const EdgeInsets.only(right: 12),
                 child: InkWell(
-                  onTap: isBooked || isUnavailable
+                  onTap: isBooked
                       ? null
                       : () {
-                          setState(() {
-                            selectedTimeSlot = slot;
-                          });
+                          viewModel.setTimeSlot(
+                            formattedTime,
+                            slotDetails: slot,
+                          );
                         },
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
@@ -569,7 +708,7 @@ class _RescheduleModalState extends State<RescheduleModal>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          slot,
+                          formattedTime,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 13,
@@ -578,7 +717,7 @@ class _RescheduleModalState extends State<RescheduleModal>
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Available Slots',
+                          statusText,
                           style: TextStyle(color: subTextColor, fontSize: 10),
                           textAlign: TextAlign.center,
                           maxLines: 1,
@@ -594,5 +733,38 @@ class _RescheduleModalState extends State<RescheduleModal>
         ),
       ],
     );
+  }
+
+  String _formatTimeForDisplay(String time) {
+    try {
+      // Handle ISO timestamp format (0000-01-01T14:45:00Z)
+      if (time.contains('T')) {
+        final dateTime = DateTime.parse(time);
+        final hour = dateTime.hour;
+        final minute = dateTime.minute.toString().padLeft(2, '0');
+
+        final period = hour >= 12 ? 'PM' : 'AM';
+        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+
+        return '$displayHour:$minute $period';
+      }
+
+      // Handle HH:MM:SS format
+      final parts = time.split(':');
+      if (parts.length >= 2) {
+        final hour = int.parse(parts[0]);
+        final minute = parts[1];
+
+        final period = hour >= 12 ? 'PM' : 'AM';
+        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+
+        return '$displayHour:$minute $period';
+      }
+
+      return time;
+    } catch (e) {
+      print('⚠️ Error formatting time: $time - $e');
+      return time;
+    }
   }
 }

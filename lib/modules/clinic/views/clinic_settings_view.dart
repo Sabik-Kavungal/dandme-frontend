@@ -1,38 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/views/doctor_details_view.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:a/modules/clinic/views/doctor_details_content.dart';
+import 'package:a/modules/clinic/views/patients/clinic_patients_list_view.dart';
+import 'package:a/modules/clinic/viewmodels/clinic_settings_viewmodel.dart';
+import 'package:a/modules/clinic/models/clinic_doctors_model.dart';
 
 /// Simple SaaS-Style Clinic Settings Screen
 /// Clean, minimal design with reduced spacing
-
-// ============================================================================
-// DATA MODELS
-// ============================================================================
-
-class Doctor {
-  final String id;
-  final String name;
-  final String specialization;
-  final String qualification;
-  final String licenseNo;
-  final String email;
-  final String phone;
-  final String status;
-  final int experience;
-  final int patients;
-
-  Doctor({
-    required this.id,
-    required this.name,
-    required this.specialization,
-    required this.qualification,
-    required this.licenseNo,
-    required this.email,
-    required this.phone,
-    required this.status,
-    this.experience = 5,
-    this.patients = 120,
-  });
-}
 
 // ============================================================================
 // STYLE CONSTANTS
@@ -63,109 +38,6 @@ class SaaSStyles {
 }
 
 // ============================================================================
-// MOCK DATA
-// ============================================================================
-
-final List<Doctor> _mockDoctors = [
-  Doctor(
-    id: '01',
-    name: 'Dr. Arun Krishna',
-    specialization: 'Cardiology',
-    qualification: 'MD, MBBS, DM',
-    licenseNo: 'MD-CS-1001',
-    email: 'arun.k@clinic.com',
-    phone: '+91-98765-43210',
-    status: 'Active',
-    experience: 12,
-    patients: 450,
-  ),
-  Doctor(
-    id: '02',
-    name: 'Dr. Sarah Johnson',
-    specialization: 'Neurology',
-    qualification: 'MD, MBBS',
-    licenseNo: 'MD-NR-1002',
-    email: 'sarah.j@clinic.com',
-    phone: '+91-98765-43211',
-    status: 'Active',
-    experience: 8,
-    patients: 320,
-  ),
-  Doctor(
-    id: '03',
-    name: 'Dr. Michael Chen',
-    specialization: 'Orthopedics',
-    qualification: 'MS, MBBS',
-    licenseNo: 'MS-OR-1003',
-    email: 'michael.c@clinic.com',
-    phone: '+91-98765-43212',
-    status: 'On leave',
-    experience: 15,
-    patients: 580,
-  ),
-  Doctor(
-    id: '04',
-    name: 'Dr. Priya Sharma',
-    specialization: 'Pediatrics',
-    qualification: 'MD, MBBS, DCH',
-    licenseNo: 'MD-PD-1004',
-    email: 'priya.s@clinic.com',
-    phone: '+91-98765-43213',
-    status: 'Active',
-    experience: 10,
-    patients: 390,
-  ),
-  Doctor(
-    id: '05',
-    name: 'Dr. James Wilson',
-    specialization: 'Dermatology',
-    qualification: 'MD, MBBS',
-    licenseNo: 'MD-DR-1005',
-    email: 'james.w@clinic.com',
-    phone: '+91-98765-43214',
-    status: 'Inactive',
-    experience: 6,
-    patients: 210,
-  ),
-  Doctor(
-    id: '06',
-    name: 'Dr. Ananya Reddy',
-    specialization: 'Gynecology',
-    qualification: 'MD, MBBS, DGO',
-    licenseNo: 'MD-GY-1006',
-    email: 'ananya.r@clinic.com',
-    phone: '+91-98765-43215',
-    status: 'Active',
-    experience: 14,
-    patients: 510,
-  ),
-  Doctor(
-    id: '07',
-    name: 'Dr. Robert Taylor',
-    specialization: 'ENT',
-    qualification: 'MS, MBBS',
-    licenseNo: 'MS-ENT-1007',
-    email: 'robert.t@clinic.com',
-    phone: '+91-98765-43216',
-    status: 'Active',
-    experience: 9,
-    patients: 340,
-  ),
-  Doctor(
-    id: '08',
-    name: 'Dr. Lisa Anderson',
-    specialization: 'Ophthalmology',
-    qualification: 'MD, MBBS, DO',
-    licenseNo: 'MD-OP-1008',
-    email: 'lisa.a@clinic.com',
-    phone: '+91-98765-43217',
-    status: 'On leave',
-    experience: 11,
-    patients: 420,
-  ),
-];
-
-// ============================================================================
 // MAIN WIDGET
 // ============================================================================
 
@@ -180,12 +52,16 @@ class ClinicSettingsScreen extends StatefulWidget {
 
 class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<Doctor> _filteredDoctors = List.from(_mockDoctors);
+  int _selectedTab = 0; // 0 = Doctors, 1 = Patients
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterDoctors);
+    // Load clinic doctors on init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ClinicSettingsViewModel>().loadClinicDoctors();
+    });
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override
@@ -194,59 +70,121 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
     super.dispose();
   }
 
-  void _filterDoctors() {
-    setState(() {
-      final query = _searchController.text.toLowerCase();
-      if (query.isEmpty) {
-        _filteredDoctors = List.from(_mockDoctors);
-      } else {
-        _filteredDoctors = _mockDoctors
-            .where(
-              (doctor) =>
-                  doctor.name.toLowerCase().contains(query) ||
-                  doctor.specialization.toLowerCase().contains(query) ||
-                  doctor.qualification.toLowerCase().contains(query) ||
-                  doctor.licenseNo.toLowerCase().contains(query) ||
-                  doctor.email.toLowerCase().contains(query) ||
-                  doctor.phone.contains(query),
-            )
-            .toList();
-      }
-    });
+  void _onSearchChanged() {
+    context.read<ClinicSettingsViewModel>().searchDoctors(
+      _searchController.text,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: SaaSStyles.backgroundColor,
-      child: Column(
-        children: [
-          _buildHeader(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildActionBar(),
-                  const SizedBox(height: 12),
-                  _buildDoctorsTable(),
-                  const SizedBox(height: 16),
-                  _buildFooter(),
-                ],
-              ),
-            ),
+    return Consumer<ClinicSettingsViewModel>(
+      builder: (context, viewModel, child) {
+        return Container(
+          color: SaaSStyles.backgroundColor,
+          child: Column(
+            children: [
+              _buildHeader(viewModel),
+              _buildTabBar(),
+              Expanded(child: _buildContent(viewModel)),
+            ],
           ),
+        );
+      },
+    );
+  }
+
+  // ============================================================================
+  // TAB BAR
+  // ============================================================================
+
+  Widget _buildTabBar() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: SaaSStyles.borderColor, width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          _buildTab('Doctors', 0, Icons.person),
+          _buildTab('Patients', 1, Icons.people),
         ],
       ),
     );
+  }
+
+  Widget _buildTab(String label, int index, IconData icon) {
+    final isSelected = _selectedTab == index;
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? Colors.black : Colors.transparent,
+                width: 2,
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected ? Colors.black : Colors.grey,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected ? Colors.black : Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(ClinicSettingsViewModel viewModel) {
+    if (_selectedTab == 0) {
+      // Doctors tab
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildActionBar(),
+            const SizedBox(height: 12),
+            _buildDoctorsTable(viewModel),
+            const SizedBox(height: 16),
+            _buildFooter(),
+          ],
+        ),
+      );
+    } else {
+      // Patients tab
+      return const ClinicPatientsListView();
+    }
   }
 
   // ============================================================================
   // HEADER
   // ============================================================================
 
-  Widget _buildHeader() {
+  Widget _buildHeader(ClinicSettingsViewModel viewModel) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: const BoxDecoration(
@@ -303,44 +241,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               ],
             ),
             const SizedBox(height: 6),
-            _buildTabs(),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabs() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _buildTab('Doctor Onboarding', true),
-          const SizedBox(width: 12),
-          _buildTab('Patients', false),
-          const SizedBox(width: 12),
-          _buildTab('Doctors', false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTab(String title, bool isActive) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFFF0F0F0) : Colors.transparent,
-        borderRadius: BorderRadius.circular(5),
-        border: isActive
-            ? Border.all(color: const Color(0xFFE0E0E0), width: 1)
-            : null,
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-          color: isActive ? SaaSStyles.textPrimary : SaaSStyles.textSecondary,
         ),
       ),
     );
@@ -426,7 +327,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
   // DOCTORS TABLE
   // ============================================================================
 
-  Widget _buildDoctorsTable() {
+  Widget _buildDoctorsTable(ClinicSettingsViewModel viewModel) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -462,7 +363,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    '${_filteredDoctors.length} total',
+                    '${viewModel.clinicDoctors.length} total',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -478,10 +379,10 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
             builder: (context, constraints) {
               // Mobile card view for screens < 600px
               if (constraints.maxWidth < 600) {
-                return _buildMobileCardView();
+                return _buildMobileCardView(viewModel);
               }
               // Table view for all other screens - full width
-              return _buildDesktopTable(constraints.maxWidth);
+              return _buildDesktopTable(constraints.maxWidth, viewModel);
             },
           ),
         ],
@@ -489,7 +390,10 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
     );
   }
 
-  Widget _buildDesktopTable(double maxWidth) {
+  Widget _buildDesktopTable(
+    double maxWidth,
+    ClinicSettingsViewModel viewModel,
+  ) {
     const double minTableWidth = 900.0;
 
     // If screen is wide enough, show full width table
@@ -523,7 +427,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
             DataColumn(label: Text('STATUS')),
             DataColumn(label: Text('')),
           ],
-          rows: _filteredDoctors
+          rows: viewModel.clinicDoctors
               .asMap()
               .entries
               .map((entry) => _buildDataRow(entry.key + 1, entry.value))
@@ -564,7 +468,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
             DataColumn(label: Text('STATUS')),
             DataColumn(label: Text('')),
           ],
-          rows: _filteredDoctors
+          rows: viewModel.clinicDoctors
               .asMap()
               .entries
               .map((entry) => _buildDataRow(entry.key + 1, entry.value))
@@ -574,7 +478,17 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
     );
   }
 
-  DataRow _buildDataRow(int index, Doctor doctor) {
+  DataRow _buildDataRow(int index, ClinicDoctorModel doctor) {
+    final fullName =
+        doctor.fullName ?? '${doctor.firstName} ${doctor.lastName}';
+    final status = doctor.isActive == true ? 'Active' : 'Inactive';
+
+    // Get initials for avatar
+    final nameParts = fullName.split(' ');
+    final initials = nameParts.length >= 2
+        ? '${nameParts[0][0]}${nameParts[1][0]}'
+        : nameParts[0].substring(0, 2);
+
     return DataRow(
       cells: [
         DataCell(
@@ -586,6 +500,11 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               color: SaaSStyles.textSecondary,
             ),
           ),
+          onTap: doctor.doctorId != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.doctorId!}');
+                }
+              : null,
         ),
         DataCell(
           Row(
@@ -599,8 +518,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    doctor.name.split(' ')[1][0] +
-                        doctor.name.split(' ').last[0],
+                    initials.toUpperCase(),
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -613,20 +531,25 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            DoctorDetailsScreen(doctorId: doctor.id),
-                      ),
-                    );
+                    if (doctor.doctorId != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            body: DoctorDetailsContent(
+                              doctorId: doctor.doctorId!,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        doctor.name,
+                        fullName,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
@@ -635,7 +558,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                         ),
                       ),
                       Text(
-                        '${doctor.experience} years exp',
+                        doctor.specialization ?? 'Not specified',
                         style: const TextStyle(
                           fontSize: 10,
                           color: SaaSStyles.textMuted,
@@ -649,16 +572,29 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
           ),
         ),
         DataCell(
-          Text(doctor.specialization, style: const TextStyle(fontSize: 12)),
+          Text(
+            doctor.specialization ?? 'N/A',
+            style: const TextStyle(fontSize: 12),
+          ),
+          onTap: doctor.id != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.doctorId!}');
+                }
+              : null,
         ),
         DataCell(
           Text(
-            doctor.qualification,
+            'MBBS', // Placeholder - add qualifications to model if needed
             style: const TextStyle(
               fontSize: 11,
               color: SaaSStyles.textSecondary,
             ),
           ),
+          onTap: doctor.id != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.id!}');
+                }
+              : null,
         ),
         DataCell(
           Container(
@@ -669,7 +605,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               border: Border.all(color: SaaSStyles.borderColor),
             ),
             child: Text(
-              doctor.licenseNo,
+              doctor.licenseNumber ?? 'N/A',
               style: const TextStyle(
                 fontSize: 10,
                 fontFamily: 'monospace',
@@ -677,6 +613,11 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               ),
             ),
           ),
+          onTap: doctor.doctorId != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.doctorId!}');
+                }
+              : null,
         ),
         DataCell(
           Column(
@@ -684,14 +625,14 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                doctor.email,
+                doctor.email ?? 'N/A',
                 style: const TextStyle(
                   fontSize: 11,
                   color: SaaSStyles.textSecondary,
                 ),
               ),
               Text(
-                doctor.phone,
+                doctor.phone ?? 'N/A',
                 style: const TextStyle(
                   fontSize: 10,
                   color: SaaSStyles.textMuted,
@@ -699,8 +640,20 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
               ),
             ],
           ),
+          onTap: doctor.doctorId != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.doctorId!}');
+                }
+              : null,
         ),
-        DataCell(_buildStatusBadge(doctor.status)),
+        DataCell(
+          _buildStatusBadge(status),
+          onTap: doctor.doctorId != null
+              ? () {
+                  context.go('/clinic/doctor-details/${doctor.doctorId!}');
+                }
+              : null,
+        ),
         DataCell(
           PopupMenuButton<String>(
             icon: const Icon(
@@ -711,6 +664,36 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+            onSelected: (value) {
+              print('');
+              print('═══════════════════════════════════════════════════════');
+              print('🔍 MENU ITEM SELECTED');
+              print('═══════════════════════════════════════════════════════');
+              print('Selected value: $value');
+              print('Doctor ID: ${doctor.id}');
+              print('Doctor Name: $fullName');
+              print('');
+
+              if (value == 'view' && doctor.id != null) {
+                print('✅ Navigating to Doctor Details...');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      body: DoctorDetailsContent(doctorId: doctor.id!),
+                    ),
+                  ),
+                );
+                print('✅ Navigation called');
+              } else if (value == 'edit') {
+                print('📝 Edit selected');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Edit feature coming soon')),
+                );
+              } else {
+                print('❌ No action for value: $value');
+              }
+            },
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'edit',
@@ -728,7 +711,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                   children: [
                     Icon(Icons.visibility, size: 16),
                     SizedBox(width: 10),
-                    Text('View'),
+                    Text('View Details'),
                   ],
                 ),
               ),
@@ -793,42 +776,42 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
   // MOBILE CARD VIEW
   // ============================================================================
 
-  Widget _buildMobileCardView() {
+  Widget _buildMobileCardView(ClinicSettingsViewModel viewModel) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(10),
-      itemCount: _filteredDoctors.length,
+      itemCount: viewModel.clinicDoctors.length,
       itemBuilder: (context, index) {
-        final doctor = _filteredDoctors[index];
+        final doctor = viewModel.clinicDoctors[index];
         return _buildDoctorCard(doctor, index + 1);
       },
     );
   }
 
-  Widget _buildDoctorCard(Doctor doctor, int index) {
+  Widget _buildDoctorCard(ClinicDoctorModel doctor, int index) {
+    final fullName =
+        doctor.fullName ?? '${doctor.firstName} ${doctor.lastName}';
+    final status = doctor.isActive == true ? 'Active' : 'Inactive';
+
     // Get status color based on status
     Color getStatusColor() {
-      switch (doctor.status) {
-        case 'Active':
-          return const Color(0xFF28A745); // Green
-        case 'Inactive':
-          return const Color(0xFFDC3545); // Red
-        case 'On leave':
-          return const Color(0xFFFFC107); // Yellow
-        default:
-          return const Color(0xFF666666);
-      }
+      return doctor.isActive == true
+          ? const Color(0xFF28A745) // Green
+          : const Color(0xFFDC3545); // Red
     }
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DoctorDetailsScreen(doctorId: doctor.id),
-          ),
-        );
+        if (doctor.id != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Scaffold(body: DoctorDetailsContent(doctorId: doctor.id!)),
+            ),
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
@@ -881,7 +864,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                       ),
                       const SizedBox(width: 3),
                       Text(
-                        doctor.status,
+                        status,
                         style: const TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w600,
@@ -918,7 +901,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: doctor.name,
+                              text: fullName,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF333333),
@@ -941,7 +924,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: doctor.specialization,
+                              text: doctor.specialization ?? 'N/A',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF333333),
@@ -972,7 +955,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: doctor.qualification,
+                              text: 'MBBS', // Placeholder
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF333333),
@@ -995,7 +978,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: doctor.licenseNo,
+                              text: doctor.licenseNumber ?? 'N/A',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF333333),
@@ -1019,7 +1002,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        doctor.email,
+                        doctor.email ?? 'N/A',
                         style: const TextStyle(
                           color: SaaSStyles.textSecondary,
                           fontSize: 11,
@@ -1028,7 +1011,7 @@ class _ClinicSettingsScreenState extends State<ClinicSettingsScreen> {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        doctor.phone,
+                        doctor.phone ?? 'N/A',
                         style: const TextStyle(
                           color: SaaSStyles.textSecondary,
                           fontSize: 11,

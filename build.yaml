@@ -7,7 +7,6 @@ targets:
       source_gen:combining_builder:
         options:
           build_extensions:
-            '^lib/modules/appointment/models/{{}}.dart': 'lib/modules/appointment/gen/{{}}.g.dart'
             '^lib/modules/auth/models/{{}}.dart': 'lib/modules/auth/gen/{{}}.g.dart'
             '^lib/modules/clinic/models/{{}}.dart': 'lib/modules/clinic/gen/{{}}.g.dart'
             '^lib/modules/doctor/models/{{}}.dart': 'lib/modules/doctor/gen/{{}}.g.dart'
@@ -18,7 +17,6 @@ targets:
       freezed:
         options:
           build_extensions:
-            '^lib/modules/appointment/models/{{}}.dart': 'lib/modules/appointment/gen/{{}}.freezed.dart'
             '^lib/modules/auth/models/{{}}.dart': 'lib/modules/auth/gen/{{}}.freezed.dart'
             '^lib/modules/clinic/models/{{}}.dart': 'lib/modules/clinic/gen/{{}}.freezed.dart'
             '^lib/modules/doctor/models/{{}}.dart': 'lib/modules/doctor/gen/{{}}.freezed.dart'

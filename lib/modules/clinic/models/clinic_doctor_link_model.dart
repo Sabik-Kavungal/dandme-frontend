@@ -58,7 +58,13 @@ class ClinicDoctorLinkResponse with _$ClinicDoctorLinkResponse {
     @JsonKey(name: "link_id") String? linkId,
     required ClinicInfo clinic,
     required DoctorFullInfo doctor,
+    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
+    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
+    @JsonKey(name: "follow_up_fee") double? followUpFee,
+    @JsonKey(name: "follow_up_days") int? followUpDays,
+    String? notes,
     @JsonKey(name: "created_at") String? createdAt,
+    @JsonKey(name: "updated_at") String? updatedAt,
     @JsonKey(name: "is_active") bool? isActive,
   }) = _ClinicDoctorLinkResponse;
 
@@ -84,4 +90,36 @@ class DoctorFullInfo with _$DoctorFullInfo {
 
   factory DoctorFullInfo.fromJson(Map<String, dynamic> json) =>
       _$DoctorFullInfoFromJson(json);
+}
+
+// Model for creating clinic-doctor link with fees
+@freezed
+class CreateClinicDoctorLinkWithFees with _$CreateClinicDoctorLinkWithFees {
+  const factory CreateClinicDoctorLinkWithFees({
+    @JsonKey(name: "clinic_id") required String clinicId,
+    @JsonKey(name: "doctor_id") required String doctorId,
+    @JsonKey(name: "consultation_fee_offline") required double consultationFeeOffline,
+    @JsonKey(name: "consultation_fee_online") required double consultationFeeOnline,
+    @JsonKey(name: "follow_up_fee") required double followUpFee,
+    @JsonKey(name: "follow_up_days") required int followUpDays,
+    String? notes,
+  }) = _CreateClinicDoctorLinkWithFees;
+
+  factory CreateClinicDoctorLinkWithFees.fromJson(Map<String, dynamic> json) =>
+      _$CreateClinicDoctorLinkWithFeesFromJson(json);
+}
+
+// Model for updating clinic-doctor link fees
+@freezed
+class UpdateClinicDoctorLinkFees with _$UpdateClinicDoctorLinkFees {
+  const factory UpdateClinicDoctorLinkFees({
+    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
+    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
+    @JsonKey(name: "follow_up_fee") double? followUpFee,
+    @JsonKey(name: "follow_up_days") int? followUpDays,
+    String? notes,
+  }) = _UpdateClinicDoctorLinkFees;
+
+  factory UpdateClinicDoctorLinkFees.fromJson(Map<String, dynamic> json) =>
+      _$UpdateClinicDoctorLinkFeesFromJson(json);
 }

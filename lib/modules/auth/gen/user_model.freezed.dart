@@ -515,7 +515,14 @@ UserRole _$UserRoleFromJson(Map<String, dynamic> json) {
 mixin _$UserRole {
   String? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  Map<String, dynamic>? get permissions => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get permissions =>
+      throw _privateConstructorUsedError; // Add role-based IDs from backend
+  @JsonKey(name: "clinic_id")
+  String? get clinicId => throw _privateConstructorUsedError;
+  @JsonKey(name: "organization_id")
+  String? get organizationId => throw _privateConstructorUsedError;
+  @JsonKey(name: "service_id")
+  String? get serviceId => throw _privateConstructorUsedError;
 
   /// Serializes this UserRole to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -532,7 +539,14 @@ abstract class $UserRoleCopyWith<$Res> {
   factory $UserRoleCopyWith(UserRole value, $Res Function(UserRole) then) =
       _$UserRoleCopyWithImpl<$Res, UserRole>;
   @useResult
-  $Res call({String? id, String? name, Map<String, dynamic>? permissions});
+  $Res call({
+    String? id,
+    String? name,
+    Map<String, dynamic>? permissions,
+    @JsonKey(name: "clinic_id") String? clinicId,
+    @JsonKey(name: "organization_id") String? organizationId,
+    @JsonKey(name: "service_id") String? serviceId,
+  });
 }
 
 /// @nodoc
@@ -553,6 +567,9 @@ class _$UserRoleCopyWithImpl<$Res, $Val extends UserRole>
     Object? id = freezed,
     Object? name = freezed,
     Object? permissions = freezed,
+    Object? clinicId = freezed,
+    Object? organizationId = freezed,
+    Object? serviceId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -568,6 +585,18 @@ class _$UserRoleCopyWithImpl<$Res, $Val extends UserRole>
                 ? _value.permissions
                 : permissions // ignore: cast_nullable_to_non_nullable
                       as Map<String, dynamic>?,
+            clinicId: freezed == clinicId
+                ? _value.clinicId
+                : clinicId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            organizationId: freezed == organizationId
+                ? _value.organizationId
+                : organizationId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            serviceId: freezed == serviceId
+                ? _value.serviceId
+                : serviceId // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -583,7 +612,14 @@ abstract class _$$UserRoleImplCopyWith<$Res>
   ) = __$$UserRoleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, String? name, Map<String, dynamic>? permissions});
+  $Res call({
+    String? id,
+    String? name,
+    Map<String, dynamic>? permissions,
+    @JsonKey(name: "clinic_id") String? clinicId,
+    @JsonKey(name: "organization_id") String? organizationId,
+    @JsonKey(name: "service_id") String? serviceId,
+  });
 }
 
 /// @nodoc
@@ -603,6 +639,9 @@ class __$$UserRoleImplCopyWithImpl<$Res>
     Object? id = freezed,
     Object? name = freezed,
     Object? permissions = freezed,
+    Object? clinicId = freezed,
+    Object? organizationId = freezed,
+    Object? serviceId = freezed,
   }) {
     return _then(
       _$UserRoleImpl(
@@ -618,6 +657,18 @@ class __$$UserRoleImplCopyWithImpl<$Res>
             ? _value._permissions
             : permissions // ignore: cast_nullable_to_non_nullable
                   as Map<String, dynamic>?,
+        clinicId: freezed == clinicId
+            ? _value.clinicId
+            : clinicId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        organizationId: freezed == organizationId
+            ? _value.organizationId
+            : organizationId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        serviceId: freezed == serviceId
+            ? _value.serviceId
+            : serviceId // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -630,6 +681,9 @@ class _$UserRoleImpl extends _UserRole {
     this.id,
     this.name,
     final Map<String, dynamic>? permissions,
+    @JsonKey(name: "clinic_id") this.clinicId,
+    @JsonKey(name: "organization_id") this.organizationId,
+    @JsonKey(name: "service_id") this.serviceId,
   }) : _permissions = permissions,
        super._();
 
@@ -650,9 +704,20 @@ class _$UserRoleImpl extends _UserRole {
     return EqualUnmodifiableMapView(value);
   }
 
+  // Add role-based IDs from backend
+  @override
+  @JsonKey(name: "clinic_id")
+  final String? clinicId;
+  @override
+  @JsonKey(name: "organization_id")
+  final String? organizationId;
+  @override
+  @JsonKey(name: "service_id")
+  final String? serviceId;
+
   @override
   String toString() {
-    return 'UserRole(id: $id, name: $name, permissions: $permissions)';
+    return 'UserRole(id: $id, name: $name, permissions: $permissions, clinicId: $clinicId, organizationId: $organizationId, serviceId: $serviceId)';
   }
 
   @override
@@ -665,7 +730,13 @@ class _$UserRoleImpl extends _UserRole {
             const DeepCollectionEquality().equals(
               other._permissions,
               _permissions,
-            ));
+            ) &&
+            (identical(other.clinicId, clinicId) ||
+                other.clinicId == clinicId) &&
+            (identical(other.organizationId, organizationId) ||
+                other.organizationId == organizationId) &&
+            (identical(other.serviceId, serviceId) ||
+                other.serviceId == serviceId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -675,6 +746,9 @@ class _$UserRoleImpl extends _UserRole {
     id,
     name,
     const DeepCollectionEquality().hash(_permissions),
+    clinicId,
+    organizationId,
+    serviceId,
   );
 
   /// Create a copy of UserRole
@@ -696,6 +770,9 @@ abstract class _UserRole extends UserRole {
     final String? id,
     final String? name,
     final Map<String, dynamic>? permissions,
+    @JsonKey(name: "clinic_id") final String? clinicId,
+    @JsonKey(name: "organization_id") final String? organizationId,
+    @JsonKey(name: "service_id") final String? serviceId,
   }) = _$UserRoleImpl;
   const _UserRole._() : super._();
 
@@ -707,7 +784,16 @@ abstract class _UserRole extends UserRole {
   @override
   String? get name;
   @override
-  Map<String, dynamic>? get permissions;
+  Map<String, dynamic>? get permissions; // Add role-based IDs from backend
+  @override
+  @JsonKey(name: "clinic_id")
+  String? get clinicId;
+  @override
+  @JsonKey(name: "organization_id")
+  String? get organizationId;
+  @override
+  @JsonKey(name: "service_id")
+  String? get serviceId;
 
   /// Create a copy of UserRole
   /// with the given fields replaced by the non-null parameter values.
@@ -733,7 +819,11 @@ mixin _$LoginResponse {
   String? get refreshToken => throw _privateConstructorUsedError;
   List<UserRole>? get roles => throw _privateConstructorUsedError;
   String? get tokenType => throw _privateConstructorUsedError;
-  String? get username => throw _privateConstructorUsedError;
+  String? get username =>
+      throw _privateConstructorUsedError; // Add role-based IDs
+  String? get organizationId => throw _privateConstructorUsedError;
+  String? get clinicId => throw _privateConstructorUsedError;
+  String? get serviceId => throw _privateConstructorUsedError;
 
   /// Serializes this LoginResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -764,6 +854,9 @@ abstract class $LoginResponseCopyWith<$Res> {
     List<UserRole>? roles,
     String? tokenType,
     String? username,
+    String? organizationId,
+    String? clinicId,
+    String? serviceId,
   });
 }
 
@@ -793,6 +886,9 @@ class _$LoginResponseCopyWithImpl<$Res, $Val extends LoginResponse>
     Object? roles = freezed,
     Object? tokenType = freezed,
     Object? username = freezed,
+    Object? organizationId = freezed,
+    Object? clinicId = freezed,
+    Object? serviceId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -840,6 +936,18 @@ class _$LoginResponseCopyWithImpl<$Res, $Val extends LoginResponse>
                 ? _value.username
                 : username // ignore: cast_nullable_to_non_nullable
                       as String?,
+            organizationId: freezed == organizationId
+                ? _value.organizationId
+                : organizationId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            clinicId: freezed == clinicId
+                ? _value.clinicId
+                : clinicId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            serviceId: freezed == serviceId
+                ? _value.serviceId
+                : serviceId // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -867,6 +975,9 @@ abstract class _$$LoginResponseImplCopyWith<$Res>
     List<UserRole>? roles,
     String? tokenType,
     String? username,
+    String? organizationId,
+    String? clinicId,
+    String? serviceId,
   });
 }
 
@@ -895,6 +1006,9 @@ class __$$LoginResponseImplCopyWithImpl<$Res>
     Object? roles = freezed,
     Object? tokenType = freezed,
     Object? username = freezed,
+    Object? organizationId = freezed,
+    Object? clinicId = freezed,
+    Object? serviceId = freezed,
   }) {
     return _then(
       _$LoginResponseImpl(
@@ -942,6 +1056,18 @@ class __$$LoginResponseImplCopyWithImpl<$Res>
             ? _value.username
             : username // ignore: cast_nullable_to_non_nullable
                   as String?,
+        organizationId: freezed == organizationId
+            ? _value.organizationId
+            : organizationId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        clinicId: freezed == clinicId
+            ? _value.clinicId
+            : clinicId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        serviceId: freezed == serviceId
+            ? _value.serviceId
+            : serviceId // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -962,6 +1088,9 @@ class _$LoginResponseImpl extends _LoginResponse {
     final List<UserRole>? roles,
     this.tokenType,
     this.username,
+    this.organizationId,
+    this.clinicId,
+    this.serviceId,
   }) : _roles = roles,
        super._();
 
@@ -998,10 +1127,17 @@ class _$LoginResponseImpl extends _LoginResponse {
   final String? tokenType;
   @override
   final String? username;
+  // Add role-based IDs
+  @override
+  final String? organizationId;
+  @override
+  final String? clinicId;
+  @override
+  final String? serviceId;
 
   @override
   String toString() {
-    return 'LoginResponse(accessToken: $accessToken, email: $email, expiresIn: $expiresIn, firstName: $firstName, id: $id, lastName: $lastName, phone: $phone, refreshToken: $refreshToken, roles: $roles, tokenType: $tokenType, username: $username)';
+    return 'LoginResponse(accessToken: $accessToken, email: $email, expiresIn: $expiresIn, firstName: $firstName, id: $id, lastName: $lastName, phone: $phone, refreshToken: $refreshToken, roles: $roles, tokenType: $tokenType, username: $username, organizationId: $organizationId, clinicId: $clinicId, serviceId: $serviceId)';
   }
 
   @override
@@ -1026,7 +1162,13 @@ class _$LoginResponseImpl extends _LoginResponse {
             (identical(other.tokenType, tokenType) ||
                 other.tokenType == tokenType) &&
             (identical(other.username, username) ||
-                other.username == username));
+                other.username == username) &&
+            (identical(other.organizationId, organizationId) ||
+                other.organizationId == organizationId) &&
+            (identical(other.clinicId, clinicId) ||
+                other.clinicId == clinicId) &&
+            (identical(other.serviceId, serviceId) ||
+                other.serviceId == serviceId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1044,6 +1186,9 @@ class _$LoginResponseImpl extends _LoginResponse {
     const DeepCollectionEquality().hash(_roles),
     tokenType,
     username,
+    organizationId,
+    clinicId,
+    serviceId,
   );
 
   /// Create a copy of LoginResponse
@@ -1073,6 +1218,9 @@ abstract class _LoginResponse extends LoginResponse {
     final List<UserRole>? roles,
     final String? tokenType,
     final String? username,
+    final String? organizationId,
+    final String? clinicId,
+    final String? serviceId,
   }) = _$LoginResponseImpl;
   const _LoginResponse._() : super._();
 
@@ -1100,7 +1248,13 @@ abstract class _LoginResponse extends LoginResponse {
   @override
   String? get tokenType;
   @override
-  String? get username;
+  String? get username; // Add role-based IDs
+  @override
+  String? get organizationId;
+  @override
+  String? get clinicId;
+  @override
+  String? get serviceId;
 
   /// Create a copy of LoginResponse
   /// with the given fields replaced by the non-null parameter values.

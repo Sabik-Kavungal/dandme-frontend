@@ -68,11 +68,6 @@ class _PatientModuleViewState extends State<PatientModuleView> {
             tooltip: 'Emergency',
           ),
         ],
-        customFloatingActionButton: FloatingActionButton(
-          onPressed: () => _bookAppointment(context),
-          backgroundColor: AppConstants.successColor,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
         onLogout: () => _handleLogout(context),
       ),
       selectedIndex: _selectedIndex,
@@ -109,14 +104,6 @@ class _PatientModuleViewState extends State<PatientModuleView> {
     );
   }
 
-  void _bookAppointment(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Book New Appointment'),
-        backgroundColor: AppConstants.successColor,
-      ),
-    );
-  }
 
   void _handleLogout(BuildContext context) {
     showDialog(

@@ -1,15 +1,20 @@
 import 'package:a/modules/clinic/models/appointment_model.dart';
+import 'package:a/modules/clinic/models/appointment_list_item_model.dart';
+import 'package:a/modules/clinic/models/clinic_doctors_model.dart';
 import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/foundation.dart';
+import 'package:a/core/config/service.dart';
 
 import 'package:a/modules/clinic/repositories/clinic_appointment_repository.dart';
 
 class AppointmentDashboardViewModel extends ChangeNotifier {
   final ClinicAppointmentRepository _repository;
   final AuthViewModel _authViewModel;
+  final ServiceRepo _serviceRepo;
 
   AppointmentDashboardViewModel(this._authViewModel)
-    : _repository = ClinicAppointmentRepository();
+    : _repository = ClinicAppointmentRepository(),
+      _serviceRepo = ServiceRepo();
 
   // State variables
   bool _isLoading = false;
@@ -18,16 +23,30 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   String _error = '';
   AppointmentSummary? _summary;
   List<Appointment> _appointments = [];
+  List<AppointmentListItem> _simpleAppointments = []; // New simple list
   int _currentPage = 1;
   bool _hasMoreData = true;
+  String?
+  _selectedDate; // For date filtering in simple API (null = show button as unselected)
+  String?
+  _currentFilterDate; // Internal: actual date used for API (today by default)
+
+  // Pagination for simple appointments
+  int _currentSimplePage = 1;
+  final int _itemsPerPage = 10;
 
   // Filter and search state
   int _selectedTab = 0; // 0: All, 1: Patients, 2: Doctors
   String _searchQuery = '';
   String? _selectedStatus;
   String? _selectedDepartment;
-  String? _selectedDoctor;
+  String?
+  _selectedDoctor; // Doctor ID for simple appointments filter (null or "all" = all doctors)
   bool _isListView = true;
+
+  // ✅ Clinic doctors list for filter dropdown
+  List<ClinicDoctorModel> _clinicDoctors = [];
+  bool _isLoadingDoctors = false;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -35,17 +54,108 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   String get error => _error;
   AppointmentSummary? get summary => _summary;
   List<Appointment> get appointments => _appointments;
+  List<AppointmentListItem> get simpleAppointments =>
+      _simpleAppointments; // New getter
   int get selectedTab => _selectedTab;
   String get searchQuery => _searchQuery;
   String? get selectedStatus => _selectedStatus;
   String? get selectedDepartment => _selectedDepartment;
   String? get selectedDoctor => _selectedDoctor;
+  String? get selectedDate => _selectedDate; // New getter
   bool get isListView => _isListView;
   bool get hasMoreData => _hasMoreData;
+
+  // ✅ Doctor filter getters
+  List<ClinicDoctorModel> get clinicDoctors => _clinicDoctors;
+  bool get isLoadingDoctors => _isLoadingDoctors;
+
+  // Pagination getters
+  int get currentSimplePage => _currentSimplePage;
+  int get itemsPerPage => _itemsPerPage;
+
+  /// Get filtered appointments based on selected status
+  List<AppointmentListItem> get _filteredSimpleAppointments {
+    if (_selectedStatus == null || _selectedStatus!.isEmpty) {
+      return _simpleAppointments;
+    }
+    final statusLower = _selectedStatus!.toLowerCase();
+    return _simpleAppointments
+        .where((a) => a.status.toLowerCase() == statusLower)
+        .toList();
+  }
+
+  List<AppointmentListItem> get paginatedSimpleAppointments {
+    final filteredList = _filteredSimpleAppointments;
+    final startIndex = (_currentSimplePage - 1) * _itemsPerPage;
+    final endIndex = startIndex + _itemsPerPage;
+    if (startIndex >= filteredList.length) return [];
+    return filteredList.sublist(
+      startIndex,
+      endIndex > filteredList.length ? filteredList.length : endIndex,
+    );
+  }
+
+  /// Get status counts from simple appointments list
+  int _getStatusCount(String status) {
+    try {
+      if (_simpleAppointments.isNotEmpty) {
+        final statusLower = status.toLowerCase();
+        return _simpleAppointments
+            .where((a) => a.status.toLowerCase() == statusLower)
+            .length;
+      }
+    } catch (_) {}
+    return 0;
+  }
+
+  // Status count getters
+  int get confirmedCount => _getStatusCount('confirmed');
+  int get pendingCount => _getStatusCount('pending');
+  int get arrivedCount => _getStatusCount('arrived');
+  int get completedCount => _getStatusCount('completed');
+  int get cancelledCount => _getStatusCount('cancelled');
+  int get noShowCount => _getStatusCount('no_show');
+
+  /// Combined Cancelled + No-show count for current context (fallbacks to summary when needed)
+  int get cancelledOrNoShowCount {
+    final cancelled = cancelledCount;
+    final noShow = noShowCount;
+    // If we have simple list loaded (even if zero), trust it
+    if (_simpleAppointments.isNotEmpty) return cancelled + noShow;
+    // Otherwise, fallback to summary when simple list not available
+    return (_summary?.cancelledAppointments ?? 0);
+  }
+
+  /// Total pages for filtered appointments
+  int get totalSimplePages {
+    final filteredList = _filteredSimpleAppointments;
+    return (filteredList.length / _itemsPerPage).ceil();
+  }
 
   // Initialize dashboard data
   Future<void> initializeDashboard() async {
     await Future.wait([loadSummary(), loadAppointments()]);
+  }
+
+  // Initialize dashboard with simple API
+  Future<void> initializeSimpleDashboard() async {
+    // ✅ Set internal filter to today, but keep selectedDate null (button not highlighted)
+    final now = DateTime.now();
+    _selectedDate = null; // Keep null so date button doesn't show as selected
+    _currentFilterDate =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    print(
+      '📅 Dashboard initialized with today\'s date filter: $_currentFilterDate',
+    );
+    print('   Date button state: ${_selectedDate ?? "Not highlighted"}');
+
+    // ✅ Load clinic doctors for filter dropdown
+    await Future.wait([
+      loadSummary(),
+      loadClinicDoctors(),
+      loadSimpleAppointments(),
+    ]);
   }
 
   // Load appointment summary
@@ -163,6 +273,158 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     await loadSummary();
   }
 
+  // Load simple appointments (optimized for table display)
+  Future<void> loadSimpleAppointments({bool refresh = false}) async {
+    try {
+      if (refresh) {
+        _setLoading(true);
+      } else {
+        _setLoadingMore(true);
+      }
+
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null) {
+        _setError('Authentication required');
+        return;
+      }
+
+      if (clinicId == null) {
+        _setError('Clinic ID not found');
+        return;
+      }
+
+      // ✅ Use selectedDate if user picked one, otherwise use currentFilterDate (today)
+      final dateToUse = _selectedDate ?? _currentFilterDate;
+
+      // ✅ Get doctor_id filter (null or "all" means show all doctors)
+      final doctorIdToUse =
+          (_selectedDoctor != null &&
+              _selectedDoctor!.isNotEmpty &&
+              _selectedDoctor != 'all')
+          ? _selectedDoctor
+          : null;
+
+      print('📅 Loading appointments for date: $dateToUse');
+      print('   User selected: ${_selectedDate ?? "None (using today)"}');
+      print('   Doctor filter: ${doctorIdToUse ?? "All doctors"}');
+
+      final response = await _repository.getSimpleAppointmentList(
+        token: token,
+        clinicId: clinicId,
+        date: dateToUse,
+        doctorId: doctorIdToUse, // ✅ Pass doctor filter
+      );
+
+      if (response != null) {
+        _simpleAppointments = response.appointments;
+        resetSimplePagination(); // Reset to page 1
+        _safeNotifyListeners();
+      } else {
+        _setError('Failed to load appointments');
+      }
+    } catch (e) {
+      _setError('Error loading appointments: $e');
+    } finally {
+      _setLoading(false);
+      _setLoadingMore(false);
+    }
+  }
+
+  // Load today's appointments using simple API
+  Future<void> loadTodaySimpleAppointments() async {
+    // ✅ Set today's date filter
+    final now = DateTime.now();
+    _selectedDate =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    print('📅 Loading today\'s appointments: $_selectedDate');
+
+    try {
+      _setLoading(true);
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null) {
+        _setError('Authentication required');
+        return;
+      }
+
+      if (clinicId == null) {
+        _setError('Clinic ID not found');
+        return;
+      }
+
+      final response = await _repository.getTodayAppointments(
+        token: token,
+        clinicId: clinicId,
+      );
+
+      if (response != null) {
+        _simpleAppointments = response.appointments;
+        resetSimplePagination(); // Reset to page 1
+        _safeNotifyListeners();
+      } else {
+        _setError('Failed to load appointments');
+      }
+    } catch (e) {
+      _setError('Error loading appointments: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Set date filter for simple appointments
+  void setDateFilter(String? date) {
+    if (_selectedDate != date) {
+      _selectedDate = date;
+      loadSimpleAppointments(refresh: true);
+      notifyListeners();
+    }
+  }
+
+  // Clear date filter
+  void clearDateFilter() {
+    setDateFilter(null);
+  }
+
+  // Refresh simple appointments
+  Future<void> refreshSimpleAppointments() async {
+    await loadSimpleAppointments(refresh: true);
+    await loadSummary();
+  }
+
+  // Pagination methods for simple appointments
+  void goToSimplePage(int page) {
+    if (page >= 1 && page <= totalSimplePages) {
+      _currentSimplePage = page;
+      notifyListeners();
+    }
+  }
+
+  void nextSimplePage() {
+    if (_currentSimplePage < totalSimplePages) {
+      _currentSimplePage++;
+      notifyListeners();
+    }
+  }
+
+  void previousSimplePage() {
+    if (_currentSimplePage > 1) {
+      _currentSimplePage--;
+      notifyListeners();
+    }
+  }
+
+  void resetSimplePagination() {
+    _currentSimplePage = 1;
+  }
+
   // Set selected tab
   void setSelectedTab(int tab) {
     if (_selectedTab != tab) {
@@ -181,13 +443,20 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     }
   }
 
-  // Set status filter
+  // Set status filter for simple appointments
   void setStatusFilter(String? status) {
     if (_selectedStatus != status) {
       _selectedStatus = status;
-      loadAppointments(refresh: true);
+      resetSimplePagination(); // Reset to page 1 when filter changes
       notifyListeners();
+      // Note: Status filtering is done client-side on _simpleAppointments
+      // No need to reload from API
     }
+  }
+
+  // Clear status filter
+  void clearStatusFilter() {
+    setStatusFilter(null);
   }
 
   // Set department filter
@@ -199,12 +468,61 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     }
   }
 
-  // Set doctor filter
-  void setDoctorFilter(String? doctor) {
-    if (_selectedDoctor != doctor) {
-      _selectedDoctor = doctor;
-      loadAppointments(refresh: true);
+  // Set doctor filter (for simple appointments)
+  void setDoctorFilter(String? doctorId) {
+    if (_selectedDoctor != doctorId) {
+      _selectedDoctor = doctorId;
+      loadSimpleAppointments(
+        refresh: true,
+      ); // ✅ Use simple appointments instead
       notifyListeners();
+    }
+  }
+
+  // ✅ Load clinic doctors for filter dropdown
+  Future<void> loadClinicDoctors() async {
+    try {
+      _isLoadingDoctors = true;
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null) {
+        _setError('Authentication required');
+        return;
+      }
+
+      if (clinicId == null) {
+        _setError('Clinic ID not found');
+        return;
+      }
+
+      print('👨‍⚕️ Loading clinic doctors for filter dropdown...');
+
+      final response = await _serviceRepo.requist(
+        'organizations/doctors/clinic/$clinicId',
+        method: 'GET',
+        useOrgApi: true,
+        token: token,
+      );
+
+      if (response != null && response is Map<String, dynamic>) {
+        final clinicDoctorsResponse = ClinicDoctorsResponse.fromJson(response);
+        _clinicDoctors = clinicDoctorsResponse.doctors;
+        print('✅ Loaded ${_clinicDoctors.length} doctors for filter');
+        _safeNotifyListeners();
+      } else {
+        print('❌ Failed to load clinic doctors');
+        _clinicDoctors = [];
+        _safeNotifyListeners();
+      }
+    } catch (e) {
+      print('❌ Error loading clinic doctors: $e');
+      _clinicDoctors = [];
+      _setError('Error loading doctors: $e');
+    } finally {
+      _isLoadingDoctors = false;
     }
   }
 
@@ -291,10 +609,10 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   // Demo data methods for when API is unavailable
   AppointmentSummary _getDemoSummary() {
     return AppointmentSummary(
-      todayAppointments: 55,
-      upcomingAppointments: 12,
-      completedAppointments: 143,
-      cancelledAppointments: 8,
+      todayAppointments: 0,
+      upcomingAppointments: 0,
+      completedAppointments: 0,
+      cancelledAppointments: 0,
     );
   }
 

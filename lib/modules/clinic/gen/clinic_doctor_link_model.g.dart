@@ -70,7 +70,14 @@ _$ClinicDoctorLinkResponseImpl _$$ClinicDoctorLinkResponseImplFromJson(
   linkId: json['link_id'] as String?,
   clinic: ClinicInfo.fromJson(json['clinic'] as Map<String, dynamic>),
   doctor: DoctorFullInfo.fromJson(json['doctor'] as Map<String, dynamic>),
+  consultationFeeOffline: (json['consultation_fee_offline'] as num?)
+      ?.toDouble(),
+  consultationFeeOnline: (json['consultation_fee_online'] as num?)?.toDouble(),
+  followUpFee: (json['follow_up_fee'] as num?)?.toDouble(),
+  followUpDays: (json['follow_up_days'] as num?)?.toInt(),
+  notes: json['notes'] as String?,
   createdAt: json['created_at'] as String?,
+  updatedAt: json['updated_at'] as String?,
   isActive: json['is_active'] as bool?,
 );
 
@@ -80,7 +87,15 @@ Map<String, dynamic> _$$ClinicDoctorLinkResponseImplToJson(
   if (instance.linkId case final value?) 'link_id': value,
   'clinic': instance.clinic.toJson(),
   'doctor': instance.doctor.toJson(),
+  if (instance.consultationFeeOffline case final value?)
+    'consultation_fee_offline': value,
+  if (instance.consultationFeeOnline case final value?)
+    'consultation_fee_online': value,
+  if (instance.followUpFee case final value?) 'follow_up_fee': value,
+  if (instance.followUpDays case final value?) 'follow_up_days': value,
+  if (instance.notes case final value?) 'notes': value,
   if (instance.createdAt case final value?) 'created_at': value,
+  if (instance.updatedAt case final value?) 'updated_at': value,
   if (instance.isActive case final value?) 'is_active': value,
 };
 
@@ -113,4 +128,52 @@ Map<String, dynamic> _$$DoctorFullInfoImplToJson(
   if (instance.consultationFee case final value?) 'consultation_fee': value,
   if (instance.followUpFee case final value?) 'follow_up_fee': value,
   if (instance.followUpDays case final value?) 'follow_up_days': value,
+};
+
+_$CreateClinicDoctorLinkWithFeesImpl
+_$$CreateClinicDoctorLinkWithFeesImplFromJson(
+  Map<String, dynamic> json,
+) => _$CreateClinicDoctorLinkWithFeesImpl(
+  clinicId: json['clinic_id'] as String,
+  doctorId: json['doctor_id'] as String,
+  consultationFeeOffline: (json['consultation_fee_offline'] as num).toDouble(),
+  consultationFeeOnline: (json['consultation_fee_online'] as num).toDouble(),
+  followUpFee: (json['follow_up_fee'] as num).toDouble(),
+  followUpDays: (json['follow_up_days'] as num).toInt(),
+  notes: json['notes'] as String?,
+);
+
+Map<String, dynamic> _$$CreateClinicDoctorLinkWithFeesImplToJson(
+  _$CreateClinicDoctorLinkWithFeesImpl instance,
+) => <String, dynamic>{
+  'clinic_id': instance.clinicId,
+  'doctor_id': instance.doctorId,
+  'consultation_fee_offline': instance.consultationFeeOffline,
+  'consultation_fee_online': instance.consultationFeeOnline,
+  'follow_up_fee': instance.followUpFee,
+  'follow_up_days': instance.followUpDays,
+  if (instance.notes case final value?) 'notes': value,
+};
+
+_$UpdateClinicDoctorLinkFeesImpl _$$UpdateClinicDoctorLinkFeesImplFromJson(
+  Map<String, dynamic> json,
+) => _$UpdateClinicDoctorLinkFeesImpl(
+  consultationFeeOffline: (json['consultation_fee_offline'] as num?)
+      ?.toDouble(),
+  consultationFeeOnline: (json['consultation_fee_online'] as num?)?.toDouble(),
+  followUpFee: (json['follow_up_fee'] as num?)?.toDouble(),
+  followUpDays: (json['follow_up_days'] as num?)?.toInt(),
+  notes: json['notes'] as String?,
+);
+
+Map<String, dynamic> _$$UpdateClinicDoctorLinkFeesImplToJson(
+  _$UpdateClinicDoctorLinkFeesImpl instance,
+) => <String, dynamic>{
+  if (instance.consultationFeeOffline case final value?)
+    'consultation_fee_offline': value,
+  if (instance.consultationFeeOnline case final value?)
+    'consultation_fee_online': value,
+  if (instance.followUpFee case final value?) 'follow_up_fee': value,
+  if (instance.followUpDays case final value?) 'follow_up_days': value,
+  if (instance.notes case final value?) 'notes': value,
 };

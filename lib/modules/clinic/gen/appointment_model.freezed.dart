@@ -15,6 +15,1895 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
+AppointmentDetails _$AppointmentDetailsFromJson(Map<String, dynamic> json) {
+  return _AppointmentDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AppointmentDetails {
+  String? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+  dynamic get tokenNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: "mo_id")
+  String? get moId => throw _privateConstructorUsedError;
+  @JsonKey(name: "booking_number")
+  String? get bookingNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: "consultation_type")
+  String? get consultationType => throw _privateConstructorUsedError;
+  @JsonKey(name: "appointment_date_time")
+  String? get appointmentDateTime => throw _privateConstructorUsedError;
+  @JsonKey(name: "duration_minutes")
+  int? get durationMinutes => throw _privateConstructorUsedError;
+  @JsonKey(name: "session_type")
+  String? get sessionType => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  @JsonKey(name: "fee_amount")
+  double? get feeAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: "fee_status")
+  String? get feeStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: "payment_status")
+  String? get paymentStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: "payment_method")
+  String? get paymentMethod => throw _privateConstructorUsedError;
+  String? get notes => throw _privateConstructorUsedError;
+  @JsonKey(name: "cancellation_reason")
+  String? get cancellationReason => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_details")
+  SlotDetails? get slotDetails => throw _privateConstructorUsedError;
+  @JsonKey(name: "created_at")
+  String? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: "updated_at")
+  String? get updatedAt => throw _privateConstructorUsedError; // Flat structure from API
+  @JsonKey(name: "patient_name")
+  String? get patientName => throw _privateConstructorUsedError;
+  @JsonKey(name: "doctor_name")
+  String? get doctorName => throw _privateConstructorUsedError;
+  String? get department => throw _privateConstructorUsedError;
+  @JsonKey(name: "clinic_patient_id")
+  String? get clinicPatientId => throw _privateConstructorUsedError; // Nested objects (for compatibility)
+  PatientDetails? get patient => throw _privateConstructorUsedError;
+  DoctorDetails? get doctor => throw _privateConstructorUsedError;
+  ClinicDetails? get clinic => throw _privateConstructorUsedError;
+
+  /// Serializes this AppointmentDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AppointmentDetailsCopyWith<AppointmentDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AppointmentDetailsCopyWith<$Res> {
+  factory $AppointmentDetailsCopyWith(
+    AppointmentDetails value,
+    $Res Function(AppointmentDetails) then,
+  ) = _$AppointmentDetailsCopyWithImpl<$Res, AppointmentDetails>;
+  @useResult
+  $Res call({
+    String? id,
+    @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+    dynamic tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    @JsonKey(name: "duration_minutes") int? durationMinutes,
+    @JsonKey(name: "session_type") String? sessionType,
+    String? status,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "payment_method") String? paymentMethod,
+    String? notes,
+    @JsonKey(name: "cancellation_reason") String? cancellationReason,
+    @JsonKey(name: "slot_details") SlotDetails? slotDetails,
+    @JsonKey(name: "created_at") String? createdAt,
+    @JsonKey(name: "updated_at") String? updatedAt,
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "clinic_patient_id") String? clinicPatientId,
+    PatientDetails? patient,
+    DoctorDetails? doctor,
+    ClinicDetails? clinic,
+  });
+
+  $SlotDetailsCopyWith<$Res>? get slotDetails;
+  $PatientDetailsCopyWith<$Res>? get patient;
+  $DoctorDetailsCopyWith<$Res>? get doctor;
+  $ClinicDetailsCopyWith<$Res>? get clinic;
+}
+
+/// @nodoc
+class _$AppointmentDetailsCopyWithImpl<$Res, $Val extends AppointmentDetails>
+    implements $AppointmentDetailsCopyWith<$Res> {
+  _$AppointmentDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? tokenNumber = freezed,
+    Object? moId = freezed,
+    Object? bookingNumber = freezed,
+    Object? consultationType = freezed,
+    Object? appointmentDateTime = freezed,
+    Object? durationMinutes = freezed,
+    Object? sessionType = freezed,
+    Object? status = freezed,
+    Object? feeAmount = freezed,
+    Object? feeStatus = freezed,
+    Object? paymentStatus = freezed,
+    Object? paymentMethod = freezed,
+    Object? notes = freezed,
+    Object? cancellationReason = freezed,
+    Object? slotDetails = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? patientName = freezed,
+    Object? doctorName = freezed,
+    Object? department = freezed,
+    Object? clinicPatientId = freezed,
+    Object? patient = freezed,
+    Object? doctor = freezed,
+    Object? clinic = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            tokenNumber: freezed == tokenNumber
+                ? _value.tokenNumber
+                : tokenNumber // ignore: cast_nullable_to_non_nullable
+                      as dynamic,
+            moId: freezed == moId
+                ? _value.moId
+                : moId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            bookingNumber: freezed == bookingNumber
+                ? _value.bookingNumber
+                : bookingNumber // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            consultationType: freezed == consultationType
+                ? _value.consultationType
+                : consultationType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            appointmentDateTime: freezed == appointmentDateTime
+                ? _value.appointmentDateTime
+                : appointmentDateTime // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            durationMinutes: freezed == durationMinutes
+                ? _value.durationMinutes
+                : durationMinutes // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            sessionType: freezed == sessionType
+                ? _value.sessionType
+                : sessionType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            status: freezed == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            feeAmount: freezed == feeAmount
+                ? _value.feeAmount
+                : feeAmount // ignore: cast_nullable_to_non_nullable
+                      as double?,
+            feeStatus: freezed == feeStatus
+                ? _value.feeStatus
+                : feeStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            paymentStatus: freezed == paymentStatus
+                ? _value.paymentStatus
+                : paymentStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            paymentMethod: freezed == paymentMethod
+                ? _value.paymentMethod
+                : paymentMethod // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            notes: freezed == notes
+                ? _value.notes
+                : notes // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            cancellationReason: freezed == cancellationReason
+                ? _value.cancellationReason
+                : cancellationReason // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotDetails: freezed == slotDetails
+                ? _value.slotDetails
+                : slotDetails // ignore: cast_nullable_to_non_nullable
+                      as SlotDetails?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            patientName: freezed == patientName
+                ? _value.patientName
+                : patientName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            doctorName: freezed == doctorName
+                ? _value.doctorName
+                : doctorName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            department: freezed == department
+                ? _value.department
+                : department // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            clinicPatientId: freezed == clinicPatientId
+                ? _value.clinicPatientId
+                : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            patient: freezed == patient
+                ? _value.patient
+                : patient // ignore: cast_nullable_to_non_nullable
+                      as PatientDetails?,
+            doctor: freezed == doctor
+                ? _value.doctor
+                : doctor // ignore: cast_nullable_to_non_nullable
+                      as DoctorDetails?,
+            clinic: freezed == clinic
+                ? _value.clinic
+                : clinic // ignore: cast_nullable_to_non_nullable
+                      as ClinicDetails?,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SlotDetailsCopyWith<$Res>? get slotDetails {
+    if (_value.slotDetails == null) {
+      return null;
+    }
+
+    return $SlotDetailsCopyWith<$Res>(_value.slotDetails!, (value) {
+      return _then(_value.copyWith(slotDetails: value) as $Val);
+    });
+  }
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PatientDetailsCopyWith<$Res>? get patient {
+    if (_value.patient == null) {
+      return null;
+    }
+
+    return $PatientDetailsCopyWith<$Res>(_value.patient!, (value) {
+      return _then(_value.copyWith(patient: value) as $Val);
+    });
+  }
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DoctorDetailsCopyWith<$Res>? get doctor {
+    if (_value.doctor == null) {
+      return null;
+    }
+
+    return $DoctorDetailsCopyWith<$Res>(_value.doctor!, (value) {
+      return _then(_value.copyWith(doctor: value) as $Val);
+    });
+  }
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ClinicDetailsCopyWith<$Res>? get clinic {
+    if (_value.clinic == null) {
+      return null;
+    }
+
+    return $ClinicDetailsCopyWith<$Res>(_value.clinic!, (value) {
+      return _then(_value.copyWith(clinic: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AppointmentDetailsImplCopyWith<$Res>
+    implements $AppointmentDetailsCopyWith<$Res> {
+  factory _$$AppointmentDetailsImplCopyWith(
+    _$AppointmentDetailsImpl value,
+    $Res Function(_$AppointmentDetailsImpl) then,
+  ) = __$$AppointmentDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String? id,
+    @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+    dynamic tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    @JsonKey(name: "duration_minutes") int? durationMinutes,
+    @JsonKey(name: "session_type") String? sessionType,
+    String? status,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "payment_method") String? paymentMethod,
+    String? notes,
+    @JsonKey(name: "cancellation_reason") String? cancellationReason,
+    @JsonKey(name: "slot_details") SlotDetails? slotDetails,
+    @JsonKey(name: "created_at") String? createdAt,
+    @JsonKey(name: "updated_at") String? updatedAt,
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "clinic_patient_id") String? clinicPatientId,
+    PatientDetails? patient,
+    DoctorDetails? doctor,
+    ClinicDetails? clinic,
+  });
+
+  @override
+  $SlotDetailsCopyWith<$Res>? get slotDetails;
+  @override
+  $PatientDetailsCopyWith<$Res>? get patient;
+  @override
+  $DoctorDetailsCopyWith<$Res>? get doctor;
+  @override
+  $ClinicDetailsCopyWith<$Res>? get clinic;
+}
+
+/// @nodoc
+class __$$AppointmentDetailsImplCopyWithImpl<$Res>
+    extends _$AppointmentDetailsCopyWithImpl<$Res, _$AppointmentDetailsImpl>
+    implements _$$AppointmentDetailsImplCopyWith<$Res> {
+  __$$AppointmentDetailsImplCopyWithImpl(
+    _$AppointmentDetailsImpl _value,
+    $Res Function(_$AppointmentDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? tokenNumber = freezed,
+    Object? moId = freezed,
+    Object? bookingNumber = freezed,
+    Object? consultationType = freezed,
+    Object? appointmentDateTime = freezed,
+    Object? durationMinutes = freezed,
+    Object? sessionType = freezed,
+    Object? status = freezed,
+    Object? feeAmount = freezed,
+    Object? feeStatus = freezed,
+    Object? paymentStatus = freezed,
+    Object? paymentMethod = freezed,
+    Object? notes = freezed,
+    Object? cancellationReason = freezed,
+    Object? slotDetails = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? patientName = freezed,
+    Object? doctorName = freezed,
+    Object? department = freezed,
+    Object? clinicPatientId = freezed,
+    Object? patient = freezed,
+    Object? doctor = freezed,
+    Object? clinic = freezed,
+  }) {
+    return _then(
+      _$AppointmentDetailsImpl(
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        tokenNumber: freezed == tokenNumber
+            ? _value.tokenNumber
+            : tokenNumber // ignore: cast_nullable_to_non_nullable
+                  as dynamic,
+        moId: freezed == moId
+            ? _value.moId
+            : moId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        bookingNumber: freezed == bookingNumber
+            ? _value.bookingNumber
+            : bookingNumber // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        consultationType: freezed == consultationType
+            ? _value.consultationType
+            : consultationType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        appointmentDateTime: freezed == appointmentDateTime
+            ? _value.appointmentDateTime
+            : appointmentDateTime // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        durationMinutes: freezed == durationMinutes
+            ? _value.durationMinutes
+            : durationMinutes // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        sessionType: freezed == sessionType
+            ? _value.sessionType
+            : sessionType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        status: freezed == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        feeAmount: freezed == feeAmount
+            ? _value.feeAmount
+            : feeAmount // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        feeStatus: freezed == feeStatus
+            ? _value.feeStatus
+            : feeStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        paymentStatus: freezed == paymentStatus
+            ? _value.paymentStatus
+            : paymentStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        paymentMethod: freezed == paymentMethod
+            ? _value.paymentMethod
+            : paymentMethod // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        notes: freezed == notes
+            ? _value.notes
+            : notes // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        cancellationReason: freezed == cancellationReason
+            ? _value.cancellationReason
+            : cancellationReason // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotDetails: freezed == slotDetails
+            ? _value.slotDetails
+            : slotDetails // ignore: cast_nullable_to_non_nullable
+                  as SlotDetails?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        patientName: freezed == patientName
+            ? _value.patientName
+            : patientName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        doctorName: freezed == doctorName
+            ? _value.doctorName
+            : doctorName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        department: freezed == department
+            ? _value.department
+            : department // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        clinicPatientId: freezed == clinicPatientId
+            ? _value.clinicPatientId
+            : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        patient: freezed == patient
+            ? _value.patient
+            : patient // ignore: cast_nullable_to_non_nullable
+                  as PatientDetails?,
+        doctor: freezed == doctor
+            ? _value.doctor
+            : doctor // ignore: cast_nullable_to_non_nullable
+                  as DoctorDetails?,
+        clinic: freezed == clinic
+            ? _value.clinic
+            : clinic // ignore: cast_nullable_to_non_nullable
+                  as ClinicDetails?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AppointmentDetailsImpl implements _AppointmentDetails {
+  const _$AppointmentDetailsImpl({
+    this.id,
+    @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+    this.tokenNumber,
+    @JsonKey(name: "mo_id") this.moId,
+    @JsonKey(name: "booking_number") this.bookingNumber,
+    @JsonKey(name: "consultation_type") this.consultationType,
+    @JsonKey(name: "appointment_date_time") this.appointmentDateTime,
+    @JsonKey(name: "duration_minutes") this.durationMinutes,
+    @JsonKey(name: "session_type") this.sessionType,
+    this.status,
+    @JsonKey(name: "fee_amount") this.feeAmount,
+    @JsonKey(name: "fee_status") this.feeStatus,
+    @JsonKey(name: "payment_status") this.paymentStatus,
+    @JsonKey(name: "payment_method") this.paymentMethod,
+    this.notes,
+    @JsonKey(name: "cancellation_reason") this.cancellationReason,
+    @JsonKey(name: "slot_details") this.slotDetails,
+    @JsonKey(name: "created_at") this.createdAt,
+    @JsonKey(name: "updated_at") this.updatedAt,
+    @JsonKey(name: "patient_name") this.patientName,
+    @JsonKey(name: "doctor_name") this.doctorName,
+    this.department,
+    @JsonKey(name: "clinic_patient_id") this.clinicPatientId,
+    this.patient,
+    this.doctor,
+    this.clinic,
+  });
+
+  factory _$AppointmentDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AppointmentDetailsImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+  final dynamic tokenNumber;
+  @override
+  @JsonKey(name: "mo_id")
+  final String? moId;
+  @override
+  @JsonKey(name: "booking_number")
+  final String? bookingNumber;
+  @override
+  @JsonKey(name: "consultation_type")
+  final String? consultationType;
+  @override
+  @JsonKey(name: "appointment_date_time")
+  final String? appointmentDateTime;
+  @override
+  @JsonKey(name: "duration_minutes")
+  final int? durationMinutes;
+  @override
+  @JsonKey(name: "session_type")
+  final String? sessionType;
+  @override
+  final String? status;
+  @override
+  @JsonKey(name: "fee_amount")
+  final double? feeAmount;
+  @override
+  @JsonKey(name: "fee_status")
+  final String? feeStatus;
+  @override
+  @JsonKey(name: "payment_status")
+  final String? paymentStatus;
+  @override
+  @JsonKey(name: "payment_method")
+  final String? paymentMethod;
+  @override
+  final String? notes;
+  @override
+  @JsonKey(name: "cancellation_reason")
+  final String? cancellationReason;
+  @override
+  @JsonKey(name: "slot_details")
+  final SlotDetails? slotDetails;
+  @override
+  @JsonKey(name: "created_at")
+  final String? createdAt;
+  @override
+  @JsonKey(name: "updated_at")
+  final String? updatedAt;
+  // Flat structure from API
+  @override
+  @JsonKey(name: "patient_name")
+  final String? patientName;
+  @override
+  @JsonKey(name: "doctor_name")
+  final String? doctorName;
+  @override
+  final String? department;
+  @override
+  @JsonKey(name: "clinic_patient_id")
+  final String? clinicPatientId;
+  // Nested objects (for compatibility)
+  @override
+  final PatientDetails? patient;
+  @override
+  final DoctorDetails? doctor;
+  @override
+  final ClinicDetails? clinic;
+
+  @override
+  String toString() {
+    return 'AppointmentDetails(id: $id, tokenNumber: $tokenNumber, moId: $moId, bookingNumber: $bookingNumber, consultationType: $consultationType, appointmentDateTime: $appointmentDateTime, durationMinutes: $durationMinutes, sessionType: $sessionType, status: $status, feeAmount: $feeAmount, feeStatus: $feeStatus, paymentStatus: $paymentStatus, paymentMethod: $paymentMethod, notes: $notes, cancellationReason: $cancellationReason, slotDetails: $slotDetails, createdAt: $createdAt, updatedAt: $updatedAt, patientName: $patientName, doctorName: $doctorName, department: $department, clinicPatientId: $clinicPatientId, patient: $patient, doctor: $doctor, clinic: $clinic)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppointmentDetailsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            const DeepCollectionEquality().equals(
+              other.tokenNumber,
+              tokenNumber,
+            ) &&
+            (identical(other.moId, moId) || other.moId == moId) &&
+            (identical(other.bookingNumber, bookingNumber) ||
+                other.bookingNumber == bookingNumber) &&
+            (identical(other.consultationType, consultationType) ||
+                other.consultationType == consultationType) &&
+            (identical(other.appointmentDateTime, appointmentDateTime) ||
+                other.appointmentDateTime == appointmentDateTime) &&
+            (identical(other.durationMinutes, durationMinutes) ||
+                other.durationMinutes == durationMinutes) &&
+            (identical(other.sessionType, sessionType) ||
+                other.sessionType == sessionType) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.feeAmount, feeAmount) ||
+                other.feeAmount == feeAmount) &&
+            (identical(other.feeStatus, feeStatus) ||
+                other.feeStatus == feeStatus) &&
+            (identical(other.paymentStatus, paymentStatus) ||
+                other.paymentStatus == paymentStatus) &&
+            (identical(other.paymentMethod, paymentMethod) ||
+                other.paymentMethod == paymentMethod) &&
+            (identical(other.notes, notes) || other.notes == notes) &&
+            (identical(other.cancellationReason, cancellationReason) ||
+                other.cancellationReason == cancellationReason) &&
+            (identical(other.slotDetails, slotDetails) ||
+                other.slotDetails == slotDetails) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.patientName, patientName) ||
+                other.patientName == patientName) &&
+            (identical(other.doctorName, doctorName) ||
+                other.doctorName == doctorName) &&
+            (identical(other.department, department) ||
+                other.department == department) &&
+            (identical(other.clinicPatientId, clinicPatientId) ||
+                other.clinicPatientId == clinicPatientId) &&
+            (identical(other.patient, patient) || other.patient == patient) &&
+            (identical(other.doctor, doctor) || other.doctor == doctor) &&
+            (identical(other.clinic, clinic) || other.clinic == clinic));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hashAll([
+    runtimeType,
+    id,
+    const DeepCollectionEquality().hash(tokenNumber),
+    moId,
+    bookingNumber,
+    consultationType,
+    appointmentDateTime,
+    durationMinutes,
+    sessionType,
+    status,
+    feeAmount,
+    feeStatus,
+    paymentStatus,
+    paymentMethod,
+    notes,
+    cancellationReason,
+    slotDetails,
+    createdAt,
+    updatedAt,
+    patientName,
+    doctorName,
+    department,
+    clinicPatientId,
+    patient,
+    doctor,
+    clinic,
+  ]);
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppointmentDetailsImplCopyWith<_$AppointmentDetailsImpl> get copyWith =>
+      __$$AppointmentDetailsImplCopyWithImpl<_$AppointmentDetailsImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AppointmentDetailsImplToJson(this);
+  }
+}
+
+abstract class _AppointmentDetails implements AppointmentDetails {
+  const factory _AppointmentDetails({
+    final String? id,
+    @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+    final dynamic tokenNumber,
+    @JsonKey(name: "mo_id") final String? moId,
+    @JsonKey(name: "booking_number") final String? bookingNumber,
+    @JsonKey(name: "consultation_type") final String? consultationType,
+    @JsonKey(name: "appointment_date_time") final String? appointmentDateTime,
+    @JsonKey(name: "duration_minutes") final int? durationMinutes,
+    @JsonKey(name: "session_type") final String? sessionType,
+    final String? status,
+    @JsonKey(name: "fee_amount") final double? feeAmount,
+    @JsonKey(name: "fee_status") final String? feeStatus,
+    @JsonKey(name: "payment_status") final String? paymentStatus,
+    @JsonKey(name: "payment_method") final String? paymentMethod,
+    final String? notes,
+    @JsonKey(name: "cancellation_reason") final String? cancellationReason,
+    @JsonKey(name: "slot_details") final SlotDetails? slotDetails,
+    @JsonKey(name: "created_at") final String? createdAt,
+    @JsonKey(name: "updated_at") final String? updatedAt,
+    @JsonKey(name: "patient_name") final String? patientName,
+    @JsonKey(name: "doctor_name") final String? doctorName,
+    final String? department,
+    @JsonKey(name: "clinic_patient_id") final String? clinicPatientId,
+    final PatientDetails? patient,
+    final DoctorDetails? doctor,
+    final ClinicDetails? clinic,
+  }) = _$AppointmentDetailsImpl;
+
+  factory _AppointmentDetails.fromJson(Map<String, dynamic> json) =
+      _$AppointmentDetailsImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
+  dynamic get tokenNumber;
+  @override
+  @JsonKey(name: "mo_id")
+  String? get moId;
+  @override
+  @JsonKey(name: "booking_number")
+  String? get bookingNumber;
+  @override
+  @JsonKey(name: "consultation_type")
+  String? get consultationType;
+  @override
+  @JsonKey(name: "appointment_date_time")
+  String? get appointmentDateTime;
+  @override
+  @JsonKey(name: "duration_minutes")
+  int? get durationMinutes;
+  @override
+  @JsonKey(name: "session_type")
+  String? get sessionType;
+  @override
+  String? get status;
+  @override
+  @JsonKey(name: "fee_amount")
+  double? get feeAmount;
+  @override
+  @JsonKey(name: "fee_status")
+  String? get feeStatus;
+  @override
+  @JsonKey(name: "payment_status")
+  String? get paymentStatus;
+  @override
+  @JsonKey(name: "payment_method")
+  String? get paymentMethod;
+  @override
+  String? get notes;
+  @override
+  @JsonKey(name: "cancellation_reason")
+  String? get cancellationReason;
+  @override
+  @JsonKey(name: "slot_details")
+  SlotDetails? get slotDetails;
+  @override
+  @JsonKey(name: "created_at")
+  String? get createdAt;
+  @override
+  @JsonKey(name: "updated_at")
+  String? get updatedAt; // Flat structure from API
+  @override
+  @JsonKey(name: "patient_name")
+  String? get patientName;
+  @override
+  @JsonKey(name: "doctor_name")
+  String? get doctorName;
+  @override
+  String? get department;
+  @override
+  @JsonKey(name: "clinic_patient_id")
+  String? get clinicPatientId; // Nested objects (for compatibility)
+  @override
+  PatientDetails? get patient;
+  @override
+  DoctorDetails? get doctor;
+  @override
+  ClinicDetails? get clinic;
+
+  /// Create a copy of AppointmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AppointmentDetailsImplCopyWith<_$AppointmentDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+PatientDetails _$PatientDetailsFromJson(Map<String, dynamic> json) {
+  return _PatientDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PatientDetails {
+  String? get name => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
+  int? get age => throw _privateConstructorUsedError;
+  String? get gender => throw _privateConstructorUsedError;
+
+  /// Serializes this PatientDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PatientDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PatientDetailsCopyWith<PatientDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PatientDetailsCopyWith<$Res> {
+  factory $PatientDetailsCopyWith(
+    PatientDetails value,
+    $Res Function(PatientDetails) then,
+  ) = _$PatientDetailsCopyWithImpl<$Res, PatientDetails>;
+  @useResult
+  $Res call({
+    String? name,
+    String? phone,
+    String? email,
+    int? age,
+    String? gender,
+  });
+}
+
+/// @nodoc
+class _$PatientDetailsCopyWithImpl<$Res, $Val extends PatientDetails>
+    implements $PatientDetailsCopyWith<$Res> {
+  _$PatientDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PatientDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? phone = freezed,
+    Object? email = freezed,
+    Object? age = freezed,
+    Object? gender = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            phone: freezed == phone
+                ? _value.phone
+                : phone // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            email: freezed == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            age: freezed == age
+                ? _value.age
+                : age // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            gender: freezed == gender
+                ? _value.gender
+                : gender // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$PatientDetailsImplCopyWith<$Res>
+    implements $PatientDetailsCopyWith<$Res> {
+  factory _$$PatientDetailsImplCopyWith(
+    _$PatientDetailsImpl value,
+    $Res Function(_$PatientDetailsImpl) then,
+  ) = __$$PatientDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String? name,
+    String? phone,
+    String? email,
+    int? age,
+    String? gender,
+  });
+}
+
+/// @nodoc
+class __$$PatientDetailsImplCopyWithImpl<$Res>
+    extends _$PatientDetailsCopyWithImpl<$Res, _$PatientDetailsImpl>
+    implements _$$PatientDetailsImplCopyWith<$Res> {
+  __$$PatientDetailsImplCopyWithImpl(
+    _$PatientDetailsImpl _value,
+    $Res Function(_$PatientDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of PatientDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? phone = freezed,
+    Object? email = freezed,
+    Object? age = freezed,
+    Object? gender = freezed,
+  }) {
+    return _then(
+      _$PatientDetailsImpl(
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        phone: freezed == phone
+            ? _value.phone
+            : phone // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        email: freezed == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        age: freezed == age
+            ? _value.age
+            : age // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        gender: freezed == gender
+            ? _value.gender
+            : gender // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PatientDetailsImpl implements _PatientDetails {
+  const _$PatientDetailsImpl({
+    this.name,
+    this.phone,
+    this.email,
+    this.age,
+    this.gender,
+  });
+
+  factory _$PatientDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PatientDetailsImplFromJson(json);
+
+  @override
+  final String? name;
+  @override
+  final String? phone;
+  @override
+  final String? email;
+  @override
+  final int? age;
+  @override
+  final String? gender;
+
+  @override
+  String toString() {
+    return 'PatientDetails(name: $name, phone: $phone, email: $email, age: $age, gender: $gender)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PatientDetailsImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.age, age) || other.age == age) &&
+            (identical(other.gender, gender) || other.gender == gender));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, phone, email, age, gender);
+
+  /// Create a copy of PatientDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PatientDetailsImplCopyWith<_$PatientDetailsImpl> get copyWith =>
+      __$$PatientDetailsImplCopyWithImpl<_$PatientDetailsImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PatientDetailsImplToJson(this);
+  }
+}
+
+abstract class _PatientDetails implements PatientDetails {
+  const factory _PatientDetails({
+    final String? name,
+    final String? phone,
+    final String? email,
+    final int? age,
+    final String? gender,
+  }) = _$PatientDetailsImpl;
+
+  factory _PatientDetails.fromJson(Map<String, dynamic> json) =
+      _$PatientDetailsImpl.fromJson;
+
+  @override
+  String? get name;
+  @override
+  String? get phone;
+  @override
+  String? get email;
+  @override
+  int? get age;
+  @override
+  String? get gender;
+
+  /// Create a copy of PatientDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PatientDetailsImplCopyWith<_$PatientDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+DoctorDetails _$DoctorDetailsFromJson(Map<String, dynamic> json) {
+  return _DoctorDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DoctorDetails {
+  String? get id => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+
+  /// Serializes this DoctorDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of DoctorDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DoctorDetailsCopyWith<DoctorDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DoctorDetailsCopyWith<$Res> {
+  factory $DoctorDetailsCopyWith(
+    DoctorDetails value,
+    $Res Function(DoctorDetails) then,
+  ) = _$DoctorDetailsCopyWithImpl<$Res, DoctorDetails>;
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class _$DoctorDetailsCopyWithImpl<$Res, $Val extends DoctorDetails>
+    implements $DoctorDetailsCopyWith<$Res> {
+  _$DoctorDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DoctorDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _value.copyWith(
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$DoctorDetailsImplCopyWith<$Res>
+    implements $DoctorDetailsCopyWith<$Res> {
+  factory _$$DoctorDetailsImplCopyWith(
+    _$DoctorDetailsImpl value,
+    $Res Function(_$DoctorDetailsImpl) then,
+  ) = __$$DoctorDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class __$$DoctorDetailsImplCopyWithImpl<$Res>
+    extends _$DoctorDetailsCopyWithImpl<$Res, _$DoctorDetailsImpl>
+    implements _$$DoctorDetailsImplCopyWith<$Res> {
+  __$$DoctorDetailsImplCopyWithImpl(
+    _$DoctorDetailsImpl _value,
+    $Res Function(_$DoctorDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DoctorDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _$DoctorDetailsImpl(
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DoctorDetailsImpl implements _DoctorDetails {
+  const _$DoctorDetailsImpl({this.id, this.name});
+
+  factory _$DoctorDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DoctorDetailsImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  final String? name;
+
+  @override
+  String toString() {
+    return 'DoctorDetails(id: $id, name: $name)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DoctorDetailsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  /// Create a copy of DoctorDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DoctorDetailsImplCopyWith<_$DoctorDetailsImpl> get copyWith =>
+      __$$DoctorDetailsImplCopyWithImpl<_$DoctorDetailsImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DoctorDetailsImplToJson(this);
+  }
+}
+
+abstract class _DoctorDetails implements DoctorDetails {
+  const factory _DoctorDetails({final String? id, final String? name}) =
+      _$DoctorDetailsImpl;
+
+  factory _DoctorDetails.fromJson(Map<String, dynamic> json) =
+      _$DoctorDetailsImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  String? get name;
+
+  /// Create a copy of DoctorDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DoctorDetailsImplCopyWith<_$DoctorDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+DepartmentDetails _$DepartmentDetailsFromJson(Map<String, dynamic> json) {
+  return _DepartmentDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DepartmentDetails {
+  String? get id => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+
+  /// Serializes this DepartmentDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of DepartmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DepartmentDetailsCopyWith<DepartmentDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DepartmentDetailsCopyWith<$Res> {
+  factory $DepartmentDetailsCopyWith(
+    DepartmentDetails value,
+    $Res Function(DepartmentDetails) then,
+  ) = _$DepartmentDetailsCopyWithImpl<$Res, DepartmentDetails>;
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class _$DepartmentDetailsCopyWithImpl<$Res, $Val extends DepartmentDetails>
+    implements $DepartmentDetailsCopyWith<$Res> {
+  _$DepartmentDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DepartmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _value.copyWith(
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$DepartmentDetailsImplCopyWith<$Res>
+    implements $DepartmentDetailsCopyWith<$Res> {
+  factory _$$DepartmentDetailsImplCopyWith(
+    _$DepartmentDetailsImpl value,
+    $Res Function(_$DepartmentDetailsImpl) then,
+  ) = __$$DepartmentDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class __$$DepartmentDetailsImplCopyWithImpl<$Res>
+    extends _$DepartmentDetailsCopyWithImpl<$Res, _$DepartmentDetailsImpl>
+    implements _$$DepartmentDetailsImplCopyWith<$Res> {
+  __$$DepartmentDetailsImplCopyWithImpl(
+    _$DepartmentDetailsImpl _value,
+    $Res Function(_$DepartmentDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DepartmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _$DepartmentDetailsImpl(
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DepartmentDetailsImpl implements _DepartmentDetails {
+  const _$DepartmentDetailsImpl({this.id, this.name});
+
+  factory _$DepartmentDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DepartmentDetailsImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  final String? name;
+
+  @override
+  String toString() {
+    return 'DepartmentDetails(id: $id, name: $name)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DepartmentDetailsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  /// Create a copy of DepartmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DepartmentDetailsImplCopyWith<_$DepartmentDetailsImpl> get copyWith =>
+      __$$DepartmentDetailsImplCopyWithImpl<_$DepartmentDetailsImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DepartmentDetailsImplToJson(this);
+  }
+}
+
+abstract class _DepartmentDetails implements DepartmentDetails {
+  const factory _DepartmentDetails({final String? id, final String? name}) =
+      _$DepartmentDetailsImpl;
+
+  factory _DepartmentDetails.fromJson(Map<String, dynamic> json) =
+      _$DepartmentDetailsImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  String? get name;
+
+  /// Create a copy of DepartmentDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DepartmentDetailsImplCopyWith<_$DepartmentDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ClinicDetails _$ClinicDetailsFromJson(Map<String, dynamic> json) {
+  return _ClinicDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ClinicDetails {
+  String? get id => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+
+  /// Serializes this ClinicDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ClinicDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ClinicDetailsCopyWith<ClinicDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ClinicDetailsCopyWith<$Res> {
+  factory $ClinicDetailsCopyWith(
+    ClinicDetails value,
+    $Res Function(ClinicDetails) then,
+  ) = _$ClinicDetailsCopyWithImpl<$Res, ClinicDetails>;
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class _$ClinicDetailsCopyWithImpl<$Res, $Val extends ClinicDetails>
+    implements $ClinicDetailsCopyWith<$Res> {
+  _$ClinicDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ClinicDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _value.copyWith(
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ClinicDetailsImplCopyWith<$Res>
+    implements $ClinicDetailsCopyWith<$Res> {
+  factory _$$ClinicDetailsImplCopyWith(
+    _$ClinicDetailsImpl value,
+    $Res Function(_$ClinicDetailsImpl) then,
+  ) = __$$ClinicDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? id, String? name});
+}
+
+/// @nodoc
+class __$$ClinicDetailsImplCopyWithImpl<$Res>
+    extends _$ClinicDetailsCopyWithImpl<$Res, _$ClinicDetailsImpl>
+    implements _$$ClinicDetailsImplCopyWith<$Res> {
+  __$$ClinicDetailsImplCopyWithImpl(
+    _$ClinicDetailsImpl _value,
+    $Res Function(_$ClinicDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ClinicDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = freezed, Object? name = freezed}) {
+    return _then(
+      _$ClinicDetailsImpl(
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ClinicDetailsImpl implements _ClinicDetails {
+  const _$ClinicDetailsImpl({this.id, this.name});
+
+  factory _$ClinicDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ClinicDetailsImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  final String? name;
+
+  @override
+  String toString() {
+    return 'ClinicDetails(id: $id, name: $name)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ClinicDetailsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  /// Create a copy of ClinicDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ClinicDetailsImplCopyWith<_$ClinicDetailsImpl> get copyWith =>
+      __$$ClinicDetailsImplCopyWithImpl<_$ClinicDetailsImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ClinicDetailsImplToJson(this);
+  }
+}
+
+abstract class _ClinicDetails implements ClinicDetails {
+  const factory _ClinicDetails({final String? id, final String? name}) =
+      _$ClinicDetailsImpl;
+
+  factory _ClinicDetails.fromJson(Map<String, dynamic> json) =
+      _$ClinicDetailsImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  String? get name;
+
+  /// Create a copy of ClinicDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ClinicDetailsImplCopyWith<_$ClinicDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+SlotDetails _$SlotDetailsFromJson(Map<String, dynamic> json) {
+  return _SlotDetails.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SlotDetails {
+  @JsonKey(name: "slot_id")
+  String? get slotId => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_status")
+  String? get slotStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_start_time")
+  String? get slotStartTime => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_end_time")
+  String? get slotEndTime => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_date")
+  String? get slotDate => throw _privateConstructorUsedError;
+  @JsonKey(name: "slot_full_time")
+  String? get slotFullTime => throw _privateConstructorUsedError;
+  @JsonKey(name: "session_name")
+  String? get sessionName => throw _privateConstructorUsedError;
+
+  /// Serializes this SlotDetails to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SlotDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SlotDetailsCopyWith<SlotDetails> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SlotDetailsCopyWith<$Res> {
+  factory $SlotDetailsCopyWith(
+    SlotDetails value,
+    $Res Function(SlotDetails) then,
+  ) = _$SlotDetailsCopyWithImpl<$Res, SlotDetails>;
+  @useResult
+  $Res call({
+    @JsonKey(name: "slot_id") String? slotId,
+    @JsonKey(name: "slot_status") String? slotStatus,
+    @JsonKey(name: "slot_start_time") String? slotStartTime,
+    @JsonKey(name: "slot_end_time") String? slotEndTime,
+    @JsonKey(name: "slot_date") String? slotDate,
+    @JsonKey(name: "slot_full_time") String? slotFullTime,
+    @JsonKey(name: "session_name") String? sessionName,
+  });
+}
+
+/// @nodoc
+class _$SlotDetailsCopyWithImpl<$Res, $Val extends SlotDetails>
+    implements $SlotDetailsCopyWith<$Res> {
+  _$SlotDetailsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SlotDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? slotId = freezed,
+    Object? slotStatus = freezed,
+    Object? slotStartTime = freezed,
+    Object? slotEndTime = freezed,
+    Object? slotDate = freezed,
+    Object? slotFullTime = freezed,
+    Object? sessionName = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            slotId: freezed == slotId
+                ? _value.slotId
+                : slotId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotStatus: freezed == slotStatus
+                ? _value.slotStatus
+                : slotStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotStartTime: freezed == slotStartTime
+                ? _value.slotStartTime
+                : slotStartTime // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotEndTime: freezed == slotEndTime
+                ? _value.slotEndTime
+                : slotEndTime // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotDate: freezed == slotDate
+                ? _value.slotDate
+                : slotDate // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            slotFullTime: freezed == slotFullTime
+                ? _value.slotFullTime
+                : slotFullTime // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            sessionName: freezed == sessionName
+                ? _value.sessionName
+                : sessionName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$SlotDetailsImplCopyWith<$Res>
+    implements $SlotDetailsCopyWith<$Res> {
+  factory _$$SlotDetailsImplCopyWith(
+    _$SlotDetailsImpl value,
+    $Res Function(_$SlotDetailsImpl) then,
+  ) = __$$SlotDetailsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    @JsonKey(name: "slot_id") String? slotId,
+    @JsonKey(name: "slot_status") String? slotStatus,
+    @JsonKey(name: "slot_start_time") String? slotStartTime,
+    @JsonKey(name: "slot_end_time") String? slotEndTime,
+    @JsonKey(name: "slot_date") String? slotDate,
+    @JsonKey(name: "slot_full_time") String? slotFullTime,
+    @JsonKey(name: "session_name") String? sessionName,
+  });
+}
+
+/// @nodoc
+class __$$SlotDetailsImplCopyWithImpl<$Res>
+    extends _$SlotDetailsCopyWithImpl<$Res, _$SlotDetailsImpl>
+    implements _$$SlotDetailsImplCopyWith<$Res> {
+  __$$SlotDetailsImplCopyWithImpl(
+    _$SlotDetailsImpl _value,
+    $Res Function(_$SlotDetailsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of SlotDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? slotId = freezed,
+    Object? slotStatus = freezed,
+    Object? slotStartTime = freezed,
+    Object? slotEndTime = freezed,
+    Object? slotDate = freezed,
+    Object? slotFullTime = freezed,
+    Object? sessionName = freezed,
+  }) {
+    return _then(
+      _$SlotDetailsImpl(
+        slotId: freezed == slotId
+            ? _value.slotId
+            : slotId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotStatus: freezed == slotStatus
+            ? _value.slotStatus
+            : slotStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotStartTime: freezed == slotStartTime
+            ? _value.slotStartTime
+            : slotStartTime // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotEndTime: freezed == slotEndTime
+            ? _value.slotEndTime
+            : slotEndTime // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotDate: freezed == slotDate
+            ? _value.slotDate
+            : slotDate // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        slotFullTime: freezed == slotFullTime
+            ? _value.slotFullTime
+            : slotFullTime // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        sessionName: freezed == sessionName
+            ? _value.sessionName
+            : sessionName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SlotDetailsImpl implements _SlotDetails {
+  const _$SlotDetailsImpl({
+    @JsonKey(name: "slot_id") this.slotId,
+    @JsonKey(name: "slot_status") this.slotStatus,
+    @JsonKey(name: "slot_start_time") this.slotStartTime,
+    @JsonKey(name: "slot_end_time") this.slotEndTime,
+    @JsonKey(name: "slot_date") this.slotDate,
+    @JsonKey(name: "slot_full_time") this.slotFullTime,
+    @JsonKey(name: "session_name") this.sessionName,
+  });
+
+  factory _$SlotDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SlotDetailsImplFromJson(json);
+
+  @override
+  @JsonKey(name: "slot_id")
+  final String? slotId;
+  @override
+  @JsonKey(name: "slot_status")
+  final String? slotStatus;
+  @override
+  @JsonKey(name: "slot_start_time")
+  final String? slotStartTime;
+  @override
+  @JsonKey(name: "slot_end_time")
+  final String? slotEndTime;
+  @override
+  @JsonKey(name: "slot_date")
+  final String? slotDate;
+  @override
+  @JsonKey(name: "slot_full_time")
+  final String? slotFullTime;
+  @override
+  @JsonKey(name: "session_name")
+  final String? sessionName;
+
+  @override
+  String toString() {
+    return 'SlotDetails(slotId: $slotId, slotStatus: $slotStatus, slotStartTime: $slotStartTime, slotEndTime: $slotEndTime, slotDate: $slotDate, slotFullTime: $slotFullTime, sessionName: $sessionName)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SlotDetailsImpl &&
+            (identical(other.slotId, slotId) || other.slotId == slotId) &&
+            (identical(other.slotStatus, slotStatus) ||
+                other.slotStatus == slotStatus) &&
+            (identical(other.slotStartTime, slotStartTime) ||
+                other.slotStartTime == slotStartTime) &&
+            (identical(other.slotEndTime, slotEndTime) ||
+                other.slotEndTime == slotEndTime) &&
+            (identical(other.slotDate, slotDate) ||
+                other.slotDate == slotDate) &&
+            (identical(other.slotFullTime, slotFullTime) ||
+                other.slotFullTime == slotFullTime) &&
+            (identical(other.sessionName, sessionName) ||
+                other.sessionName == sessionName));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    slotId,
+    slotStatus,
+    slotStartTime,
+    slotEndTime,
+    slotDate,
+    slotFullTime,
+    sessionName,
+  );
+
+  /// Create a copy of SlotDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SlotDetailsImplCopyWith<_$SlotDetailsImpl> get copyWith =>
+      __$$SlotDetailsImplCopyWithImpl<_$SlotDetailsImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SlotDetailsImplToJson(this);
+  }
+}
+
+abstract class _SlotDetails implements SlotDetails {
+  const factory _SlotDetails({
+    @JsonKey(name: "slot_id") final String? slotId,
+    @JsonKey(name: "slot_status") final String? slotStatus,
+    @JsonKey(name: "slot_start_time") final String? slotStartTime,
+    @JsonKey(name: "slot_end_time") final String? slotEndTime,
+    @JsonKey(name: "slot_date") final String? slotDate,
+    @JsonKey(name: "slot_full_time") final String? slotFullTime,
+    @JsonKey(name: "session_name") final String? sessionName,
+  }) = _$SlotDetailsImpl;
+
+  factory _SlotDetails.fromJson(Map<String, dynamic> json) =
+      _$SlotDetailsImpl.fromJson;
+
+  @override
+  @JsonKey(name: "slot_id")
+  String? get slotId;
+  @override
+  @JsonKey(name: "slot_status")
+  String? get slotStatus;
+  @override
+  @JsonKey(name: "slot_start_time")
+  String? get slotStartTime;
+  @override
+  @JsonKey(name: "slot_end_time")
+  String? get slotEndTime;
+  @override
+  @JsonKey(name: "slot_date")
+  String? get slotDate;
+  @override
+  @JsonKey(name: "slot_full_time")
+  String? get slotFullTime;
+  @override
+  @JsonKey(name: "session_name")
+  String? get sessionName;
+
+  /// Create a copy of SlotDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SlotDetailsImplCopyWith<_$SlotDetailsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 Appointment _$AppointmentFromJson(Map<String, dynamic> json) {
   return _Appointment.fromJson(json);
 }
@@ -22,13 +1911,33 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Appointment {
   String? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: "token_number")
+  int? get tokenNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: "mo_id")
+  String? get moId => throw _privateConstructorUsedError;
+  @JsonKey(name: "patient_name")
+  String? get patientName => throw _privateConstructorUsedError;
+  @JsonKey(name: "doctor_name")
+  String? get doctorName => throw _privateConstructorUsedError;
+  String? get department => throw _privateConstructorUsedError;
+  @JsonKey(name: "consultation_type")
+  String? get consultationType => throw _privateConstructorUsedError;
+  @JsonKey(name: "appointment_date_time")
+  String? get appointmentDateTime => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  @JsonKey(name: "fee_status")
+  String? get feeStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: "fee_amount")
+  double? get feeAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: "payment_status")
+  String? get paymentStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: "booking_number")
+  String? get bookingNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: "created_at")
+  String? get createdAt => throw _privateConstructorUsedError; // Legacy fields for backward compatibility
   String? get appointmentId => throw _privateConstructorUsedError;
   String? get patientId => throw _privateConstructorUsedError;
   String? get doctorId => throw _privateConstructorUsedError;
-  String? get department => throw _privateConstructorUsedError;
-  String? get consultationType => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-  String? get feeStatus => throw _privateConstructorUsedError;
   String? get appointmentDate => throw _privateConstructorUsedError;
   String? get appointmentTime => throw _privateConstructorUsedError;
   String? get bookedOn => throw _privateConstructorUsedError;
@@ -58,13 +1967,22 @@ abstract class $AppointmentCopyWith<$Res> {
   @useResult
   $Res call({
     String? id,
+    @JsonKey(name: "token_number") int? tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    String? status,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "created_at") String? createdAt,
     String? appointmentId,
     String? patientId,
     String? doctorId,
-    String? department,
-    String? consultationType,
-    String? status,
-    String? feeStatus,
     String? appointmentDate,
     String? appointmentTime,
     String? bookedOn,
@@ -96,13 +2014,22 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
   @override
   $Res call({
     Object? id = freezed,
+    Object? tokenNumber = freezed,
+    Object? moId = freezed,
+    Object? patientName = freezed,
+    Object? doctorName = freezed,
+    Object? department = freezed,
+    Object? consultationType = freezed,
+    Object? appointmentDateTime = freezed,
+    Object? status = freezed,
+    Object? feeStatus = freezed,
+    Object? feeAmount = freezed,
+    Object? paymentStatus = freezed,
+    Object? bookingNumber = freezed,
+    Object? createdAt = freezed,
     Object? appointmentId = freezed,
     Object? patientId = freezed,
     Object? doctorId = freezed,
-    Object? department = freezed,
-    Object? consultationType = freezed,
-    Object? status = freezed,
-    Object? feeStatus = freezed,
     Object? appointmentDate = freezed,
     Object? appointmentTime = freezed,
     Object? bookedOn = freezed,
@@ -119,6 +2046,58 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
                       as String?,
+            tokenNumber: freezed == tokenNumber
+                ? _value.tokenNumber
+                : tokenNumber // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            moId: freezed == moId
+                ? _value.moId
+                : moId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            patientName: freezed == patientName
+                ? _value.patientName
+                : patientName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            doctorName: freezed == doctorName
+                ? _value.doctorName
+                : doctorName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            department: freezed == department
+                ? _value.department
+                : department // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            consultationType: freezed == consultationType
+                ? _value.consultationType
+                : consultationType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            appointmentDateTime: freezed == appointmentDateTime
+                ? _value.appointmentDateTime
+                : appointmentDateTime // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            status: freezed == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            feeStatus: freezed == feeStatus
+                ? _value.feeStatus
+                : feeStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            feeAmount: freezed == feeAmount
+                ? _value.feeAmount
+                : feeAmount // ignore: cast_nullable_to_non_nullable
+                      as double?,
+            paymentStatus: freezed == paymentStatus
+                ? _value.paymentStatus
+                : paymentStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            bookingNumber: freezed == bookingNumber
+                ? _value.bookingNumber
+                : bookingNumber // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
             appointmentId: freezed == appointmentId
                 ? _value.appointmentId
                 : appointmentId // ignore: cast_nullable_to_non_nullable
@@ -130,22 +2109,6 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
             doctorId: freezed == doctorId
                 ? _value.doctorId
                 : doctorId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            department: freezed == department
-                ? _value.department
-                : department // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            consultationType: freezed == consultationType
-                ? _value.consultationType
-                : consultationType // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            status: freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            feeStatus: freezed == feeStatus
-                ? _value.feeStatus
-                : feeStatus // ignore: cast_nullable_to_non_nullable
                       as String?,
             appointmentDate: freezed == appointmentDate
                 ? _value.appointmentDate
@@ -228,13 +2191,22 @@ abstract class _$$AppointmentImplCopyWith<$Res>
   @useResult
   $Res call({
     String? id,
+    @JsonKey(name: "token_number") int? tokenNumber,
+    @JsonKey(name: "mo_id") String? moId,
+    @JsonKey(name: "patient_name") String? patientName,
+    @JsonKey(name: "doctor_name") String? doctorName,
+    String? department,
+    @JsonKey(name: "consultation_type") String? consultationType,
+    @JsonKey(name: "appointment_date_time") String? appointmentDateTime,
+    String? status,
+    @JsonKey(name: "fee_status") String? feeStatus,
+    @JsonKey(name: "fee_amount") double? feeAmount,
+    @JsonKey(name: "payment_status") String? paymentStatus,
+    @JsonKey(name: "booking_number") String? bookingNumber,
+    @JsonKey(name: "created_at") String? createdAt,
     String? appointmentId,
     String? patientId,
     String? doctorId,
-    String? department,
-    String? consultationType,
-    String? status,
-    String? feeStatus,
     String? appointmentDate,
     String? appointmentTime,
     String? bookedOn,
@@ -267,13 +2239,22 @@ class __$$AppointmentImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? tokenNumber = freezed,
+    Object? moId = freezed,
+    Object? patientName = freezed,
+    Object? doctorName = freezed,
+    Object? department = freezed,
+    Object? consultationType = freezed,
+    Object? appointmentDateTime = freezed,
+    Object? status = freezed,
+    Object? feeStatus = freezed,
+    Object? feeAmount = freezed,
+    Object? paymentStatus = freezed,
+    Object? bookingNumber = freezed,
+    Object? createdAt = freezed,
     Object? appointmentId = freezed,
     Object? patientId = freezed,
     Object? doctorId = freezed,
-    Object? department = freezed,
-    Object? consultationType = freezed,
-    Object? status = freezed,
-    Object? feeStatus = freezed,
     Object? appointmentDate = freezed,
     Object? appointmentTime = freezed,
     Object? bookedOn = freezed,
@@ -290,6 +2271,58 @@ class __$$AppointmentImplCopyWithImpl<$Res>
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as String?,
+        tokenNumber: freezed == tokenNumber
+            ? _value.tokenNumber
+            : tokenNumber // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        moId: freezed == moId
+            ? _value.moId
+            : moId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        patientName: freezed == patientName
+            ? _value.patientName
+            : patientName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        doctorName: freezed == doctorName
+            ? _value.doctorName
+            : doctorName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        department: freezed == department
+            ? _value.department
+            : department // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        consultationType: freezed == consultationType
+            ? _value.consultationType
+            : consultationType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        appointmentDateTime: freezed == appointmentDateTime
+            ? _value.appointmentDateTime
+            : appointmentDateTime // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        status: freezed == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        feeStatus: freezed == feeStatus
+            ? _value.feeStatus
+            : feeStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        feeAmount: freezed == feeAmount
+            ? _value.feeAmount
+            : feeAmount // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        paymentStatus: freezed == paymentStatus
+            ? _value.paymentStatus
+            : paymentStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        bookingNumber: freezed == bookingNumber
+            ? _value.bookingNumber
+            : bookingNumber // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
         appointmentId: freezed == appointmentId
             ? _value.appointmentId
             : appointmentId // ignore: cast_nullable_to_non_nullable
@@ -301,22 +2334,6 @@ class __$$AppointmentImplCopyWithImpl<$Res>
         doctorId: freezed == doctorId
             ? _value.doctorId
             : doctorId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        department: freezed == department
-            ? _value.department
-            : department // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        consultationType: freezed == consultationType
-            ? _value.consultationType
-            : consultationType // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        status: freezed == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        feeStatus: freezed == feeStatus
-            ? _value.feeStatus
-            : feeStatus // ignore: cast_nullable_to_non_nullable
                   as String?,
         appointmentDate: freezed == appointmentDate
             ? _value.appointmentDate
@@ -364,13 +2381,22 @@ class __$$AppointmentImplCopyWithImpl<$Res>
 class _$AppointmentImpl implements _Appointment {
   const _$AppointmentImpl({
     this.id,
+    @JsonKey(name: "token_number") this.tokenNumber,
+    @JsonKey(name: "mo_id") this.moId,
+    @JsonKey(name: "patient_name") this.patientName,
+    @JsonKey(name: "doctor_name") this.doctorName,
+    this.department,
+    @JsonKey(name: "consultation_type") this.consultationType,
+    @JsonKey(name: "appointment_date_time") this.appointmentDateTime,
+    this.status,
+    @JsonKey(name: "fee_status") this.feeStatus,
+    @JsonKey(name: "fee_amount") this.feeAmount,
+    @JsonKey(name: "payment_status") this.paymentStatus,
+    @JsonKey(name: "booking_number") this.bookingNumber,
+    @JsonKey(name: "created_at") this.createdAt,
     this.appointmentId,
     this.patientId,
     this.doctorId,
-    this.department,
-    this.consultationType,
-    this.status,
-    this.feeStatus,
     this.appointmentDate,
     this.appointmentTime,
     this.bookedOn,
@@ -388,19 +2414,49 @@ class _$AppointmentImpl implements _Appointment {
   @override
   final String? id;
   @override
+  @JsonKey(name: "token_number")
+  final int? tokenNumber;
+  @override
+  @JsonKey(name: "mo_id")
+  final String? moId;
+  @override
+  @JsonKey(name: "patient_name")
+  final String? patientName;
+  @override
+  @JsonKey(name: "doctor_name")
+  final String? doctorName;
+  @override
+  final String? department;
+  @override
+  @JsonKey(name: "consultation_type")
+  final String? consultationType;
+  @override
+  @JsonKey(name: "appointment_date_time")
+  final String? appointmentDateTime;
+  @override
+  final String? status;
+  @override
+  @JsonKey(name: "fee_status")
+  final String? feeStatus;
+  @override
+  @JsonKey(name: "fee_amount")
+  final double? feeAmount;
+  @override
+  @JsonKey(name: "payment_status")
+  final String? paymentStatus;
+  @override
+  @JsonKey(name: "booking_number")
+  final String? bookingNumber;
+  @override
+  @JsonKey(name: "created_at")
+  final String? createdAt;
+  // Legacy fields for backward compatibility
+  @override
   final String? appointmentId;
   @override
   final String? patientId;
   @override
   final String? doctorId;
-  @override
-  final String? department;
-  @override
-  final String? consultationType;
-  @override
-  final String? status;
-  @override
-  final String? feeStatus;
   @override
   final String? appointmentDate;
   @override
@@ -422,7 +2478,7 @@ class _$AppointmentImpl implements _Appointment {
 
   @override
   String toString() {
-    return 'Appointment(id: $id, appointmentId: $appointmentId, patientId: $patientId, doctorId: $doctorId, department: $department, consultationType: $consultationType, status: $status, feeStatus: $feeStatus, appointmentDate: $appointmentDate, appointmentTime: $appointmentTime, bookedOn: $bookedOn, reasonForVisit: $reasonForVisit, notes: $notes, fee: $fee, paymentMethod: $paymentMethod, patient: $patient, doctor: $doctor)';
+    return 'Appointment(id: $id, tokenNumber: $tokenNumber, moId: $moId, patientName: $patientName, doctorName: $doctorName, department: $department, consultationType: $consultationType, appointmentDateTime: $appointmentDateTime, status: $status, feeStatus: $feeStatus, feeAmount: $feeAmount, paymentStatus: $paymentStatus, bookingNumber: $bookingNumber, createdAt: $createdAt, appointmentId: $appointmentId, patientId: $patientId, doctorId: $doctorId, appointmentDate: $appointmentDate, appointmentTime: $appointmentTime, bookedOn: $bookedOn, reasonForVisit: $reasonForVisit, notes: $notes, fee: $fee, paymentMethod: $paymentMethod, patient: $patient, doctor: $doctor)';
   }
 
   @override
@@ -431,19 +2487,36 @@ class _$AppointmentImpl implements _Appointment {
         (other.runtimeType == runtimeType &&
             other is _$AppointmentImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.tokenNumber, tokenNumber) ||
+                other.tokenNumber == tokenNumber) &&
+            (identical(other.moId, moId) || other.moId == moId) &&
+            (identical(other.patientName, patientName) ||
+                other.patientName == patientName) &&
+            (identical(other.doctorName, doctorName) ||
+                other.doctorName == doctorName) &&
+            (identical(other.department, department) ||
+                other.department == department) &&
+            (identical(other.consultationType, consultationType) ||
+                other.consultationType == consultationType) &&
+            (identical(other.appointmentDateTime, appointmentDateTime) ||
+                other.appointmentDateTime == appointmentDateTime) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.feeStatus, feeStatus) ||
+                other.feeStatus == feeStatus) &&
+            (identical(other.feeAmount, feeAmount) ||
+                other.feeAmount == feeAmount) &&
+            (identical(other.paymentStatus, paymentStatus) ||
+                other.paymentStatus == paymentStatus) &&
+            (identical(other.bookingNumber, bookingNumber) ||
+                other.bookingNumber == bookingNumber) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             (identical(other.appointmentId, appointmentId) ||
                 other.appointmentId == appointmentId) &&
             (identical(other.patientId, patientId) ||
                 other.patientId == patientId) &&
             (identical(other.doctorId, doctorId) ||
                 other.doctorId == doctorId) &&
-            (identical(other.department, department) ||
-                other.department == department) &&
-            (identical(other.consultationType, consultationType) ||
-                other.consultationType == consultationType) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.feeStatus, feeStatus) ||
-                other.feeStatus == feeStatus) &&
             (identical(other.appointmentDate, appointmentDate) ||
                 other.appointmentDate == appointmentDate) &&
             (identical(other.appointmentTime, appointmentTime) ||
@@ -462,16 +2535,25 @@ class _$AppointmentImpl implements _Appointment {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
+    tokenNumber,
+    moId,
+    patientName,
+    doctorName,
+    department,
+    consultationType,
+    appointmentDateTime,
+    status,
+    feeStatus,
+    feeAmount,
+    paymentStatus,
+    bookingNumber,
+    createdAt,
     appointmentId,
     patientId,
     doctorId,
-    department,
-    consultationType,
-    status,
-    feeStatus,
     appointmentDate,
     appointmentTime,
     bookedOn,
@@ -481,7 +2563,7 @@ class _$AppointmentImpl implements _Appointment {
     paymentMethod,
     patient,
     doctor,
-  );
+  ]);
 
   /// Create a copy of Appointment
   /// with the given fields replaced by the non-null parameter values.
@@ -500,13 +2582,22 @@ class _$AppointmentImpl implements _Appointment {
 abstract class _Appointment implements Appointment {
   const factory _Appointment({
     final String? id,
+    @JsonKey(name: "token_number") final int? tokenNumber,
+    @JsonKey(name: "mo_id") final String? moId,
+    @JsonKey(name: "patient_name") final String? patientName,
+    @JsonKey(name: "doctor_name") final String? doctorName,
+    final String? department,
+    @JsonKey(name: "consultation_type") final String? consultationType,
+    @JsonKey(name: "appointment_date_time") final String? appointmentDateTime,
+    final String? status,
+    @JsonKey(name: "fee_status") final String? feeStatus,
+    @JsonKey(name: "fee_amount") final double? feeAmount,
+    @JsonKey(name: "payment_status") final String? paymentStatus,
+    @JsonKey(name: "booking_number") final String? bookingNumber,
+    @JsonKey(name: "created_at") final String? createdAt,
     final String? appointmentId,
     final String? patientId,
     final String? doctorId,
-    final String? department,
-    final String? consultationType,
-    final String? status,
-    final String? feeStatus,
     final String? appointmentDate,
     final String? appointmentTime,
     final String? bookedOn,
@@ -524,19 +2615,48 @@ abstract class _Appointment implements Appointment {
   @override
   String? get id;
   @override
+  @JsonKey(name: "token_number")
+  int? get tokenNumber;
+  @override
+  @JsonKey(name: "mo_id")
+  String? get moId;
+  @override
+  @JsonKey(name: "patient_name")
+  String? get patientName;
+  @override
+  @JsonKey(name: "doctor_name")
+  String? get doctorName;
+  @override
+  String? get department;
+  @override
+  @JsonKey(name: "consultation_type")
+  String? get consultationType;
+  @override
+  @JsonKey(name: "appointment_date_time")
+  String? get appointmentDateTime;
+  @override
+  String? get status;
+  @override
+  @JsonKey(name: "fee_status")
+  String? get feeStatus;
+  @override
+  @JsonKey(name: "fee_amount")
+  double? get feeAmount;
+  @override
+  @JsonKey(name: "payment_status")
+  String? get paymentStatus;
+  @override
+  @JsonKey(name: "booking_number")
+  String? get bookingNumber;
+  @override
+  @JsonKey(name: "created_at")
+  String? get createdAt; // Legacy fields for backward compatibility
+  @override
   String? get appointmentId;
   @override
   String? get patientId;
   @override
   String? get doctorId;
-  @override
-  String? get department;
-  @override
-  String? get consultationType;
-  @override
-  String? get status;
-  @override
-  String? get feeStatus;
   @override
   String? get appointmentDate;
   @override
@@ -562,6 +2682,212 @@ abstract class _Appointment implements Appointment {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AppointmentImplCopyWith<_$AppointmentImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+AppointmentListResponse _$AppointmentListResponseFromJson(
+  Map<String, dynamic> json,
+) {
+  return _AppointmentListResponse.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AppointmentListResponse {
+  List<Appointment> get appointments => throw _privateConstructorUsedError;
+  @JsonKey(name: "total_count")
+  int? get totalCount => throw _privateConstructorUsedError;
+
+  /// Serializes this AppointmentListResponse to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AppointmentListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AppointmentListResponseCopyWith<AppointmentListResponse> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AppointmentListResponseCopyWith<$Res> {
+  factory $AppointmentListResponseCopyWith(
+    AppointmentListResponse value,
+    $Res Function(AppointmentListResponse) then,
+  ) = _$AppointmentListResponseCopyWithImpl<$Res, AppointmentListResponse>;
+  @useResult
+  $Res call({
+    List<Appointment> appointments,
+    @JsonKey(name: "total_count") int? totalCount,
+  });
+}
+
+/// @nodoc
+class _$AppointmentListResponseCopyWithImpl<
+  $Res,
+  $Val extends AppointmentListResponse
+>
+    implements $AppointmentListResponseCopyWith<$Res> {
+  _$AppointmentListResponseCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AppointmentListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? appointments = null, Object? totalCount = freezed}) {
+    return _then(
+      _value.copyWith(
+            appointments: null == appointments
+                ? _value.appointments
+                : appointments // ignore: cast_nullable_to_non_nullable
+                      as List<Appointment>,
+            totalCount: freezed == totalCount
+                ? _value.totalCount
+                : totalCount // ignore: cast_nullable_to_non_nullable
+                      as int?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$AppointmentListResponseImplCopyWith<$Res>
+    implements $AppointmentListResponseCopyWith<$Res> {
+  factory _$$AppointmentListResponseImplCopyWith(
+    _$AppointmentListResponseImpl value,
+    $Res Function(_$AppointmentListResponseImpl) then,
+  ) = __$$AppointmentListResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    List<Appointment> appointments,
+    @JsonKey(name: "total_count") int? totalCount,
+  });
+}
+
+/// @nodoc
+class __$$AppointmentListResponseImplCopyWithImpl<$Res>
+    extends
+        _$AppointmentListResponseCopyWithImpl<
+          $Res,
+          _$AppointmentListResponseImpl
+        >
+    implements _$$AppointmentListResponseImplCopyWith<$Res> {
+  __$$AppointmentListResponseImplCopyWithImpl(
+    _$AppointmentListResponseImpl _value,
+    $Res Function(_$AppointmentListResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AppointmentListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? appointments = null, Object? totalCount = freezed}) {
+    return _then(
+      _$AppointmentListResponseImpl(
+        appointments: null == appointments
+            ? _value._appointments
+            : appointments // ignore: cast_nullable_to_non_nullable
+                  as List<Appointment>,
+        totalCount: freezed == totalCount
+            ? _value.totalCount
+            : totalCount // ignore: cast_nullable_to_non_nullable
+                  as int?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AppointmentListResponseImpl implements _AppointmentListResponse {
+  const _$AppointmentListResponseImpl({
+    required final List<Appointment> appointments,
+    @JsonKey(name: "total_count") this.totalCount,
+  }) : _appointments = appointments;
+
+  factory _$AppointmentListResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AppointmentListResponseImplFromJson(json);
+
+  final List<Appointment> _appointments;
+  @override
+  List<Appointment> get appointments {
+    if (_appointments is EqualUnmodifiableListView) return _appointments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_appointments);
+  }
+
+  @override
+  @JsonKey(name: "total_count")
+  final int? totalCount;
+
+  @override
+  String toString() {
+    return 'AppointmentListResponse(appointments: $appointments, totalCount: $totalCount)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AppointmentListResponseImpl &&
+            const DeepCollectionEquality().equals(
+              other._appointments,
+              _appointments,
+            ) &&
+            (identical(other.totalCount, totalCount) ||
+                other.totalCount == totalCount));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_appointments),
+    totalCount,
+  );
+
+  /// Create a copy of AppointmentListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AppointmentListResponseImplCopyWith<_$AppointmentListResponseImpl>
+  get copyWith =>
+      __$$AppointmentListResponseImplCopyWithImpl<
+        _$AppointmentListResponseImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AppointmentListResponseImplToJson(this);
+  }
+}
+
+abstract class _AppointmentListResponse implements AppointmentListResponse {
+  const factory _AppointmentListResponse({
+    required final List<Appointment> appointments,
+    @JsonKey(name: "total_count") final int? totalCount,
+  }) = _$AppointmentListResponseImpl;
+
+  factory _AppointmentListResponse.fromJson(Map<String, dynamic> json) =
+      _$AppointmentListResponseImpl.fromJson;
+
+  @override
+  List<Appointment> get appointments;
+  @override
+  @JsonKey(name: "total_count")
+  int? get totalCount;
+
+  /// Create a copy of AppointmentListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AppointmentListResponseImplCopyWith<_$AppointmentListResponseImpl>
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 Patient _$PatientFromJson(Map<String, dynamic> json) {
@@ -1121,6 +3447,7 @@ mixin _$Doctor {
   String? get id => throw _privateConstructorUsedError;
   String? get firstName => throw _privateConstructorUsedError;
   String? get lastName => throw _privateConstructorUsedError;
+  String? get fullName => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get department => throw _privateConstructorUsedError;
@@ -1149,6 +3476,7 @@ abstract class $DoctorCopyWith<$Res> {
     String? id,
     String? firstName,
     String? lastName,
+    String? fullName,
     String? email,
     String? phone,
     String? department,
@@ -1179,6 +3507,7 @@ class _$DoctorCopyWithImpl<$Res, $Val extends Doctor>
     Object? id = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? fullName = freezed,
     Object? email = freezed,
     Object? phone = freezed,
     Object? department = freezed,
@@ -1202,6 +3531,10 @@ class _$DoctorCopyWithImpl<$Res, $Val extends Doctor>
             lastName: freezed == lastName
                 ? _value.lastName
                 : lastName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            fullName: freezed == fullName
+                ? _value.fullName
+                : fullName // ignore: cast_nullable_to_non_nullable
                       as String?,
             email: freezed == email
                 ? _value.email
@@ -1257,6 +3590,7 @@ abstract class _$$DoctorImplCopyWith<$Res> implements $DoctorCopyWith<$Res> {
     String? id,
     String? firstName,
     String? lastName,
+    String? fullName,
     String? email,
     String? phone,
     String? department,
@@ -1286,6 +3620,7 @@ class __$$DoctorImplCopyWithImpl<$Res>
     Object? id = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? fullName = freezed,
     Object? email = freezed,
     Object? phone = freezed,
     Object? department = freezed,
@@ -1309,6 +3644,10 @@ class __$$DoctorImplCopyWithImpl<$Res>
         lastName: freezed == lastName
             ? _value.lastName
             : lastName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        fullName: freezed == fullName
+            ? _value.fullName
+            : fullName // ignore: cast_nullable_to_non_nullable
                   as String?,
         email: freezed == email
             ? _value.email
@@ -1358,6 +3697,7 @@ class _$DoctorImpl implements _Doctor {
     this.id,
     this.firstName,
     this.lastName,
+    this.fullName,
     this.email,
     this.phone,
     this.department,
@@ -1378,6 +3718,8 @@ class _$DoctorImpl implements _Doctor {
   final String? firstName;
   @override
   final String? lastName;
+  @override
+  final String? fullName;
   @override
   final String? email;
   @override
@@ -1406,7 +3748,7 @@ class _$DoctorImpl implements _Doctor {
 
   @override
   String toString() {
-    return 'Doctor(id: $id, firstName: $firstName, lastName: $lastName, email: $email, phone: $phone, department: $department, specialization: $specialization, qualification: $qualification, experience: $experience, consultationFee: $consultationFee, isAvailable: $isAvailable, availableSlots: $availableSlots)';
+    return 'Doctor(id: $id, firstName: $firstName, lastName: $lastName, fullName: $fullName, email: $email, phone: $phone, department: $department, specialization: $specialization, qualification: $qualification, experience: $experience, consultationFee: $consultationFee, isAvailable: $isAvailable, availableSlots: $availableSlots)';
   }
 
   @override
@@ -1419,6 +3761,8 @@ class _$DoctorImpl implements _Doctor {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.fullName, fullName) ||
+                other.fullName == fullName) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.department, department) ||
@@ -1446,6 +3790,7 @@ class _$DoctorImpl implements _Doctor {
     id,
     firstName,
     lastName,
+    fullName,
     email,
     phone,
     department,
@@ -1476,6 +3821,7 @@ abstract class _Doctor implements Doctor {
     final String? id,
     final String? firstName,
     final String? lastName,
+    final String? fullName,
     final String? email,
     final String? phone,
     final String? department,
@@ -1495,6 +3841,8 @@ abstract class _Doctor implements Doctor {
   String? get firstName;
   @override
   String? get lastName;
+  @override
+  String? get fullName;
   @override
   String? get email;
   @override
@@ -2274,6 +4622,2234 @@ abstract class _AppointmentSummary implements AppointmentSummary {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AppointmentSummaryImplCopyWith<_$AppointmentSummaryImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+SimpleAppointment _$SimpleAppointmentFromJson(Map<String, dynamic> json) {
+  return _SimpleAppointment.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SimpleAppointment {
+  String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clinic_patient_id')
+  String get clinicPatientId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clinic_id')
+  String get clinicId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'doctor_id')
+  String get doctorId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'booking_number')
+  String get bookingNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'token_number')
+  int get tokenNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointment_date')
+  String get appointmentDate => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointment_time')
+  String get appointmentTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'duration_minutes')
+  int? get durationMinutes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'consultation_type')
+  String get consultationType => throw _privateConstructorUsedError;
+  String? get reason => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
+  @JsonKey(name: 'fee_amount')
+  double? get feeAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'payment_status')
+  String? get paymentStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'payment_mode')
+  String? get paymentMode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
+  String? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
+  String? get updatedAt => throw _privateConstructorUsedError;
+
+  /// Serializes this SimpleAppointment to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SimpleAppointment
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SimpleAppointmentCopyWith<SimpleAppointment> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SimpleAppointmentCopyWith<$Res> {
+  factory $SimpleAppointmentCopyWith(
+    SimpleAppointment value,
+    $Res Function(SimpleAppointment) then,
+  ) = _$SimpleAppointmentCopyWithImpl<$Res, SimpleAppointment>;
+  @useResult
+  $Res call({
+    String id,
+    @JsonKey(name: 'clinic_patient_id') String clinicPatientId,
+    @JsonKey(name: 'clinic_id') String clinicId,
+    @JsonKey(name: 'doctor_id') String doctorId,
+    @JsonKey(name: 'booking_number') String bookingNumber,
+    @JsonKey(name: 'token_number') int tokenNumber,
+    @JsonKey(name: 'appointment_date') String appointmentDate,
+    @JsonKey(name: 'appointment_time') String appointmentTime,
+    @JsonKey(name: 'duration_minutes') int? durationMinutes,
+    @JsonKey(name: 'consultation_type') String consultationType,
+    String? reason,
+    String status,
+    @JsonKey(name: 'fee_amount') double? feeAmount,
+    @JsonKey(name: 'payment_status') String? paymentStatus,
+    @JsonKey(name: 'payment_mode') String? paymentMode,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  });
+}
+
+/// @nodoc
+class _$SimpleAppointmentCopyWithImpl<$Res, $Val extends SimpleAppointment>
+    implements $SimpleAppointmentCopyWith<$Res> {
+  _$SimpleAppointmentCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SimpleAppointment
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? clinicPatientId = null,
+    Object? clinicId = null,
+    Object? doctorId = null,
+    Object? bookingNumber = null,
+    Object? tokenNumber = null,
+    Object? appointmentDate = null,
+    Object? appointmentTime = null,
+    Object? durationMinutes = freezed,
+    Object? consultationType = null,
+    Object? reason = freezed,
+    Object? status = null,
+    Object? feeAmount = freezed,
+    Object? paymentStatus = freezed,
+    Object? paymentMode = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            clinicPatientId: null == clinicPatientId
+                ? _value.clinicPatientId
+                : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            clinicId: null == clinicId
+                ? _value.clinicId
+                : clinicId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            doctorId: null == doctorId
+                ? _value.doctorId
+                : doctorId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            bookingNumber: null == bookingNumber
+                ? _value.bookingNumber
+                : bookingNumber // ignore: cast_nullable_to_non_nullable
+                      as String,
+            tokenNumber: null == tokenNumber
+                ? _value.tokenNumber
+                : tokenNumber // ignore: cast_nullable_to_non_nullable
+                      as int,
+            appointmentDate: null == appointmentDate
+                ? _value.appointmentDate
+                : appointmentDate // ignore: cast_nullable_to_non_nullable
+                      as String,
+            appointmentTime: null == appointmentTime
+                ? _value.appointmentTime
+                : appointmentTime // ignore: cast_nullable_to_non_nullable
+                      as String,
+            durationMinutes: freezed == durationMinutes
+                ? _value.durationMinutes
+                : durationMinutes // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            consultationType: null == consultationType
+                ? _value.consultationType
+                : consultationType // ignore: cast_nullable_to_non_nullable
+                      as String,
+            reason: freezed == reason
+                ? _value.reason
+                : reason // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            status: null == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as String,
+            feeAmount: freezed == feeAmount
+                ? _value.feeAmount
+                : feeAmount // ignore: cast_nullable_to_non_nullable
+                      as double?,
+            paymentStatus: freezed == paymentStatus
+                ? _value.paymentStatus
+                : paymentStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            paymentMode: freezed == paymentMode
+                ? _value.paymentMode
+                : paymentMode // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$SimpleAppointmentImplCopyWith<$Res>
+    implements $SimpleAppointmentCopyWith<$Res> {
+  factory _$$SimpleAppointmentImplCopyWith(
+    _$SimpleAppointmentImpl value,
+    $Res Function(_$SimpleAppointmentImpl) then,
+  ) = __$$SimpleAppointmentImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    @JsonKey(name: 'clinic_patient_id') String clinicPatientId,
+    @JsonKey(name: 'clinic_id') String clinicId,
+    @JsonKey(name: 'doctor_id') String doctorId,
+    @JsonKey(name: 'booking_number') String bookingNumber,
+    @JsonKey(name: 'token_number') int tokenNumber,
+    @JsonKey(name: 'appointment_date') String appointmentDate,
+    @JsonKey(name: 'appointment_time') String appointmentTime,
+    @JsonKey(name: 'duration_minutes') int? durationMinutes,
+    @JsonKey(name: 'consultation_type') String consultationType,
+    String? reason,
+    String status,
+    @JsonKey(name: 'fee_amount') double? feeAmount,
+    @JsonKey(name: 'payment_status') String? paymentStatus,
+    @JsonKey(name: 'payment_mode') String? paymentMode,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  });
+}
+
+/// @nodoc
+class __$$SimpleAppointmentImplCopyWithImpl<$Res>
+    extends _$SimpleAppointmentCopyWithImpl<$Res, _$SimpleAppointmentImpl>
+    implements _$$SimpleAppointmentImplCopyWith<$Res> {
+  __$$SimpleAppointmentImplCopyWithImpl(
+    _$SimpleAppointmentImpl _value,
+    $Res Function(_$SimpleAppointmentImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of SimpleAppointment
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? clinicPatientId = null,
+    Object? clinicId = null,
+    Object? doctorId = null,
+    Object? bookingNumber = null,
+    Object? tokenNumber = null,
+    Object? appointmentDate = null,
+    Object? appointmentTime = null,
+    Object? durationMinutes = freezed,
+    Object? consultationType = null,
+    Object? reason = freezed,
+    Object? status = null,
+    Object? feeAmount = freezed,
+    Object? paymentStatus = freezed,
+    Object? paymentMode = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _$SimpleAppointmentImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        clinicPatientId: null == clinicPatientId
+            ? _value.clinicPatientId
+            : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        clinicId: null == clinicId
+            ? _value.clinicId
+            : clinicId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        doctorId: null == doctorId
+            ? _value.doctorId
+            : doctorId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        bookingNumber: null == bookingNumber
+            ? _value.bookingNumber
+            : bookingNumber // ignore: cast_nullable_to_non_nullable
+                  as String,
+        tokenNumber: null == tokenNumber
+            ? _value.tokenNumber
+            : tokenNumber // ignore: cast_nullable_to_non_nullable
+                  as int,
+        appointmentDate: null == appointmentDate
+            ? _value.appointmentDate
+            : appointmentDate // ignore: cast_nullable_to_non_nullable
+                  as String,
+        appointmentTime: null == appointmentTime
+            ? _value.appointmentTime
+            : appointmentTime // ignore: cast_nullable_to_non_nullable
+                  as String,
+        durationMinutes: freezed == durationMinutes
+            ? _value.durationMinutes
+            : durationMinutes // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        consultationType: null == consultationType
+            ? _value.consultationType
+            : consultationType // ignore: cast_nullable_to_non_nullable
+                  as String,
+        reason: freezed == reason
+            ? _value.reason
+            : reason // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        status: null == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as String,
+        feeAmount: freezed == feeAmount
+            ? _value.feeAmount
+            : feeAmount // ignore: cast_nullable_to_non_nullable
+                  as double?,
+        paymentStatus: freezed == paymentStatus
+            ? _value.paymentStatus
+            : paymentStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        paymentMode: freezed == paymentMode
+            ? _value.paymentMode
+            : paymentMode // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SimpleAppointmentImpl implements _SimpleAppointment {
+  const _$SimpleAppointmentImpl({
+    required this.id,
+    @JsonKey(name: 'clinic_patient_id') required this.clinicPatientId,
+    @JsonKey(name: 'clinic_id') required this.clinicId,
+    @JsonKey(name: 'doctor_id') required this.doctorId,
+    @JsonKey(name: 'booking_number') required this.bookingNumber,
+    @JsonKey(name: 'token_number') required this.tokenNumber,
+    @JsonKey(name: 'appointment_date') required this.appointmentDate,
+    @JsonKey(name: 'appointment_time') required this.appointmentTime,
+    @JsonKey(name: 'duration_minutes') this.durationMinutes,
+    @JsonKey(name: 'consultation_type') required this.consultationType,
+    this.reason,
+    required this.status,
+    @JsonKey(name: 'fee_amount') this.feeAmount,
+    @JsonKey(name: 'payment_status') this.paymentStatus,
+    @JsonKey(name: 'payment_mode') this.paymentMode,
+    @JsonKey(name: 'created_at') this.createdAt,
+    @JsonKey(name: 'updated_at') this.updatedAt,
+  });
+
+  factory _$SimpleAppointmentImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SimpleAppointmentImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  @JsonKey(name: 'clinic_patient_id')
+  final String clinicPatientId;
+  @override
+  @JsonKey(name: 'clinic_id')
+  final String clinicId;
+  @override
+  @JsonKey(name: 'doctor_id')
+  final String doctorId;
+  @override
+  @JsonKey(name: 'booking_number')
+  final String bookingNumber;
+  @override
+  @JsonKey(name: 'token_number')
+  final int tokenNumber;
+  @override
+  @JsonKey(name: 'appointment_date')
+  final String appointmentDate;
+  @override
+  @JsonKey(name: 'appointment_time')
+  final String appointmentTime;
+  @override
+  @JsonKey(name: 'duration_minutes')
+  final int? durationMinutes;
+  @override
+  @JsonKey(name: 'consultation_type')
+  final String consultationType;
+  @override
+  final String? reason;
+  @override
+  final String status;
+  @override
+  @JsonKey(name: 'fee_amount')
+  final double? feeAmount;
+  @override
+  @JsonKey(name: 'payment_status')
+  final String? paymentStatus;
+  @override
+  @JsonKey(name: 'payment_mode')
+  final String? paymentMode;
+  @override
+  @JsonKey(name: 'created_at')
+  final String? createdAt;
+  @override
+  @JsonKey(name: 'updated_at')
+  final String? updatedAt;
+
+  @override
+  String toString() {
+    return 'SimpleAppointment(id: $id, clinicPatientId: $clinicPatientId, clinicId: $clinicId, doctorId: $doctorId, bookingNumber: $bookingNumber, tokenNumber: $tokenNumber, appointmentDate: $appointmentDate, appointmentTime: $appointmentTime, durationMinutes: $durationMinutes, consultationType: $consultationType, reason: $reason, status: $status, feeAmount: $feeAmount, paymentStatus: $paymentStatus, paymentMode: $paymentMode, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SimpleAppointmentImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.clinicPatientId, clinicPatientId) ||
+                other.clinicPatientId == clinicPatientId) &&
+            (identical(other.clinicId, clinicId) ||
+                other.clinicId == clinicId) &&
+            (identical(other.doctorId, doctorId) ||
+                other.doctorId == doctorId) &&
+            (identical(other.bookingNumber, bookingNumber) ||
+                other.bookingNumber == bookingNumber) &&
+            (identical(other.tokenNumber, tokenNumber) ||
+                other.tokenNumber == tokenNumber) &&
+            (identical(other.appointmentDate, appointmentDate) ||
+                other.appointmentDate == appointmentDate) &&
+            (identical(other.appointmentTime, appointmentTime) ||
+                other.appointmentTime == appointmentTime) &&
+            (identical(other.durationMinutes, durationMinutes) ||
+                other.durationMinutes == durationMinutes) &&
+            (identical(other.consultationType, consultationType) ||
+                other.consultationType == consultationType) &&
+            (identical(other.reason, reason) || other.reason == reason) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.feeAmount, feeAmount) ||
+                other.feeAmount == feeAmount) &&
+            (identical(other.paymentStatus, paymentStatus) ||
+                other.paymentStatus == paymentStatus) &&
+            (identical(other.paymentMode, paymentMode) ||
+                other.paymentMode == paymentMode) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    clinicPatientId,
+    clinicId,
+    doctorId,
+    bookingNumber,
+    tokenNumber,
+    appointmentDate,
+    appointmentTime,
+    durationMinutes,
+    consultationType,
+    reason,
+    status,
+    feeAmount,
+    paymentStatus,
+    paymentMode,
+    createdAt,
+    updatedAt,
+  );
+
+  /// Create a copy of SimpleAppointment
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SimpleAppointmentImplCopyWith<_$SimpleAppointmentImpl> get copyWith =>
+      __$$SimpleAppointmentImplCopyWithImpl<_$SimpleAppointmentImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SimpleAppointmentImplToJson(this);
+  }
+}
+
+abstract class _SimpleAppointment implements SimpleAppointment {
+  const factory _SimpleAppointment({
+    required final String id,
+    @JsonKey(name: 'clinic_patient_id') required final String clinicPatientId,
+    @JsonKey(name: 'clinic_id') required final String clinicId,
+    @JsonKey(name: 'doctor_id') required final String doctorId,
+    @JsonKey(name: 'booking_number') required final String bookingNumber,
+    @JsonKey(name: 'token_number') required final int tokenNumber,
+    @JsonKey(name: 'appointment_date') required final String appointmentDate,
+    @JsonKey(name: 'appointment_time') required final String appointmentTime,
+    @JsonKey(name: 'duration_minutes') final int? durationMinutes,
+    @JsonKey(name: 'consultation_type') required final String consultationType,
+    final String? reason,
+    required final String status,
+    @JsonKey(name: 'fee_amount') final double? feeAmount,
+    @JsonKey(name: 'payment_status') final String? paymentStatus,
+    @JsonKey(name: 'payment_mode') final String? paymentMode,
+    @JsonKey(name: 'created_at') final String? createdAt,
+    @JsonKey(name: 'updated_at') final String? updatedAt,
+  }) = _$SimpleAppointmentImpl;
+
+  factory _SimpleAppointment.fromJson(Map<String, dynamic> json) =
+      _$SimpleAppointmentImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  @JsonKey(name: 'clinic_patient_id')
+  String get clinicPatientId;
+  @override
+  @JsonKey(name: 'clinic_id')
+  String get clinicId;
+  @override
+  @JsonKey(name: 'doctor_id')
+  String get doctorId;
+  @override
+  @JsonKey(name: 'booking_number')
+  String get bookingNumber;
+  @override
+  @JsonKey(name: 'token_number')
+  int get tokenNumber;
+  @override
+  @JsonKey(name: 'appointment_date')
+  String get appointmentDate;
+  @override
+  @JsonKey(name: 'appointment_time')
+  String get appointmentTime;
+  @override
+  @JsonKey(name: 'duration_minutes')
+  int? get durationMinutes;
+  @override
+  @JsonKey(name: 'consultation_type')
+  String get consultationType;
+  @override
+  String? get reason;
+  @override
+  String get status;
+  @override
+  @JsonKey(name: 'fee_amount')
+  double? get feeAmount;
+  @override
+  @JsonKey(name: 'payment_status')
+  String? get paymentStatus;
+  @override
+  @JsonKey(name: 'payment_mode')
+  String? get paymentMode;
+  @override
+  @JsonKey(name: 'created_at')
+  String? get createdAt;
+  @override
+  @JsonKey(name: 'updated_at')
+  String? get updatedAt;
+
+  /// Create a copy of SimpleAppointment
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SimpleAppointmentImplCopyWith<_$SimpleAppointmentImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+SimpleAppointmentResponse _$SimpleAppointmentResponseFromJson(
+  Map<String, dynamic> json,
+) {
+  return _SimpleAppointmentResponse.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SimpleAppointmentResponse {
+  String get message => throw _privateConstructorUsedError;
+  SimpleAppointment get appointment =>
+      throw _privateConstructorUsedError; // ✅ NEW: Follow-up information
+  FollowUpInfo? get followUp => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clinic_patient_update')
+  ClinicPatientUpdate? get clinicPatientUpdate =>
+      throw _privateConstructorUsedError; // ✅ NEW: Appointment type flags
+  @JsonKey(name: 'is_regular_appointment')
+  bool? get isRegularAppointment => throw _privateConstructorUsedError;
+  @JsonKey(name: 'followup_granted')
+  bool? get followupGranted => throw _privateConstructorUsedError;
+  @JsonKey(name: 'followup_message')
+  String? get followupMessage => throw _privateConstructorUsedError;
+  @JsonKey(name: 'followup_valid_until')
+  String? get followupValidUntil => throw _privateConstructorUsedError; // ✅ NEW: Free follow-up flags
+  @JsonKey(name: 'is_free_followup')
+  bool? get isFreeFollowup => throw _privateConstructorUsedError;
+  @JsonKey(name: 'followup_type')
+  String? get followupType => throw _privateConstructorUsedError;
+  @JsonKey(name: 'follow_up_info')
+  FollowUpInfo? get followUpInfo => throw _privateConstructorUsedError; // ✅ NEW: Renewal options
+  RenewalOptions? get renewalOptions => throw _privateConstructorUsedError;
+
+  /// Serializes this SimpleAppointmentResponse to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SimpleAppointmentResponseCopyWith<SimpleAppointmentResponse> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SimpleAppointmentResponseCopyWith<$Res> {
+  factory $SimpleAppointmentResponseCopyWith(
+    SimpleAppointmentResponse value,
+    $Res Function(SimpleAppointmentResponse) then,
+  ) = _$SimpleAppointmentResponseCopyWithImpl<$Res, SimpleAppointmentResponse>;
+  @useResult
+  $Res call({
+    String message,
+    SimpleAppointment appointment,
+    FollowUpInfo? followUp,
+    @JsonKey(name: 'clinic_patient_update')
+    ClinicPatientUpdate? clinicPatientUpdate,
+    @JsonKey(name: 'is_regular_appointment') bool? isRegularAppointment,
+    @JsonKey(name: 'followup_granted') bool? followupGranted,
+    @JsonKey(name: 'followup_message') String? followupMessage,
+    @JsonKey(name: 'followup_valid_until') String? followupValidUntil,
+    @JsonKey(name: 'is_free_followup') bool? isFreeFollowup,
+    @JsonKey(name: 'followup_type') String? followupType,
+    @JsonKey(name: 'follow_up_info') FollowUpInfo? followUpInfo,
+    RenewalOptions? renewalOptions,
+  });
+
+  $SimpleAppointmentCopyWith<$Res> get appointment;
+  $FollowUpInfoCopyWith<$Res>? get followUp;
+  $ClinicPatientUpdateCopyWith<$Res>? get clinicPatientUpdate;
+  $FollowUpInfoCopyWith<$Res>? get followUpInfo;
+  $RenewalOptionsCopyWith<$Res>? get renewalOptions;
+}
+
+/// @nodoc
+class _$SimpleAppointmentResponseCopyWithImpl<
+  $Res,
+  $Val extends SimpleAppointmentResponse
+>
+    implements $SimpleAppointmentResponseCopyWith<$Res> {
+  _$SimpleAppointmentResponseCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+    Object? appointment = null,
+    Object? followUp = freezed,
+    Object? clinicPatientUpdate = freezed,
+    Object? isRegularAppointment = freezed,
+    Object? followupGranted = freezed,
+    Object? followupMessage = freezed,
+    Object? followupValidUntil = freezed,
+    Object? isFreeFollowup = freezed,
+    Object? followupType = freezed,
+    Object? followUpInfo = freezed,
+    Object? renewalOptions = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            message: null == message
+                ? _value.message
+                : message // ignore: cast_nullable_to_non_nullable
+                      as String,
+            appointment: null == appointment
+                ? _value.appointment
+                : appointment // ignore: cast_nullable_to_non_nullable
+                      as SimpleAppointment,
+            followUp: freezed == followUp
+                ? _value.followUp
+                : followUp // ignore: cast_nullable_to_non_nullable
+                      as FollowUpInfo?,
+            clinicPatientUpdate: freezed == clinicPatientUpdate
+                ? _value.clinicPatientUpdate
+                : clinicPatientUpdate // ignore: cast_nullable_to_non_nullable
+                      as ClinicPatientUpdate?,
+            isRegularAppointment: freezed == isRegularAppointment
+                ? _value.isRegularAppointment
+                : isRegularAppointment // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            followupGranted: freezed == followupGranted
+                ? _value.followupGranted
+                : followupGranted // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            followupMessage: freezed == followupMessage
+                ? _value.followupMessage
+                : followupMessage // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            followupValidUntil: freezed == followupValidUntil
+                ? _value.followupValidUntil
+                : followupValidUntil // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isFreeFollowup: freezed == isFreeFollowup
+                ? _value.isFreeFollowup
+                : isFreeFollowup // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            followupType: freezed == followupType
+                ? _value.followupType
+                : followupType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            followUpInfo: freezed == followUpInfo
+                ? _value.followUpInfo
+                : followUpInfo // ignore: cast_nullable_to_non_nullable
+                      as FollowUpInfo?,
+            renewalOptions: freezed == renewalOptions
+                ? _value.renewalOptions
+                : renewalOptions // ignore: cast_nullable_to_non_nullable
+                      as RenewalOptions?,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SimpleAppointmentCopyWith<$Res> get appointment {
+    return $SimpleAppointmentCopyWith<$Res>(_value.appointment, (value) {
+      return _then(_value.copyWith(appointment: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FollowUpInfoCopyWith<$Res>? get followUp {
+    if (_value.followUp == null) {
+      return null;
+    }
+
+    return $FollowUpInfoCopyWith<$Res>(_value.followUp!, (value) {
+      return _then(_value.copyWith(followUp: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ClinicPatientUpdateCopyWith<$Res>? get clinicPatientUpdate {
+    if (_value.clinicPatientUpdate == null) {
+      return null;
+    }
+
+    return $ClinicPatientUpdateCopyWith<$Res>(_value.clinicPatientUpdate!, (
+      value,
+    ) {
+      return _then(_value.copyWith(clinicPatientUpdate: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FollowUpInfoCopyWith<$Res>? get followUpInfo {
+    if (_value.followUpInfo == null) {
+      return null;
+    }
+
+    return $FollowUpInfoCopyWith<$Res>(_value.followUpInfo!, (value) {
+      return _then(_value.copyWith(followUpInfo: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RenewalOptionsCopyWith<$Res>? get renewalOptions {
+    if (_value.renewalOptions == null) {
+      return null;
+    }
+
+    return $RenewalOptionsCopyWith<$Res>(_value.renewalOptions!, (value) {
+      return _then(_value.copyWith(renewalOptions: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$SimpleAppointmentResponseImplCopyWith<$Res>
+    implements $SimpleAppointmentResponseCopyWith<$Res> {
+  factory _$$SimpleAppointmentResponseImplCopyWith(
+    _$SimpleAppointmentResponseImpl value,
+    $Res Function(_$SimpleAppointmentResponseImpl) then,
+  ) = __$$SimpleAppointmentResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String message,
+    SimpleAppointment appointment,
+    FollowUpInfo? followUp,
+    @JsonKey(name: 'clinic_patient_update')
+    ClinicPatientUpdate? clinicPatientUpdate,
+    @JsonKey(name: 'is_regular_appointment') bool? isRegularAppointment,
+    @JsonKey(name: 'followup_granted') bool? followupGranted,
+    @JsonKey(name: 'followup_message') String? followupMessage,
+    @JsonKey(name: 'followup_valid_until') String? followupValidUntil,
+    @JsonKey(name: 'is_free_followup') bool? isFreeFollowup,
+    @JsonKey(name: 'followup_type') String? followupType,
+    @JsonKey(name: 'follow_up_info') FollowUpInfo? followUpInfo,
+    RenewalOptions? renewalOptions,
+  });
+
+  @override
+  $SimpleAppointmentCopyWith<$Res> get appointment;
+  @override
+  $FollowUpInfoCopyWith<$Res>? get followUp;
+  @override
+  $ClinicPatientUpdateCopyWith<$Res>? get clinicPatientUpdate;
+  @override
+  $FollowUpInfoCopyWith<$Res>? get followUpInfo;
+  @override
+  $RenewalOptionsCopyWith<$Res>? get renewalOptions;
+}
+
+/// @nodoc
+class __$$SimpleAppointmentResponseImplCopyWithImpl<$Res>
+    extends
+        _$SimpleAppointmentResponseCopyWithImpl<
+          $Res,
+          _$SimpleAppointmentResponseImpl
+        >
+    implements _$$SimpleAppointmentResponseImplCopyWith<$Res> {
+  __$$SimpleAppointmentResponseImplCopyWithImpl(
+    _$SimpleAppointmentResponseImpl _value,
+    $Res Function(_$SimpleAppointmentResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+    Object? appointment = null,
+    Object? followUp = freezed,
+    Object? clinicPatientUpdate = freezed,
+    Object? isRegularAppointment = freezed,
+    Object? followupGranted = freezed,
+    Object? followupMessage = freezed,
+    Object? followupValidUntil = freezed,
+    Object? isFreeFollowup = freezed,
+    Object? followupType = freezed,
+    Object? followUpInfo = freezed,
+    Object? renewalOptions = freezed,
+  }) {
+    return _then(
+      _$SimpleAppointmentResponseImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+        appointment: null == appointment
+            ? _value.appointment
+            : appointment // ignore: cast_nullable_to_non_nullable
+                  as SimpleAppointment,
+        followUp: freezed == followUp
+            ? _value.followUp
+            : followUp // ignore: cast_nullable_to_non_nullable
+                  as FollowUpInfo?,
+        clinicPatientUpdate: freezed == clinicPatientUpdate
+            ? _value.clinicPatientUpdate
+            : clinicPatientUpdate // ignore: cast_nullable_to_non_nullable
+                  as ClinicPatientUpdate?,
+        isRegularAppointment: freezed == isRegularAppointment
+            ? _value.isRegularAppointment
+            : isRegularAppointment // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        followupGranted: freezed == followupGranted
+            ? _value.followupGranted
+            : followupGranted // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        followupMessage: freezed == followupMessage
+            ? _value.followupMessage
+            : followupMessage // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        followupValidUntil: freezed == followupValidUntil
+            ? _value.followupValidUntil
+            : followupValidUntil // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isFreeFollowup: freezed == isFreeFollowup
+            ? _value.isFreeFollowup
+            : isFreeFollowup // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        followupType: freezed == followupType
+            ? _value.followupType
+            : followupType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        followUpInfo: freezed == followUpInfo
+            ? _value.followUpInfo
+            : followUpInfo // ignore: cast_nullable_to_non_nullable
+                  as FollowUpInfo?,
+        renewalOptions: freezed == renewalOptions
+            ? _value.renewalOptions
+            : renewalOptions // ignore: cast_nullable_to_non_nullable
+                  as RenewalOptions?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SimpleAppointmentResponseImpl implements _SimpleAppointmentResponse {
+  const _$SimpleAppointmentResponseImpl({
+    required this.message,
+    required this.appointment,
+    this.followUp,
+    @JsonKey(name: 'clinic_patient_update') this.clinicPatientUpdate,
+    @JsonKey(name: 'is_regular_appointment') this.isRegularAppointment,
+    @JsonKey(name: 'followup_granted') this.followupGranted,
+    @JsonKey(name: 'followup_message') this.followupMessage,
+    @JsonKey(name: 'followup_valid_until') this.followupValidUntil,
+    @JsonKey(name: 'is_free_followup') this.isFreeFollowup,
+    @JsonKey(name: 'followup_type') this.followupType,
+    @JsonKey(name: 'follow_up_info') this.followUpInfo,
+    this.renewalOptions,
+  });
+
+  factory _$SimpleAppointmentResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SimpleAppointmentResponseImplFromJson(json);
+
+  @override
+  final String message;
+  @override
+  final SimpleAppointment appointment;
+  // ✅ NEW: Follow-up information
+  @override
+  final FollowUpInfo? followUp;
+  @override
+  @JsonKey(name: 'clinic_patient_update')
+  final ClinicPatientUpdate? clinicPatientUpdate;
+  // ✅ NEW: Appointment type flags
+  @override
+  @JsonKey(name: 'is_regular_appointment')
+  final bool? isRegularAppointment;
+  @override
+  @JsonKey(name: 'followup_granted')
+  final bool? followupGranted;
+  @override
+  @JsonKey(name: 'followup_message')
+  final String? followupMessage;
+  @override
+  @JsonKey(name: 'followup_valid_until')
+  final String? followupValidUntil;
+  // ✅ NEW: Free follow-up flags
+  @override
+  @JsonKey(name: 'is_free_followup')
+  final bool? isFreeFollowup;
+  @override
+  @JsonKey(name: 'followup_type')
+  final String? followupType;
+  @override
+  @JsonKey(name: 'follow_up_info')
+  final FollowUpInfo? followUpInfo;
+  // ✅ NEW: Renewal options
+  @override
+  final RenewalOptions? renewalOptions;
+
+  @override
+  String toString() {
+    return 'SimpleAppointmentResponse(message: $message, appointment: $appointment, followUp: $followUp, clinicPatientUpdate: $clinicPatientUpdate, isRegularAppointment: $isRegularAppointment, followupGranted: $followupGranted, followupMessage: $followupMessage, followupValidUntil: $followupValidUntil, isFreeFollowup: $isFreeFollowup, followupType: $followupType, followUpInfo: $followUpInfo, renewalOptions: $renewalOptions)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SimpleAppointmentResponseImpl &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.appointment, appointment) ||
+                other.appointment == appointment) &&
+            (identical(other.followUp, followUp) ||
+                other.followUp == followUp) &&
+            (identical(other.clinicPatientUpdate, clinicPatientUpdate) ||
+                other.clinicPatientUpdate == clinicPatientUpdate) &&
+            (identical(other.isRegularAppointment, isRegularAppointment) ||
+                other.isRegularAppointment == isRegularAppointment) &&
+            (identical(other.followupGranted, followupGranted) ||
+                other.followupGranted == followupGranted) &&
+            (identical(other.followupMessage, followupMessage) ||
+                other.followupMessage == followupMessage) &&
+            (identical(other.followupValidUntil, followupValidUntil) ||
+                other.followupValidUntil == followupValidUntil) &&
+            (identical(other.isFreeFollowup, isFreeFollowup) ||
+                other.isFreeFollowup == isFreeFollowup) &&
+            (identical(other.followupType, followupType) ||
+                other.followupType == followupType) &&
+            (identical(other.followUpInfo, followUpInfo) ||
+                other.followUpInfo == followUpInfo) &&
+            (identical(other.renewalOptions, renewalOptions) ||
+                other.renewalOptions == renewalOptions));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    message,
+    appointment,
+    followUp,
+    clinicPatientUpdate,
+    isRegularAppointment,
+    followupGranted,
+    followupMessage,
+    followupValidUntil,
+    isFreeFollowup,
+    followupType,
+    followUpInfo,
+    renewalOptions,
+  );
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SimpleAppointmentResponseImplCopyWith<_$SimpleAppointmentResponseImpl>
+  get copyWith =>
+      __$$SimpleAppointmentResponseImplCopyWithImpl<
+        _$SimpleAppointmentResponseImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SimpleAppointmentResponseImplToJson(this);
+  }
+}
+
+abstract class _SimpleAppointmentResponse implements SimpleAppointmentResponse {
+  const factory _SimpleAppointmentResponse({
+    required final String message,
+    required final SimpleAppointment appointment,
+    final FollowUpInfo? followUp,
+    @JsonKey(name: 'clinic_patient_update')
+    final ClinicPatientUpdate? clinicPatientUpdate,
+    @JsonKey(name: 'is_regular_appointment') final bool? isRegularAppointment,
+    @JsonKey(name: 'followup_granted') final bool? followupGranted,
+    @JsonKey(name: 'followup_message') final String? followupMessage,
+    @JsonKey(name: 'followup_valid_until') final String? followupValidUntil,
+    @JsonKey(name: 'is_free_followup') final bool? isFreeFollowup,
+    @JsonKey(name: 'followup_type') final String? followupType,
+    @JsonKey(name: 'follow_up_info') final FollowUpInfo? followUpInfo,
+    final RenewalOptions? renewalOptions,
+  }) = _$SimpleAppointmentResponseImpl;
+
+  factory _SimpleAppointmentResponse.fromJson(Map<String, dynamic> json) =
+      _$SimpleAppointmentResponseImpl.fromJson;
+
+  @override
+  String get message;
+  @override
+  SimpleAppointment get appointment; // ✅ NEW: Follow-up information
+  @override
+  FollowUpInfo? get followUp;
+  @override
+  @JsonKey(name: 'clinic_patient_update')
+  ClinicPatientUpdate? get clinicPatientUpdate; // ✅ NEW: Appointment type flags
+  @override
+  @JsonKey(name: 'is_regular_appointment')
+  bool? get isRegularAppointment;
+  @override
+  @JsonKey(name: 'followup_granted')
+  bool? get followupGranted;
+  @override
+  @JsonKey(name: 'followup_message')
+  String? get followupMessage;
+  @override
+  @JsonKey(name: 'followup_valid_until')
+  String? get followupValidUntil; // ✅ NEW: Free follow-up flags
+  @override
+  @JsonKey(name: 'is_free_followup')
+  bool? get isFreeFollowup;
+  @override
+  @JsonKey(name: 'followup_type')
+  String? get followupType;
+  @override
+  @JsonKey(name: 'follow_up_info')
+  FollowUpInfo? get followUpInfo; // ✅ NEW: Renewal options
+  @override
+  RenewalOptions? get renewalOptions;
+
+  /// Create a copy of SimpleAppointmentResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SimpleAppointmentResponseImplCopyWith<_$SimpleAppointmentResponseImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+FollowUpInfo _$FollowUpInfoFromJson(Map<String, dynamic> json) {
+  return _FollowUpInfo.fromJson(json);
+}
+
+/// @nodoc
+mixin _$FollowUpInfo {
+  String? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clinic_patient_id')
+  String? get clinicPatientId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clinic_id')
+  String? get clinicId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'patient_name')
+  String? get patientName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'doctor_id')
+  String? get doctorId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'doctor_name')
+  String? get doctorName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'department_id')
+  String? get departmentId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'department_name')
+  String? get departmentName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'source_appointment_id')
+  String? get sourceAppointmentId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'follow_up_status')
+  String? get followUpStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_free')
+  bool? get isFree => throw _privateConstructorUsedError;
+  @JsonKey(name: 'valid_from')
+  String? get validFrom => throw _privateConstructorUsedError;
+  @JsonKey(name: 'valid_until')
+  String? get validUntil => throw _privateConstructorUsedError;
+  @JsonKey(name: 'days_remaining')
+  int? get daysRemaining => throw _privateConstructorUsedError;
+  @JsonKey(name: 'used_appointment_id')
+  String? get usedAppointmentId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'used_at')
+  String? get usedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'renewed_at')
+  String? get renewedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'renewed_by_appointment_id')
+  String? get renewedByAppointmentId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointment_slot_type')
+  String? get appointmentSlotType => throw _privateConstructorUsedError;
+  @JsonKey(name: 'follow_up_type')
+  String? get followUpType => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
+  String? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
+  String? get updatedAt => throw _privateConstructorUsedError;
+
+  /// Serializes this FollowUpInfo to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of FollowUpInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $FollowUpInfoCopyWith<FollowUpInfo> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $FollowUpInfoCopyWith<$Res> {
+  factory $FollowUpInfoCopyWith(
+    FollowUpInfo value,
+    $Res Function(FollowUpInfo) then,
+  ) = _$FollowUpInfoCopyWithImpl<$Res, FollowUpInfo>;
+  @useResult
+  $Res call({
+    String? id,
+    @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
+    @JsonKey(name: 'clinic_id') String? clinicId,
+    @JsonKey(name: 'patient_name') String? patientName,
+    @JsonKey(name: 'doctor_id') String? doctorId,
+    @JsonKey(name: 'doctor_name') String? doctorName,
+    @JsonKey(name: 'department_id') String? departmentId,
+    @JsonKey(name: 'department_name') String? departmentName,
+    @JsonKey(name: 'source_appointment_id') String? sourceAppointmentId,
+    @JsonKey(name: 'follow_up_status') String? followUpStatus,
+    @JsonKey(name: 'is_free') bool? isFree,
+    @JsonKey(name: 'valid_from') String? validFrom,
+    @JsonKey(name: 'valid_until') String? validUntil,
+    @JsonKey(name: 'days_remaining') int? daysRemaining,
+    @JsonKey(name: 'used_appointment_id') String? usedAppointmentId,
+    @JsonKey(name: 'used_at') String? usedAt,
+    @JsonKey(name: 'renewed_at') String? renewedAt,
+    @JsonKey(name: 'renewed_by_appointment_id') String? renewedByAppointmentId,
+    @JsonKey(name: 'appointment_slot_type') String? appointmentSlotType,
+    @JsonKey(name: 'follow_up_type') String? followUpType,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  });
+}
+
+/// @nodoc
+class _$FollowUpInfoCopyWithImpl<$Res, $Val extends FollowUpInfo>
+    implements $FollowUpInfoCopyWith<$Res> {
+  _$FollowUpInfoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of FollowUpInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? clinicPatientId = freezed,
+    Object? clinicId = freezed,
+    Object? patientName = freezed,
+    Object? doctorId = freezed,
+    Object? doctorName = freezed,
+    Object? departmentId = freezed,
+    Object? departmentName = freezed,
+    Object? sourceAppointmentId = freezed,
+    Object? followUpStatus = freezed,
+    Object? isFree = freezed,
+    Object? validFrom = freezed,
+    Object? validUntil = freezed,
+    Object? daysRemaining = freezed,
+    Object? usedAppointmentId = freezed,
+    Object? usedAt = freezed,
+    Object? renewedAt = freezed,
+    Object? renewedByAppointmentId = freezed,
+    Object? appointmentSlotType = freezed,
+    Object? followUpType = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            clinicPatientId: freezed == clinicPatientId
+                ? _value.clinicPatientId
+                : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            clinicId: freezed == clinicId
+                ? _value.clinicId
+                : clinicId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            patientName: freezed == patientName
+                ? _value.patientName
+                : patientName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            doctorId: freezed == doctorId
+                ? _value.doctorId
+                : doctorId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            doctorName: freezed == doctorName
+                ? _value.doctorName
+                : doctorName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            departmentId: freezed == departmentId
+                ? _value.departmentId
+                : departmentId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            departmentName: freezed == departmentName
+                ? _value.departmentName
+                : departmentName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            sourceAppointmentId: freezed == sourceAppointmentId
+                ? _value.sourceAppointmentId
+                : sourceAppointmentId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            followUpStatus: freezed == followUpStatus
+                ? _value.followUpStatus
+                : followUpStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isFree: freezed == isFree
+                ? _value.isFree
+                : isFree // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            validFrom: freezed == validFrom
+                ? _value.validFrom
+                : validFrom // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            validUntil: freezed == validUntil
+                ? _value.validUntil
+                : validUntil // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            daysRemaining: freezed == daysRemaining
+                ? _value.daysRemaining
+                : daysRemaining // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            usedAppointmentId: freezed == usedAppointmentId
+                ? _value.usedAppointmentId
+                : usedAppointmentId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            usedAt: freezed == usedAt
+                ? _value.usedAt
+                : usedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            renewedAt: freezed == renewedAt
+                ? _value.renewedAt
+                : renewedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            renewedByAppointmentId: freezed == renewedByAppointmentId
+                ? _value.renewedByAppointmentId
+                : renewedByAppointmentId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            appointmentSlotType: freezed == appointmentSlotType
+                ? _value.appointmentSlotType
+                : appointmentSlotType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            followUpType: freezed == followUpType
+                ? _value.followUpType
+                : followUpType // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$FollowUpInfoImplCopyWith<$Res>
+    implements $FollowUpInfoCopyWith<$Res> {
+  factory _$$FollowUpInfoImplCopyWith(
+    _$FollowUpInfoImpl value,
+    $Res Function(_$FollowUpInfoImpl) then,
+  ) = __$$FollowUpInfoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String? id,
+    @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
+    @JsonKey(name: 'clinic_id') String? clinicId,
+    @JsonKey(name: 'patient_name') String? patientName,
+    @JsonKey(name: 'doctor_id') String? doctorId,
+    @JsonKey(name: 'doctor_name') String? doctorName,
+    @JsonKey(name: 'department_id') String? departmentId,
+    @JsonKey(name: 'department_name') String? departmentName,
+    @JsonKey(name: 'source_appointment_id') String? sourceAppointmentId,
+    @JsonKey(name: 'follow_up_status') String? followUpStatus,
+    @JsonKey(name: 'is_free') bool? isFree,
+    @JsonKey(name: 'valid_from') String? validFrom,
+    @JsonKey(name: 'valid_until') String? validUntil,
+    @JsonKey(name: 'days_remaining') int? daysRemaining,
+    @JsonKey(name: 'used_appointment_id') String? usedAppointmentId,
+    @JsonKey(name: 'used_at') String? usedAt,
+    @JsonKey(name: 'renewed_at') String? renewedAt,
+    @JsonKey(name: 'renewed_by_appointment_id') String? renewedByAppointmentId,
+    @JsonKey(name: 'appointment_slot_type') String? appointmentSlotType,
+    @JsonKey(name: 'follow_up_type') String? followUpType,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+  });
+}
+
+/// @nodoc
+class __$$FollowUpInfoImplCopyWithImpl<$Res>
+    extends _$FollowUpInfoCopyWithImpl<$Res, _$FollowUpInfoImpl>
+    implements _$$FollowUpInfoImplCopyWith<$Res> {
+  __$$FollowUpInfoImplCopyWithImpl(
+    _$FollowUpInfoImpl _value,
+    $Res Function(_$FollowUpInfoImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of FollowUpInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? clinicPatientId = freezed,
+    Object? clinicId = freezed,
+    Object? patientName = freezed,
+    Object? doctorId = freezed,
+    Object? doctorName = freezed,
+    Object? departmentId = freezed,
+    Object? departmentName = freezed,
+    Object? sourceAppointmentId = freezed,
+    Object? followUpStatus = freezed,
+    Object? isFree = freezed,
+    Object? validFrom = freezed,
+    Object? validUntil = freezed,
+    Object? daysRemaining = freezed,
+    Object? usedAppointmentId = freezed,
+    Object? usedAt = freezed,
+    Object? renewedAt = freezed,
+    Object? renewedByAppointmentId = freezed,
+    Object? appointmentSlotType = freezed,
+    Object? followUpType = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(
+      _$FollowUpInfoImpl(
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        clinicPatientId: freezed == clinicPatientId
+            ? _value.clinicPatientId
+            : clinicPatientId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        clinicId: freezed == clinicId
+            ? _value.clinicId
+            : clinicId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        patientName: freezed == patientName
+            ? _value.patientName
+            : patientName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        doctorId: freezed == doctorId
+            ? _value.doctorId
+            : doctorId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        doctorName: freezed == doctorName
+            ? _value.doctorName
+            : doctorName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        departmentId: freezed == departmentId
+            ? _value.departmentId
+            : departmentId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        departmentName: freezed == departmentName
+            ? _value.departmentName
+            : departmentName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        sourceAppointmentId: freezed == sourceAppointmentId
+            ? _value.sourceAppointmentId
+            : sourceAppointmentId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        followUpStatus: freezed == followUpStatus
+            ? _value.followUpStatus
+            : followUpStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isFree: freezed == isFree
+            ? _value.isFree
+            : isFree // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        validFrom: freezed == validFrom
+            ? _value.validFrom
+            : validFrom // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        validUntil: freezed == validUntil
+            ? _value.validUntil
+            : validUntil // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        daysRemaining: freezed == daysRemaining
+            ? _value.daysRemaining
+            : daysRemaining // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        usedAppointmentId: freezed == usedAppointmentId
+            ? _value.usedAppointmentId
+            : usedAppointmentId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        usedAt: freezed == usedAt
+            ? _value.usedAt
+            : usedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        renewedAt: freezed == renewedAt
+            ? _value.renewedAt
+            : renewedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        renewedByAppointmentId: freezed == renewedByAppointmentId
+            ? _value.renewedByAppointmentId
+            : renewedByAppointmentId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        appointmentSlotType: freezed == appointmentSlotType
+            ? _value.appointmentSlotType
+            : appointmentSlotType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        followUpType: freezed == followUpType
+            ? _value.followUpType
+            : followUpType // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$FollowUpInfoImpl implements _FollowUpInfo {
+  const _$FollowUpInfoImpl({
+    this.id,
+    @JsonKey(name: 'clinic_patient_id') this.clinicPatientId,
+    @JsonKey(name: 'clinic_id') this.clinicId,
+    @JsonKey(name: 'patient_name') this.patientName,
+    @JsonKey(name: 'doctor_id') this.doctorId,
+    @JsonKey(name: 'doctor_name') this.doctorName,
+    @JsonKey(name: 'department_id') this.departmentId,
+    @JsonKey(name: 'department_name') this.departmentName,
+    @JsonKey(name: 'source_appointment_id') this.sourceAppointmentId,
+    @JsonKey(name: 'follow_up_status') this.followUpStatus,
+    @JsonKey(name: 'is_free') this.isFree,
+    @JsonKey(name: 'valid_from') this.validFrom,
+    @JsonKey(name: 'valid_until') this.validUntil,
+    @JsonKey(name: 'days_remaining') this.daysRemaining,
+    @JsonKey(name: 'used_appointment_id') this.usedAppointmentId,
+    @JsonKey(name: 'used_at') this.usedAt,
+    @JsonKey(name: 'renewed_at') this.renewedAt,
+    @JsonKey(name: 'renewed_by_appointment_id') this.renewedByAppointmentId,
+    @JsonKey(name: 'appointment_slot_type') this.appointmentSlotType,
+    @JsonKey(name: 'follow_up_type') this.followUpType,
+    @JsonKey(name: 'created_at') this.createdAt,
+    @JsonKey(name: 'updated_at') this.updatedAt,
+  });
+
+  factory _$FollowUpInfoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FollowUpInfoImplFromJson(json);
+
+  @override
+  final String? id;
+  @override
+  @JsonKey(name: 'clinic_patient_id')
+  final String? clinicPatientId;
+  @override
+  @JsonKey(name: 'clinic_id')
+  final String? clinicId;
+  @override
+  @JsonKey(name: 'patient_name')
+  final String? patientName;
+  @override
+  @JsonKey(name: 'doctor_id')
+  final String? doctorId;
+  @override
+  @JsonKey(name: 'doctor_name')
+  final String? doctorName;
+  @override
+  @JsonKey(name: 'department_id')
+  final String? departmentId;
+  @override
+  @JsonKey(name: 'department_name')
+  final String? departmentName;
+  @override
+  @JsonKey(name: 'source_appointment_id')
+  final String? sourceAppointmentId;
+  @override
+  @JsonKey(name: 'follow_up_status')
+  final String? followUpStatus;
+  @override
+  @JsonKey(name: 'is_free')
+  final bool? isFree;
+  @override
+  @JsonKey(name: 'valid_from')
+  final String? validFrom;
+  @override
+  @JsonKey(name: 'valid_until')
+  final String? validUntil;
+  @override
+  @JsonKey(name: 'days_remaining')
+  final int? daysRemaining;
+  @override
+  @JsonKey(name: 'used_appointment_id')
+  final String? usedAppointmentId;
+  @override
+  @JsonKey(name: 'used_at')
+  final String? usedAt;
+  @override
+  @JsonKey(name: 'renewed_at')
+  final String? renewedAt;
+  @override
+  @JsonKey(name: 'renewed_by_appointment_id')
+  final String? renewedByAppointmentId;
+  @override
+  @JsonKey(name: 'appointment_slot_type')
+  final String? appointmentSlotType;
+  @override
+  @JsonKey(name: 'follow_up_type')
+  final String? followUpType;
+  @override
+  @JsonKey(name: 'created_at')
+  final String? createdAt;
+  @override
+  @JsonKey(name: 'updated_at')
+  final String? updatedAt;
+
+  @override
+  String toString() {
+    return 'FollowUpInfo(id: $id, clinicPatientId: $clinicPatientId, clinicId: $clinicId, patientName: $patientName, doctorId: $doctorId, doctorName: $doctorName, departmentId: $departmentId, departmentName: $departmentName, sourceAppointmentId: $sourceAppointmentId, followUpStatus: $followUpStatus, isFree: $isFree, validFrom: $validFrom, validUntil: $validUntil, daysRemaining: $daysRemaining, usedAppointmentId: $usedAppointmentId, usedAt: $usedAt, renewedAt: $renewedAt, renewedByAppointmentId: $renewedByAppointmentId, appointmentSlotType: $appointmentSlotType, followUpType: $followUpType, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FollowUpInfoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.clinicPatientId, clinicPatientId) ||
+                other.clinicPatientId == clinicPatientId) &&
+            (identical(other.clinicId, clinicId) ||
+                other.clinicId == clinicId) &&
+            (identical(other.patientName, patientName) ||
+                other.patientName == patientName) &&
+            (identical(other.doctorId, doctorId) ||
+                other.doctorId == doctorId) &&
+            (identical(other.doctorName, doctorName) ||
+                other.doctorName == doctorName) &&
+            (identical(other.departmentId, departmentId) ||
+                other.departmentId == departmentId) &&
+            (identical(other.departmentName, departmentName) ||
+                other.departmentName == departmentName) &&
+            (identical(other.sourceAppointmentId, sourceAppointmentId) ||
+                other.sourceAppointmentId == sourceAppointmentId) &&
+            (identical(other.followUpStatus, followUpStatus) ||
+                other.followUpStatus == followUpStatus) &&
+            (identical(other.isFree, isFree) || other.isFree == isFree) &&
+            (identical(other.validFrom, validFrom) ||
+                other.validFrom == validFrom) &&
+            (identical(other.validUntil, validUntil) ||
+                other.validUntil == validUntil) &&
+            (identical(other.daysRemaining, daysRemaining) ||
+                other.daysRemaining == daysRemaining) &&
+            (identical(other.usedAppointmentId, usedAppointmentId) ||
+                other.usedAppointmentId == usedAppointmentId) &&
+            (identical(other.usedAt, usedAt) || other.usedAt == usedAt) &&
+            (identical(other.renewedAt, renewedAt) ||
+                other.renewedAt == renewedAt) &&
+            (identical(other.renewedByAppointmentId, renewedByAppointmentId) ||
+                other.renewedByAppointmentId == renewedByAppointmentId) &&
+            (identical(other.appointmentSlotType, appointmentSlotType) ||
+                other.appointmentSlotType == appointmentSlotType) &&
+            (identical(other.followUpType, followUpType) ||
+                other.followUpType == followUpType) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hashAll([
+    runtimeType,
+    id,
+    clinicPatientId,
+    clinicId,
+    patientName,
+    doctorId,
+    doctorName,
+    departmentId,
+    departmentName,
+    sourceAppointmentId,
+    followUpStatus,
+    isFree,
+    validFrom,
+    validUntil,
+    daysRemaining,
+    usedAppointmentId,
+    usedAt,
+    renewedAt,
+    renewedByAppointmentId,
+    appointmentSlotType,
+    followUpType,
+    createdAt,
+    updatedAt,
+  ]);
+
+  /// Create a copy of FollowUpInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FollowUpInfoImplCopyWith<_$FollowUpInfoImpl> get copyWith =>
+      __$$FollowUpInfoImplCopyWithImpl<_$FollowUpInfoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$FollowUpInfoImplToJson(this);
+  }
+}
+
+abstract class _FollowUpInfo implements FollowUpInfo {
+  const factory _FollowUpInfo({
+    final String? id,
+    @JsonKey(name: 'clinic_patient_id') final String? clinicPatientId,
+    @JsonKey(name: 'clinic_id') final String? clinicId,
+    @JsonKey(name: 'patient_name') final String? patientName,
+    @JsonKey(name: 'doctor_id') final String? doctorId,
+    @JsonKey(name: 'doctor_name') final String? doctorName,
+    @JsonKey(name: 'department_id') final String? departmentId,
+    @JsonKey(name: 'department_name') final String? departmentName,
+    @JsonKey(name: 'source_appointment_id') final String? sourceAppointmentId,
+    @JsonKey(name: 'follow_up_status') final String? followUpStatus,
+    @JsonKey(name: 'is_free') final bool? isFree,
+    @JsonKey(name: 'valid_from') final String? validFrom,
+    @JsonKey(name: 'valid_until') final String? validUntil,
+    @JsonKey(name: 'days_remaining') final int? daysRemaining,
+    @JsonKey(name: 'used_appointment_id') final String? usedAppointmentId,
+    @JsonKey(name: 'used_at') final String? usedAt,
+    @JsonKey(name: 'renewed_at') final String? renewedAt,
+    @JsonKey(name: 'renewed_by_appointment_id')
+    final String? renewedByAppointmentId,
+    @JsonKey(name: 'appointment_slot_type') final String? appointmentSlotType,
+    @JsonKey(name: 'follow_up_type') final String? followUpType,
+    @JsonKey(name: 'created_at') final String? createdAt,
+    @JsonKey(name: 'updated_at') final String? updatedAt,
+  }) = _$FollowUpInfoImpl;
+
+  factory _FollowUpInfo.fromJson(Map<String, dynamic> json) =
+      _$FollowUpInfoImpl.fromJson;
+
+  @override
+  String? get id;
+  @override
+  @JsonKey(name: 'clinic_patient_id')
+  String? get clinicPatientId;
+  @override
+  @JsonKey(name: 'clinic_id')
+  String? get clinicId;
+  @override
+  @JsonKey(name: 'patient_name')
+  String? get patientName;
+  @override
+  @JsonKey(name: 'doctor_id')
+  String? get doctorId;
+  @override
+  @JsonKey(name: 'doctor_name')
+  String? get doctorName;
+  @override
+  @JsonKey(name: 'department_id')
+  String? get departmentId;
+  @override
+  @JsonKey(name: 'department_name')
+  String? get departmentName;
+  @override
+  @JsonKey(name: 'source_appointment_id')
+  String? get sourceAppointmentId;
+  @override
+  @JsonKey(name: 'follow_up_status')
+  String? get followUpStatus;
+  @override
+  @JsonKey(name: 'is_free')
+  bool? get isFree;
+  @override
+  @JsonKey(name: 'valid_from')
+  String? get validFrom;
+  @override
+  @JsonKey(name: 'valid_until')
+  String? get validUntil;
+  @override
+  @JsonKey(name: 'days_remaining')
+  int? get daysRemaining;
+  @override
+  @JsonKey(name: 'used_appointment_id')
+  String? get usedAppointmentId;
+  @override
+  @JsonKey(name: 'used_at')
+  String? get usedAt;
+  @override
+  @JsonKey(name: 'renewed_at')
+  String? get renewedAt;
+  @override
+  @JsonKey(name: 'renewed_by_appointment_id')
+  String? get renewedByAppointmentId;
+  @override
+  @JsonKey(name: 'appointment_slot_type')
+  String? get appointmentSlotType;
+  @override
+  @JsonKey(name: 'follow_up_type')
+  String? get followUpType;
+  @override
+  @JsonKey(name: 'created_at')
+  String? get createdAt;
+  @override
+  @JsonKey(name: 'updated_at')
+  String? get updatedAt;
+
+  /// Create a copy of FollowUpInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FollowUpInfoImplCopyWith<_$FollowUpInfoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ClinicPatientUpdate _$ClinicPatientUpdateFromJson(Map<String, dynamic> json) {
+  return _ClinicPatientUpdate.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ClinicPatientUpdate {
+  @JsonKey(name: 'current_followup_status')
+  String? get currentFollowupStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_appointment_id')
+  String? get lastAppointmentId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_followup_id')
+  String? get lastFollowupId => throw _privateConstructorUsedError;
+
+  /// Serializes this ClinicPatientUpdate to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ClinicPatientUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ClinicPatientUpdateCopyWith<ClinicPatientUpdate> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ClinicPatientUpdateCopyWith<$Res> {
+  factory $ClinicPatientUpdateCopyWith(
+    ClinicPatientUpdate value,
+    $Res Function(ClinicPatientUpdate) then,
+  ) = _$ClinicPatientUpdateCopyWithImpl<$Res, ClinicPatientUpdate>;
+  @useResult
+  $Res call({
+    @JsonKey(name: 'current_followup_status') String? currentFollowupStatus,
+    @JsonKey(name: 'last_appointment_id') String? lastAppointmentId,
+    @JsonKey(name: 'last_followup_id') String? lastFollowupId,
+  });
+}
+
+/// @nodoc
+class _$ClinicPatientUpdateCopyWithImpl<$Res, $Val extends ClinicPatientUpdate>
+    implements $ClinicPatientUpdateCopyWith<$Res> {
+  _$ClinicPatientUpdateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ClinicPatientUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? currentFollowupStatus = freezed,
+    Object? lastAppointmentId = freezed,
+    Object? lastFollowupId = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            currentFollowupStatus: freezed == currentFollowupStatus
+                ? _value.currentFollowupStatus
+                : currentFollowupStatus // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            lastAppointmentId: freezed == lastAppointmentId
+                ? _value.lastAppointmentId
+                : lastAppointmentId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            lastFollowupId: freezed == lastFollowupId
+                ? _value.lastFollowupId
+                : lastFollowupId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ClinicPatientUpdateImplCopyWith<$Res>
+    implements $ClinicPatientUpdateCopyWith<$Res> {
+  factory _$$ClinicPatientUpdateImplCopyWith(
+    _$ClinicPatientUpdateImpl value,
+    $Res Function(_$ClinicPatientUpdateImpl) then,
+  ) = __$$ClinicPatientUpdateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    @JsonKey(name: 'current_followup_status') String? currentFollowupStatus,
+    @JsonKey(name: 'last_appointment_id') String? lastAppointmentId,
+    @JsonKey(name: 'last_followup_id') String? lastFollowupId,
+  });
+}
+
+/// @nodoc
+class __$$ClinicPatientUpdateImplCopyWithImpl<$Res>
+    extends _$ClinicPatientUpdateCopyWithImpl<$Res, _$ClinicPatientUpdateImpl>
+    implements _$$ClinicPatientUpdateImplCopyWith<$Res> {
+  __$$ClinicPatientUpdateImplCopyWithImpl(
+    _$ClinicPatientUpdateImpl _value,
+    $Res Function(_$ClinicPatientUpdateImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ClinicPatientUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? currentFollowupStatus = freezed,
+    Object? lastAppointmentId = freezed,
+    Object? lastFollowupId = freezed,
+  }) {
+    return _then(
+      _$ClinicPatientUpdateImpl(
+        currentFollowupStatus: freezed == currentFollowupStatus
+            ? _value.currentFollowupStatus
+            : currentFollowupStatus // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastAppointmentId: freezed == lastAppointmentId
+            ? _value.lastAppointmentId
+            : lastAppointmentId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastFollowupId: freezed == lastFollowupId
+            ? _value.lastFollowupId
+            : lastFollowupId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ClinicPatientUpdateImpl implements _ClinicPatientUpdate {
+  const _$ClinicPatientUpdateImpl({
+    @JsonKey(name: 'current_followup_status') this.currentFollowupStatus,
+    @JsonKey(name: 'last_appointment_id') this.lastAppointmentId,
+    @JsonKey(name: 'last_followup_id') this.lastFollowupId,
+  });
+
+  factory _$ClinicPatientUpdateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ClinicPatientUpdateImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'current_followup_status')
+  final String? currentFollowupStatus;
+  @override
+  @JsonKey(name: 'last_appointment_id')
+  final String? lastAppointmentId;
+  @override
+  @JsonKey(name: 'last_followup_id')
+  final String? lastFollowupId;
+
+  @override
+  String toString() {
+    return 'ClinicPatientUpdate(currentFollowupStatus: $currentFollowupStatus, lastAppointmentId: $lastAppointmentId, lastFollowupId: $lastFollowupId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ClinicPatientUpdateImpl &&
+            (identical(other.currentFollowupStatus, currentFollowupStatus) ||
+                other.currentFollowupStatus == currentFollowupStatus) &&
+            (identical(other.lastAppointmentId, lastAppointmentId) ||
+                other.lastAppointmentId == lastAppointmentId) &&
+            (identical(other.lastFollowupId, lastFollowupId) ||
+                other.lastFollowupId == lastFollowupId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    currentFollowupStatus,
+    lastAppointmentId,
+    lastFollowupId,
+  );
+
+  /// Create a copy of ClinicPatientUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ClinicPatientUpdateImplCopyWith<_$ClinicPatientUpdateImpl> get copyWith =>
+      __$$ClinicPatientUpdateImplCopyWithImpl<_$ClinicPatientUpdateImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ClinicPatientUpdateImplToJson(this);
+  }
+}
+
+abstract class _ClinicPatientUpdate implements ClinicPatientUpdate {
+  const factory _ClinicPatientUpdate({
+    @JsonKey(name: 'current_followup_status')
+    final String? currentFollowupStatus,
+    @JsonKey(name: 'last_appointment_id') final String? lastAppointmentId,
+    @JsonKey(name: 'last_followup_id') final String? lastFollowupId,
+  }) = _$ClinicPatientUpdateImpl;
+
+  factory _ClinicPatientUpdate.fromJson(Map<String, dynamic> json) =
+      _$ClinicPatientUpdateImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'current_followup_status')
+  String? get currentFollowupStatus;
+  @override
+  @JsonKey(name: 'last_appointment_id')
+  String? get lastAppointmentId;
+  @override
+  @JsonKey(name: 'last_followup_id')
+  String? get lastFollowupId;
+
+  /// Create a copy of ClinicPatientUpdate
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ClinicPatientUpdateImplCopyWith<_$ClinicPatientUpdateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+RenewalOptions _$RenewalOptionsFromJson(Map<String, dynamic> json) {
+  return _RenewalOptions.fromJson(json);
+}
+
+/// @nodoc
+mixin _$RenewalOptions {
+  @JsonKey(name: 'can_renew')
+  bool? get canRenew => throw _privateConstructorUsedError;
+  String? get message => throw _privateConstructorUsedError;
+  @JsonKey(name: 'previous_followup_id')
+  String? get previousFollowupId => throw _privateConstructorUsedError;
+
+  /// Serializes this RenewalOptions to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of RenewalOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $RenewalOptionsCopyWith<RenewalOptions> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RenewalOptionsCopyWith<$Res> {
+  factory $RenewalOptionsCopyWith(
+    RenewalOptions value,
+    $Res Function(RenewalOptions) then,
+  ) = _$RenewalOptionsCopyWithImpl<$Res, RenewalOptions>;
+  @useResult
+  $Res call({
+    @JsonKey(name: 'can_renew') bool? canRenew,
+    String? message,
+    @JsonKey(name: 'previous_followup_id') String? previousFollowupId,
+  });
+}
+
+/// @nodoc
+class _$RenewalOptionsCopyWithImpl<$Res, $Val extends RenewalOptions>
+    implements $RenewalOptionsCopyWith<$Res> {
+  _$RenewalOptionsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of RenewalOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? canRenew = freezed,
+    Object? message = freezed,
+    Object? previousFollowupId = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            canRenew: freezed == canRenew
+                ? _value.canRenew
+                : canRenew // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            message: freezed == message
+                ? _value.message
+                : message // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            previousFollowupId: freezed == previousFollowupId
+                ? _value.previousFollowupId
+                : previousFollowupId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$RenewalOptionsImplCopyWith<$Res>
+    implements $RenewalOptionsCopyWith<$Res> {
+  factory _$$RenewalOptionsImplCopyWith(
+    _$RenewalOptionsImpl value,
+    $Res Function(_$RenewalOptionsImpl) then,
+  ) = __$$RenewalOptionsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    @JsonKey(name: 'can_renew') bool? canRenew,
+    String? message,
+    @JsonKey(name: 'previous_followup_id') String? previousFollowupId,
+  });
+}
+
+/// @nodoc
+class __$$RenewalOptionsImplCopyWithImpl<$Res>
+    extends _$RenewalOptionsCopyWithImpl<$Res, _$RenewalOptionsImpl>
+    implements _$$RenewalOptionsImplCopyWith<$Res> {
+  __$$RenewalOptionsImplCopyWithImpl(
+    _$RenewalOptionsImpl _value,
+    $Res Function(_$RenewalOptionsImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of RenewalOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? canRenew = freezed,
+    Object? message = freezed,
+    Object? previousFollowupId = freezed,
+  }) {
+    return _then(
+      _$RenewalOptionsImpl(
+        canRenew: freezed == canRenew
+            ? _value.canRenew
+            : canRenew // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        message: freezed == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        previousFollowupId: freezed == previousFollowupId
+            ? _value.previousFollowupId
+            : previousFollowupId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$RenewalOptionsImpl implements _RenewalOptions {
+  const _$RenewalOptionsImpl({
+    @JsonKey(name: 'can_renew') this.canRenew,
+    this.message,
+    @JsonKey(name: 'previous_followup_id') this.previousFollowupId,
+  });
+
+  factory _$RenewalOptionsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RenewalOptionsImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'can_renew')
+  final bool? canRenew;
+  @override
+  final String? message;
+  @override
+  @JsonKey(name: 'previous_followup_id')
+  final String? previousFollowupId;
+
+  @override
+  String toString() {
+    return 'RenewalOptions(canRenew: $canRenew, message: $message, previousFollowupId: $previousFollowupId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RenewalOptionsImpl &&
+            (identical(other.canRenew, canRenew) ||
+                other.canRenew == canRenew) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.previousFollowupId, previousFollowupId) ||
+                other.previousFollowupId == previousFollowupId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, canRenew, message, previousFollowupId);
+
+  /// Create a copy of RenewalOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RenewalOptionsImplCopyWith<_$RenewalOptionsImpl> get copyWith =>
+      __$$RenewalOptionsImplCopyWithImpl<_$RenewalOptionsImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RenewalOptionsImplToJson(this);
+  }
+}
+
+abstract class _RenewalOptions implements RenewalOptions {
+  const factory _RenewalOptions({
+    @JsonKey(name: 'can_renew') final bool? canRenew,
+    final String? message,
+    @JsonKey(name: 'previous_followup_id') final String? previousFollowupId,
+  }) = _$RenewalOptionsImpl;
+
+  factory _RenewalOptions.fromJson(Map<String, dynamic> json) =
+      _$RenewalOptionsImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'can_renew')
+  bool? get canRenew;
+  @override
+  String? get message;
+  @override
+  @JsonKey(name: 'previous_followup_id')
+  String? get previousFollowupId;
+
+  /// Create a copy of RenewalOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$RenewalOptionsImplCopyWith<_$RenewalOptionsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

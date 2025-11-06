@@ -453,37 +453,43 @@ class _NavigationItem extends StatelessWidget {
           curve: Curves.easeInOut,
           padding: EdgeInsets.symmetric(
             horizontal: showLabel ? 10 : 10,
-            vertical: 9,
+            vertical: 8,
           ),
           decoration: BoxDecoration(
             gradient: isSelected
                 ? const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1F2937), Color(0xFF111827)],
+                    colors: [Color(0xFF2D3748), Color(0xFF1A202C)],
                   )
                 : null,
             color: isSelected ? null : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
             border: isSelected
                 ? Border.all(
-                    color: const Color(0xFF374151).withOpacity(0.6),
-                    width: 0.5,
+                    color: const Color(0xFF4A5568).withOpacity(0.8),
+                    width: 1.5,
                   )
                 : null,
             boxShadow: isSelected
                 ? [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.25),
-                      blurRadius: 12,
+                      blurRadius: 16,
                       offset: const Offset(0, 4),
-                      spreadRadius: -2,
+                      spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
-                      blurRadius: 6,
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 8,
                       offset: const Offset(0, 2),
-                      spreadRadius: -1,
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: const Color(0xFF4A5568).withOpacity(0.2),
+                      blurRadius: 12,
+                      offset: const Offset(0, 0),
+                      spreadRadius: 1,
                     ),
                   ]
                 : null,
@@ -502,18 +508,19 @@ class _NavigationItem extends StatelessWidget {
                                 end: Alignment.bottomRight,
                                 colors: [
                                   Colors.white.withOpacity(0.2),
-                                  Colors.white.withOpacity(0.12),
+                                  Colors.white.withOpacity(0.15),
                                 ],
                               )
                             : null,
                         color: isSelected ? null : const Color(0xFFF3F4F6),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: Colors.white.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 1),
+                                  color: Colors.white.withOpacity(0.15),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 0),
+                                  spreadRadius: 1,
                                 ),
                               ]
                             : null,
@@ -530,10 +537,10 @@ class _NavigationItem extends StatelessWidget {
                               ? Colors.white
                               : const Color(0xFF374151),
                           fontWeight: isSelected
-                              ? FontWeight.w600
+                              ? FontWeight.w700
                               : FontWeight.w500,
-                          fontSize: 13.5,
-                          letterSpacing: isSelected ? 0.2 : 0.1,
+                          fontSize: isSelected ? 14 : 13.5,
+                          letterSpacing: isSelected ? 0.3 : 0.1,
                           height: 1.2,
                         ),
                         child: Text(
@@ -574,18 +581,19 @@ class _NavigationItem extends StatelessWidget {
                               end: Alignment.bottomRight,
                               colors: [
                                 Colors.white.withOpacity(0.2),
-                                Colors.white.withOpacity(0.12),
+                                Colors.white.withOpacity(0.15),
                               ],
                             )
                           : null,
                       color: isSelected ? null : const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(8),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.white.withOpacity(0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 1),
+                                color: Colors.white.withOpacity(0.15),
+                                blurRadius: 6,
+                                offset: const Offset(0, 0),
+                                spreadRadius: 1,
                               ),
                             ]
                           : null,
@@ -601,7 +609,7 @@ class _NavigationItem extends StatelessWidget {
   Widget _getIconForItem(String title, bool isSelected) {
     // Use the icon provided by the module, not hardcoded ones
     Color iconColor = isSelected ? Colors.white : const Color(0xFF6B7280);
-    return Icon(item.icon, color: iconColor, size: 17);
+    return Icon(item.icon, color: iconColor, size: isSelected ? 19 : 17);
   }
 }
 
@@ -667,13 +675,6 @@ class _MobileLayoutState extends State<_MobileLayout> {
       ),
       drawer: _buildMobileDrawer(context),
       body: widget.config.screens[widget.selectedIndex],
-      floatingActionButton:
-          widget.config.customFloatingActionButton ??
-          FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: Colors.black,
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
     );
   }
 
@@ -869,7 +870,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
                   children: widget.config.navigationItems
                       .map(
                         (item) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
+                          padding: const EdgeInsets.only(bottom: 2),
                           child: _NavigationItem(
                             item: item,
                             isSelected: widget.selectedIndex == item.index,
@@ -899,64 +900,6 @@ class _MobileLayoutState extends State<_MobileLayout> {
                 ),
                 child: Column(
                   children: [
-                    // Enhanced New Appointment Button (only for clinic admin)
-                    if (widget.config.showNewAppointmentButton) ...[
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF1F2937), Color(0xFF111827)],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: widget.config.onNewAppointment ?? () {},
-                            borderRadius: BorderRadius.circular(10),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(2),
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFFEF4444),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.add,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    'New Appointment',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-
                     // Hospital Information Card
                     widget.config.customHospitalInfo ??
                         Container(
@@ -984,7 +927,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
 
                     const SizedBox(height: 16),
 
-                    // Enhanced Logout Section
+                    // Enhanced Logout Section with Wave Pattern
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -995,11 +938,11 @@ class _MobileLayoutState extends State<_MobileLayout> {
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
+                            horizontal: 10,
+                            vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEF2F2),
+                            color: const Color(0xFFFEE2E2),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: const Color(0xFFFECACA),
@@ -1009,18 +952,26 @@ class _MobileLayoutState extends State<_MobileLayout> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.logout_rounded,
-                                color: const Color(0xFFDC2626),
-                                size: 18,
+                              const Text(
+                                'Log Out',
+                                style: TextStyle(
+                                  color: Color(0xFF374151),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
+                                ),
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                'Log out',
-                                style: TextStyle(
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
                                   color: const Color(0xFFDC2626),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.power_settings_new_rounded,
+                                  color: Colors.white,
+                                  size: 13,
                                 ),
                               ),
                             ],
@@ -1202,7 +1153,7 @@ class _TabletLayoutState extends State<_TabletLayout> {
                       children: widget.config.navigationItems
                           .map(
                             (item) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              padding: const EdgeInsets.symmetric(vertical: 1),
                               child: _NavigationItem(
                                 item: item,
                                 isSelected: widget.selectedIndex == item.index,
@@ -1220,80 +1171,6 @@ class _TabletLayoutState extends State<_TabletLayout> {
                     padding: EdgeInsets.all(_isSidebarExpanded ? 12 : 8),
                     child: Column(
                       children: [
-                        // Enhanced New Appointment Button (only for clinic admin)
-                        if (widget.config.showNewAppointmentButton) ...[
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF1F2937), Color(0xFF111827)],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: widget.config.onNewAppointment ?? () {},
-                                borderRadius: BorderRadius.circular(10),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: _isSidebarExpanded ? 12 : 10,
-                                  ),
-                                  child: _isSidebarExpanded
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(2),
-                                              decoration: const BoxDecoration(
-                                                color: Color(0xFFEF4444),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Icon(
-                                                Icons.add,
-                                                size: 14,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            const Text(
-                                              'New Appointment',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Container(
-                                          padding: const EdgeInsets.all(2),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFFEF4444),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.add,
-                                            size: 16,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-
                         if (_isSidebarExpanded)
                           widget.config.customHospitalInfo ??
                               Container(
@@ -1384,7 +1261,7 @@ class _TabletLayoutState extends State<_TabletLayout> {
                           ),
                         ),
 
-                        // Enhanced Logout Button
+                        // Enhanced Logout Button with Wave Pattern
                         Padding(
                           padding: EdgeInsets.fromLTRB(
                             _isSidebarExpanded ? 12 : 10,
@@ -1400,11 +1277,11 @@ class _TabletLayoutState extends State<_TabletLayout> {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 150),
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: _isSidebarExpanded ? 12 : 0,
-                                  vertical: 10,
+                                  horizontal: _isSidebarExpanded ? 10 : 0,
+                                  vertical: _isSidebarExpanded ? 8 : 10,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFEF2F2),
+                                  color: const Color(0xFFFEE2E2),
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: const Color(0xFFFECACA),
@@ -1416,26 +1293,41 @@ class _TabletLayoutState extends State<_TabletLayout> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.logout_rounded,
-                                            color: const Color(0xFFDC2626),
-                                            size: 16,
+                                          const Text(
+                                            'Log Out',
+                                            style: TextStyle(
+                                              color: Color(0xFF374151),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.2,
+                                            ),
                                           ),
                                           const SizedBox(width: 8),
-                                          Text(
-                                            'Log out',
-                                            style: TextStyle(
+                                          Container(
+                                            padding: const EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
                                               color: const Color(0xFFDC2626),
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w600,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.power_settings_new_rounded,
+                                              color: Colors.white,
+                                              size: 12,
                                             ),
                                           ),
                                         ],
                                       )
-                                    : Icon(
-                                        Icons.logout_rounded,
-                                        color: const Color(0xFFDC2626),
-                                        size: 18,
+                                    : Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFDC2626),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.power_settings_new_rounded,
+                                          color: Colors.white,
+                                          size: 14,
+                                        ),
                                       ),
                               ),
                             ),
@@ -1801,7 +1693,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                       children: widget.config.navigationItems
                           .map(
                             (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
+                              padding: const EdgeInsets.only(bottom: 2),
                               child: _NavigationItem(
                                 item: item,
                                 isSelected: widget.selectedIndex == item.index,
@@ -1828,66 +1720,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                     ),
                     child: Column(
                       children: [
-                        // Enhanced New Appointment Button (only for clinic admin)
-                        if (widget.config.showNewAppointmentButton) ...[
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF1F2937), Color(0xFF111827)],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: widget.config.onNewAppointment ?? () {},
-                                borderRadius: BorderRadius.circular(10),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(2),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFEF4444),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.add,
-                                          size: 14,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      const Text(
-                                        'New Appointment',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-
                         // Hospital Info Card
                         widget.config.customHospitalInfo ??
                             Container(
@@ -1915,7 +1747,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
                         const SizedBox(height: 12),
 
-                        // Enhanced Logout Button
+                        // Enhanced Logout Button with Wave Pattern
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -1923,11 +1755,11 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
+                                horizontal: 10,
+                                vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFEF2F2),
+                                color: const Color(0xFFFEE2E2),
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: const Color(0xFFFECACA),
@@ -1937,18 +1769,26 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.logout_rounded,
-                                    color: const Color(0xFFDC2626),
-                                    size: 16,
+                                  const Text(
+                                    'Log Out',
+                                    style: TextStyle(
+                                      color: Color(0xFF374151),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.2,
+                                    ),
                                   ),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    'Log out',
-                                    style: TextStyle(
+                                  Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
                                       color: const Color(0xFFDC2626),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.power_settings_new_rounded,
+                                      color: Colors.white,
+                                      size: 12,
                                     ),
                                   ),
                                 ],

@@ -28,10 +28,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
   final TextEditingController specializationController =
       TextEditingController();
   final TextEditingController licenseController = TextEditingController();
-  final TextEditingController consultationFeeController =
-      TextEditingController();
-  final TextEditingController followUpFeeController = TextEditingController();
-  final TextEditingController followUpDaysController = TextEditingController();
 
   // Mode selection
   bool isExistingUser = false;
@@ -79,9 +75,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     doctorCodeController.dispose();
     specializationController.dispose();
     licenseController.dispose();
-    consultationFeeController.dispose();
-    followUpFeeController.dispose();
-    followUpDaysController.dispose();
     userIdController.dispose();
     super.dispose();
   }
@@ -103,9 +96,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     doctorCodeController.text = doctor.doctorCode ?? '';
     specializationController.text = doctor.specialization ?? '';
     licenseController.text = doctor.licenseNumber ?? '';
-    consultationFeeController.text = doctor.consultationFee?.toString() ?? '';
-    followUpFeeController.text = doctor.followUpFee?.toString() ?? '';
-    followUpDaysController.text = doctor.followUpDays?.toString() ?? '';
     userIdController.text = doctor.userId ?? '';
 
     // Determine mode based on whether userId is present
@@ -174,15 +164,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
           licenseNumber: licenseController.text.trim().isEmpty
               ? null
               : licenseController.text.trim(),
-          consultationFee: consultationFeeController.text.trim().isEmpty
-              ? null
-              : double.tryParse(consultationFeeController.text.trim()),
-          followUpFee: followUpFeeController.text.trim().isEmpty
-              ? null
-              : double.tryParse(followUpFeeController.text.trim()),
-          followUpDays: followUpDaysController.text.trim().isEmpty
-              ? null
-              : int.tryParse(followUpDaysController.text.trim()),
         );
       } else {
         doctor = DoctorModel(
@@ -203,15 +184,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
           licenseNumber: licenseController.text.trim().isEmpty
               ? null
               : licenseController.text.trim(),
-          consultationFee: consultationFeeController.text.trim().isEmpty
-              ? null
-              : double.tryParse(consultationFeeController.text.trim()),
-          followUpFee: followUpFeeController.text.trim().isEmpty
-              ? null
-              : double.tryParse(followUpFeeController.text.trim()),
-          followUpDays: followUpDaysController.text.trim().isEmpty
-              ? null
-              : int.tryParse(followUpDaysController.text.trim()),
         );
       }
 
@@ -702,44 +674,38 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                                     icon: Icons.card_membership_outlined,
                                     isMobile: isMobile,
                                   ),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 16),
 
-                                  // Consultation Fee
-                                  _buildTextField(
-                                    label: 'Consultation Fee',
-                                    hint: 'Enter consultation fee',
-                                    controller: consultationFeeController,
-                                    validator: null,
-                                    required: false,
-                                    icon: Icons.attach_money,
-                                    keyboardType: TextInputType.number,
-                                    isMobile: isMobile,
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Follow-up Fee
-                                  _buildTextField(
-                                    label: 'Follow-up Fee',
-                                    hint: 'Enter follow-up fee',
-                                    controller: followUpFeeController,
-                                    validator: null,
-                                    required: false,
-                                    icon: Icons.attach_money,
-                                    keyboardType: TextInputType.number,
-                                    isMobile: isMobile,
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Follow-up Days
-                                  _buildTextField(
-                                    label: 'Follow-up Days',
-                                    hint: 'Enter follow-up days',
-                                    controller: followUpDaysController,
-                                    validator: null,
-                                    required: false,
-                                    icon: Icons.calendar_today_outlined,
-                                    keyboardType: TextInputType.number,
-                                    isMobile: isMobile,
+                                  // Information note about fees
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFEEF2FF),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: const Color(0xFFC7D2FE),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.info_outline,
+                                          color: Color(0xFF6366F1),
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            'Consultation fees will be set when linking this doctor to a clinic.',
+                                            style: TextStyle(
+                                              fontSize: isMobile ? 11 : 12,
+                                              color: const Color(0xFF4338CA),
+                                              height: 1.3,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(height: 32),
 
