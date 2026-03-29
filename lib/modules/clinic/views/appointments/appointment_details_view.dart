@@ -26,6 +26,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   bool _isEditingPatientDetails = false;
   bool _isEditingBookingDetails = false;
   bool _isEditingVitalSigns = false;
+  bool _isEditingStatus = false;
   bool _isVitalSignsExpanded = false; // Privacy: collapsed by default
   bool _isSavingPatient = false;
   bool _isSavingVitals = false;
@@ -502,6 +503,260 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
         });
       }
     }
+  }
+
+  Future<void> _showCancelAppointmentDialog() async {
+    final appointment = _viewModel.appointmentDetails;
+    if (appointment == null) return;
+
+    final reasonController = TextEditingController();
+    final notesController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEF4444).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.cancel_outlined,
+                color: Color(0xFFEF4444),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text(
+                'Cancel Appointment',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1A1D29),
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Are you sure you want to cancel this appointment? This action will free up the booked slot.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF6B7280),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                decoration: InputDecoration(
+                  labelText: 'Reason (Optional)',
+                  hintText: 'e.g., Patient requested cancellation',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: notesController,
+                decoration: InputDecoration(
+                  labelText: 'Notes (Optional)',
+                  hintText: 'Additional details...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'No, Keep It',
+              style: TextStyle(
+                color: Color(0xFF6B7280),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            ),
+            child: const Text(
+              'Yes, Cancel',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted) {
+      await _cancelAppointment(
+        reason: reasonController.text.trim().isEmpty
+            ? null
+            : reasonController.text.trim(),
+        notes: notesController.text.trim().isEmpty
+            ? null
+            : notesController.text.trim(),
+      );
+    }
+  }
+
+  Future<void> _cancelAppointment({String? reason, String? notes}) async {
+    final appointment = _viewModel.appointmentDetails;
+    final appointmentId = appointment?.id;
+    if (appointment == null || appointmentId == null || appointmentId.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Appointment ID not found.'),
+            backgroundColor: Color(0xFFEF4444),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              SizedBox(width: 12),
+              Text('Cancelling appointment...'),
+            ],
+          ),
+          backgroundColor: Color(0xFF6366F1),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+
+    try {
+      final response = await _viewModel.cancelAppointment(
+        appointmentId: appointmentId,
+        reason: reason,
+        notes: notes,
+      );
+
+      if (mounted) {
+        if (response != null) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      response['message'] as String? ??
+                          'Appointment cancelled successfully',
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: const Color(0xFF10B981),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+
+          // Refresh dashboard appointment list
+          _refreshDashboardList();
+
+          // Show slot info if available
+          if (response['slot_info'] != null) {
+            final slotInfo = response['slot_info'] as Map<String, dynamic>;
+            if (slotInfo['re_enabled'] == true) {
+              Future.delayed(const Duration(seconds: 1), () {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        slotInfo['message'] as String? ??
+                            'Slot has been freed up',
+                      ),
+                      backgroundColor: const Color(0xFF3B82F6),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              });
+            }
+          }
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                _viewModel.errorMessage ?? 'Failed to cancel appointment',
+              ),
+              backgroundColor: const Color(0xFFEF4444),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error cancelling appointment: $e'),
+            backgroundColor: const Color(0xFFEF4444),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Refresh dashboard appointment list after status update or cancellation
+  /// Note: This is handled by the dashboard's .then() callback when navigating back
+  /// We don't call the viewmodel directly here since it's not in the widget tree
+  void _refreshDashboardList() {
+    // Dashboard will refresh automatically when user navigates back
+    // via the .then() callback in appointments_dashboard_view_refactored.dart
+    print('✅ Status updated - dashboard will refresh on navigation back');
   }
 
   Future<void> _saveVitalSigns() async {
@@ -1076,14 +1331,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             ],
           ),
           const SizedBox(height: 6),
+          // Status Update Section (when editing status)
+          if (_isEditingStatus) ...[
+            _buildStatusUpdateSection(),
+            const SizedBox(height: 8),
+          ],
           // Details Layout - show editable or read-only
           if (_isEditingBookingDetails)
             _buildEditableBookingDetailsLayout()
           else
             _buildBookingDetailsLayout(),
-          const SizedBox(height: 8),
-          // Status Display and Update Section
-          _buildStatusSection(),
           const SizedBox(height: 8),
           // Action Buttons matching image exactly
           Row(
@@ -1156,9 +1413,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     ],
                   ),
                   child: OutlinedButton(
-                    onPressed: () {
-                      // Cancel appointment action
-                    },
+                    onPressed:
+                        _viewModel.appointmentDetails?.status == 'cancelled' ||
+                            _viewModel.appointmentDetails?.status ==
+                                'completed' ||
+                            _viewModel.appointmentDetails?.status == 'no_show'
+                        ? null
+                        : () => _showCancelAppointmentDialog(),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFFEF4444),
                       side: BorderSide.none,
@@ -1167,6 +1428,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      disabledForegroundColor: const Color(0xFF9CA3AF),
+                      disabledBackgroundColor: const Color(0xFFF3F4F6),
                     ),
                     child: const Text(
                       'Cancel',
@@ -3138,7 +3401,10 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   // Helper method to build status pill
   Widget _buildStatusPill() {
-    final status = _viewModel.appointmentDetails?.status ?? 'pending';
+    final appointment = _viewModel.appointmentDetails;
+    final status = appointment?.status ?? 'pending';
+    final allowedStatuses = _viewModel.getAllowedStatuses(status);
+    final isTerminalStatus = allowedStatuses.isEmpty;
 
     // Determine color based on status
     Color statusColor;
@@ -3176,50 +3442,85 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [statusColor, statusColor.withOpacity(0.8)],
-            ),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: statusColor.withOpacity(0.3),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      blurRadius: 2,
-                      spreadRadius: 1,
-                    ),
+            onTap: isTerminalStatus
+                ? null
+                : () {
+                    setState(() {
+                      _isEditingStatus = !_isEditingStatus;
+                      if (!_isEditingStatus) {
+                        _selectedStatusForUpdate = null;
+                        _statusNotesController.clear();
+                      }
+                    });
+                  },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    _isEditingStatus ? const Color(0xFF6366F1) : statusColor,
+                    (_isEditingStatus ? const Color(0xFF6366F1) : statusColor)
+                        .withOpacity(0.8),
                   ],
                 ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        (_isEditingStatus
+                                ? const Color(0xFF6366F1)
+                                : statusColor)
+                            .withOpacity(0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              const SizedBox(width: 6),
-              Text(
-                statusText,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.2,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.5),
+                          blurRadius: 2,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    statusText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  if (!isTerminalStatus) ...[
+                    const SizedBox(width: 4),
+                    Icon(
+                      _isEditingStatus
+                          ? Icons.close_rounded
+                          : Icons.edit_rounded,
+                      size: 12,
+                      color: Colors.white,
+                    ),
+                  ],
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],
@@ -3660,8 +3961,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     ]);
   }
 
-  /// Build status section with display and update functionality
-  Widget _buildStatusSection() {
+  /// Build status update section (shown when editing status)
+  Widget _buildStatusUpdateSection() {
     final appointment = _viewModel.appointmentDetails;
     if (appointment == null || appointment.status == null) {
       return const SizedBox.shrink();
@@ -3671,118 +3972,29 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     final allowedStatuses = _viewModel.getAllowedStatuses(currentStatus);
     final isTerminalStatus = allowedStatuses.isEmpty;
 
+    if (isTerminalStatus) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.white, const Color(0xFFFAFBFC)],
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.8),
-          width: 1,
+          color: const Color(0xFF6366F1).withOpacity(0.3),
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
+            color: const Color(0xFF6366F1).withOpacity(0.1),
+            blurRadius: 8,
             offset: const Offset(0, 2),
+            spreadRadius: 0,
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(currentStatus).withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.info_outline_rounded,
-                  size: 16,
-                  color: _getStatusColor(currentStatus),
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                'Appointment Status',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1A1D29),
-                  letterSpacing: -0.2,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Current Status Badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: _getStatusColor(currentStatus).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _getStatusColor(currentStatus).withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(currentStatus),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  _formatStatusLabel(currentStatus),
-                  style: TextStyle(
-                    color: _getStatusColor(currentStatus),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Status Update Section (if not terminal)
-          if (!isTerminalStatus) ...[
-            const SizedBox(height: 12),
-            _buildStatusUpdateWidget(currentStatus, allowedStatuses),
-          ] else ...[
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.lock_outline_rounded,
-                  size: 14,
-                  color: const Color(0xFF6B7280).withOpacity(0.7),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Terminal status - cannot be changed',
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280).withOpacity(0.7),
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
+      child: _buildStatusUpdateWidget(currentStatus, allowedStatuses),
     );
   }
 
@@ -3791,206 +4003,170 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   final TextEditingController _statusNotesController = TextEditingController();
   bool _isUpdatingStatus = false;
 
-  /// Build status update widget with dropdown and notes
+  /// Build status update widget with compact dropdown (auto-updates on selection)
   Widget _buildStatusUpdateWidget(
     String currentStatus,
     List<String> allowedStatuses,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        const Text(
-          'Update Status',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF6B7280),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: _selectedStatusForUpdate,
-              isExpanded: true,
-              hint: Text(
-                'Select new status',
-                style: TextStyle(
-                  color: const Color(0xFF6B7280).withOpacity(0.7),
-                  fontSize: 13,
-                ),
-              ),
-              items: allowedStatuses.map((status) {
-                return DropdownMenuItem<String>(
-                  value: status,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: _getStatusColor(status),
-                          shape: BoxShape.circle,
-                        ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedStatusForUpdate,
+                isExpanded: true,
+                isDense: true,
+                hint: Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(currentStatus),
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _formatStatusLabel(status),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF1A1D29),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-              onChanged: _isUpdatingStatus
-                  ? null
-                  : (value) {
-                      setState(() {
-                        _selectedStatusForUpdate = value;
-                      });
-                    },
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _statusNotesController,
-          maxLines: 2,
-          enabled: !_isUpdatingStatus,
-          decoration: InputDecoration(
-            hintText: 'Notes (optional)',
-            hintStyle: TextStyle(
-              color: const Color(0xFF6B7280).withOpacity(0.5),
-              fontSize: 12,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: const Color(0xFFE5E7EB), width: 1),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: const Color(0xFFE5E7EB), width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: const Color(0xFF6366F1),
-                width: 1.5,
-              ),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          style: const TextStyle(fontSize: 12, color: Color(0xFF1A1D29)),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: (_selectedStatusForUpdate == null || _isUpdatingStatus)
-                ? null
-                : () async {
-                    final appointment = _viewModel.appointmentDetails;
-                    if (appointment == null || appointment.id == null) {
-                      return;
-                    }
-
-                    setState(() {
-                      _isUpdatingStatus = true;
-                    });
-
-                    try {
-                      final success = await _viewModel.updateAppointmentStatus(
-                        appointmentId: appointment.id!,
-                        clinicPatientId:
-                            appointment.clinicPatientId ??
-                            widget.clinicPatientId ??
-                            '',
-                        status: _selectedStatusForUpdate!,
-                        notes: _statusNotesController.text.trim().isEmpty
-                            ? null
-                            : _statusNotesController.text.trim(),
-                        clinicId: appointment.clinic?.id,
-                      );
-
-                      if (mounted) {
-                        if (success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Status updated successfully to ${_formatStatusLabel(_selectedStatusForUpdate!)}',
-                              ),
-                              backgroundColor: const Color(0xFF10B981),
-                            ),
-                          );
-                          _statusNotesController.clear();
-                          setState(() {
-                            _selectedStatusForUpdate = null;
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                _viewModel.errorMessage ??
-                                    'Failed to update status',
-                              ),
-                              backgroundColor: const Color(0xFFEF4444),
-                            ),
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: ${e.toString()}'),
-                            backgroundColor: const Color(0xFFEF4444),
-                          ),
-                        );
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() {
-                          _isUpdatingStatus = false;
-                        });
-                      }
-                    }
-                  },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6366F1),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
-            ),
-            child: _isUpdatingStatus
-                ? const SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
-                  )
-                : const Text(
-                    'Update Status',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Change status',
+                      style: TextStyle(
+                        color: const Color(0xFF6B7280).withOpacity(0.7),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                items: allowedStatuses.map((status) {
+                  return DropdownMenuItem<String>(
+                    value: status,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: _getStatusColor(status),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _formatStatusLabel(status),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF1A1D29),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: _isUpdatingStatus
+                    ? null
+                    : (value) async {
+                        if (value == null) return;
+
+                        final appointment = _viewModel.appointmentDetails;
+                        if (appointment == null || appointment.id == null) {
+                          return;
+                        }
+
+                        setState(() {
+                          _isUpdatingStatus = true;
+                          _selectedStatusForUpdate = value;
+                        });
+
+                        try {
+                          final success = await _viewModel
+                              .updateAppointmentStatus(
+                                appointmentId: appointment.id!,
+                                clinicPatientId:
+                                    appointment.clinicPatientId ??
+                                    widget.clinicPatientId ??
+                                    '',
+                                status: value,
+                                notes: null,
+                                clinicId: appointment.clinic?.id,
+                              );
+
+                          if (mounted) {
+                            if (success) {
+                              // Refresh dashboard appointment list
+                              _refreshDashboardList();
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Status updated to ${_formatStatusLabel(value)}',
+                                  ),
+                                  backgroundColor: const Color(0xFF10B981),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                              setState(() {
+                                _selectedStatusForUpdate = null;
+                                _isEditingStatus = false;
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    _viewModel.errorMessage ??
+                                        'Failed to update status',
+                                  ),
+                                  backgroundColor: const Color(0xFFEF4444),
+                                ),
+                              );
+                              setState(() {
+                                _selectedStatusForUpdate = null;
+                              });
+                            }
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error: ${e.toString()}'),
+                                backgroundColor: const Color(0xFFEF4444),
+                              ),
+                            );
+                            setState(() {
+                              _selectedStatusForUpdate = null;
+                            });
+                          }
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              _isUpdatingStatus = false;
+                            });
+                          }
+                        }
+                      },
+                icon: _isUpdatingStatus
+                    ? const SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF6366F1),
+                          ),
+                        ),
+                      )
+                    : const Icon(
+                        Icons.arrow_drop_down_rounded,
+                        size: 18,
+                        color: Color(0xFF6B7280),
+                      ),
+              ),
+            ),
           ),
         ),
       ],

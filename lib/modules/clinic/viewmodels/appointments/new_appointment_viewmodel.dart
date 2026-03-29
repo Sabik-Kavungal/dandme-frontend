@@ -74,6 +74,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
   List<DateTime> _availableDates = [];
   DateTime _displayedMonth = DateTime.now(); // Track which month to display
 
+  // Appointment context for reschedule
+  String? _appointmentClinicId;
+
   // Static consultation type options
   final List<String> consultationTypeOptions = [
     'clinic_visit', // Clinic Visit
@@ -92,6 +95,8 @@ class NewAppointmentViewModel extends ChangeNotifier {
   List<TimeSlot> _availableTimeSlots = [];
   List<AvailableSlot> _doctorTimeSlots = []; // Doctor time slots from API
   GroupedTimeSlotsResponse? _groupedTimeSlots; // Grouped time slots by day
+  ListSessionSlotsResponse?
+  _sessionSlotsResponse; // ✅ Store full session slots response for session grouping
   String? _selectedDoctorId; // Track selected doctor ID
 
   // Clinic-specific patients (NEW SYSTEM - RECOMMENDED)
@@ -144,6 +149,8 @@ class NewAppointmentViewModel extends ChangeNotifier {
   List<DateTime> get availableDates => _availableDates;
   DateTime get displayedMonth => _displayedMonth;
   GroupedTimeSlotsResponse? get groupedTimeSlots => _groupedTimeSlots;
+  ListSessionSlotsResponse? get sessionSlotsResponse =>
+      _sessionSlotsResponse; // ✅ Expose session slots response
   String? get selectedSlotId => _selectedSlotId;
   DoctorTimeSlotResponse? get selectedSlotDetails => _selectedSlotDetails;
   List<ClinicPatient> get clinicPatients => _clinicPatients;
@@ -516,9 +523,10 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
   // Set selected date for slot filtering
   void selectSlotDate(DateTime date) {
-    // ✅ Validate date is not in the past
+    // ✅ Validate date is within valid range (today to maxDateRangeInDays)
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
+    final maxDate = today.add(const Duration(days: 365)); // Max 365 days ahead
     final selectedDate = DateTime(date.year, date.month, date.day);
 
     if (selectedDate.isBefore(today)) {
@@ -528,16 +536,41 @@ class NewAppointmentViewModel extends ChangeNotifier {
       return;
     }
 
-    _selectedSlotDate = selectedDate;
+    // ✅ Clamp date to max range if it exceeds (prevents date picker assertion errors)
+    final clampedDate = selectedDate.isAfter(maxDate) ? maxDate : selectedDate;
+    _selectedSlotDate = clampedDate;
+
+    if (selectedDate.isAfter(maxDate)) {
+      print('⚠️ Selected date exceeds max range, clamped to: $clampedDate');
+    }
     final dateString =
-        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        '${clampedDate.year}-${clampedDate.month.toString().padLeft(2, '0')}-${clampedDate.day.toString().padLeft(2, '0')}';
+
+    // Get weekday name for better logging
+    final weekdayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    final weekdayName = weekdayNames[date.weekday - 1];
 
     print('');
     print('╔════════════════════════════════════════════════════════════════╗');
     print('║     DATE SELECTED - RELOADING SLOTS                           ║');
     print('╚════════════════════════════════════════════════════════════════╝');
     print('📅 Date selected: $dateString');
-    print('🔍 Day of week: ${_selectedSlotDate.weekday}');
+    print('📆 Day name: $weekdayName');
+    print(
+      '🔍 Day of week (Dart): ${_selectedSlotDate.weekday} (1=Monday, 7=Sunday)',
+    );
+    print(
+      '🔍 Day of week (API): ${_selectedSlotDate.weekday % 7} (0=Sunday, 1=Monday, ..., 6=Saturday)',
+    );
+    print('💡 API will match recurring slots for this weekday');
     print('');
 
     // Reload slots if doctor is selected
@@ -547,7 +580,8 @@ class NewAppointmentViewModel extends ChangeNotifier {
         slotType: _getSlotTypeForApi(
           _selectedConsultationType,
         ), // ✅ Get slot type
-        date: dateString,
+        date:
+            dateString, // ✅ Always pass date - API will match recurring slots by weekday
       );
     } else {
       print('⚠️ No doctor selected - cannot load slots');
@@ -1943,6 +1977,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
   void setDoctor(String doctor) {
     _selectedDoctor = doctor;
 
+    // Reset previously selected slot when doctor changes
+    _selectedSlotId = null;
+    _selectedSlotDetails = null;
+    _selectedTimeSlot = '';
+
     // Find the selected doctor's ID and load their time slots
     try {
       final selectedDoctor = _clinicDoctors.firstWhere(
@@ -2266,19 +2305,31 @@ class NewAppointmentViewModel extends ChangeNotifier {
       print('🆔 Appointment ID (reschedule): $appointmentId');
       print('');
 
+      // ✅ Ensure date is always provided - use selected date if not provided
+      final dateToQuery =
+          date ??
+          '${_selectedSlotDate.year}-${_selectedSlotDate.month.toString().padLeft(2, '0')}-${_selectedSlotDate.day.toString().padLeft(2, '0')}';
+
+      print('📅 Date to query API: $dateToQuery');
+      print('💡 API will automatically match recurring slots for this weekday');
+
       // Use session-based API
       final response = await _sessionSlotRepository.listSessionSlots(
         token: token,
         doctorId: doctorId,
         clinicId: clinicId,
         slotType: slotType,
-        date: date ?? DateTime.now().toString().split(' ')[0],
+        date:
+            dateToQuery, // ✅ Always pass date - API matches recurring slots by weekday
         appointmentId:
             appointmentId, // ✅ Pass appointmentId to exclude from count
       );
 
       if (response != null && response.slots.isNotEmpty) {
         print('✅ Loaded ${response.slots.length} slot days');
+
+        // ✅ Store full session slots response for UI access
+        _sessionSlotsResponse = response;
 
         // Extract all individual slots from all sessions
         final allIndividualSlots = <IndividualSlot>[];
@@ -2300,7 +2351,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
                 id: slot.id,
                 doctorId: response.slots.first.doctorId ?? doctorId,
                 clinicId: slot.clinicId ?? clinicId ?? '',
-                date: date ?? DateTime.now().toString().split(' ')[0],
+                date: dateToQuery, // Use the date we queried with
                 slotType: slotType ?? 'clinic_visit',
                 startTime: slot.slotStart ?? '00:00',
                 endTime: slot.slotEnd ?? '00:00',
@@ -2408,12 +2459,14 @@ class NewAppointmentViewModel extends ChangeNotifier {
       } else {
         _doctorTimeSlots = [];
         _groupedTimeSlots = null;
+        _sessionSlotsResponse = null; // ✅ Clear session response
         print('❌ No session-based slots found for the selected criteria');
       }
     } catch (e) {
       print('❌ Error loading session slots: $e');
       _doctorTimeSlots = [];
       _groupedTimeSlots = null;
+      _sessionSlotsResponse = null; // ✅ Clear session response on error
       _setError('Failed to load time slots');
     } finally {
       _isLoadingSlots = false; // ✅ Use slot-specific loading state
@@ -2692,6 +2745,14 @@ class NewAppointmentViewModel extends ChangeNotifier {
       if (appointmentDetails != null) {
         print('📋 Loading appointment details for reschedule...');
 
+        _appointmentClinicId =
+            appointmentDetails.clinic?.id ?? _authViewModel.user?.clinicId;
+        if (_appointmentClinicId == null || _appointmentClinicId!.isEmpty) {
+          print('⚠️ Clinic ID missing from appointment details.');
+        } else {
+          print('🏥 Appointment Clinic ID: $_appointmentClinicId');
+        }
+
         // Pre-populate form with current appointment data
         // Use flat structure (doctorName) or nested (doctor.name)
         final doctorName =
@@ -2925,10 +2986,24 @@ class NewAppointmentViewModel extends ChangeNotifier {
         // Continue if date parsing fails (backend will validate)
       }
 
+      final clinicId = _appointmentClinicId ?? _authViewModel.user?.clinicId;
+      if (clinicId == null || clinicId.isEmpty) {
+        _setError(
+          'Clinic context missing. Please reload the appointment and try again.',
+        );
+        return false;
+      }
+
+      if (_selectedDoctorId == null || _selectedDoctorId!.isEmpty) {
+        _setError('Doctor selection is required before rescheduling.');
+        return false;
+      }
+
       final result = await _repository.rescheduleSimpleAppointment(
         token: token,
         appointmentId: appointmentId,
         doctorId: _selectedDoctorId!,
+        clinicId: clinicId,
         individualSlotId: _selectedSlotDetails!.id,
         appointmentDate: formattedDate,
         appointmentTime: formattedTime,
