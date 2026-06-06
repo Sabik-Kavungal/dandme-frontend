@@ -24,34 +24,37 @@ class DashboardPagination extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Previous button
-        IconButton(
-          onPressed: onPrevious,
-          icon: const Icon(Icons.chevron_left, size: 20),
-          color: currentPage > 1
-              ? const Color(0xFF666666)
-              : const Color(0xFFCCCCCC),
-          tooltip: 'Previous page',
-        ),
-        const SizedBox(width: 8),
+    return Material(
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Previous button
+          IconButton(
+            onPressed: onPrevious,
+            icon: const Icon(Icons.chevron_left, size: 20),
+            color: currentPage > 1
+                ? const Color(0xFF666666)
+                : const Color(0xFFCCCCCC),
+            tooltip: 'Previous page',
+          ),
+          const SizedBox(width: 8),
 
-        // Page numbers
-        ..._buildPageNumbers(),
+          // Page numbers
+          ..._buildPageNumbers(),
 
-        const SizedBox(width: 8),
-        // Next button
-        IconButton(
-          onPressed: onNext,
-          icon: const Icon(Icons.chevron_right, size: 20),
-          color: currentPage < totalPages
-              ? const Color(0xFF666666)
-              : const Color(0xFFCCCCCC),
-          tooltip: 'Next page',
-        ),
-      ],
+          const SizedBox(width: 8),
+          // Next button
+          IconButton(
+            onPressed: onNext,
+            icon: const Icon(Icons.chevron_right, size: 20),
+            color: currentPage < totalPages
+                ? const Color(0xFF666666)
+                : const Color(0xFFCCCCCC),
+            tooltip: 'Next page',
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,12 +1,17 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/doctor/models/doctor_model.dart';
-import 'package:a/core/utils/app_helpers.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/doctor/models/doctor_model.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:a/core/config/service.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DoctorViewModel extends ChangeNotifier {
   final ServiceRepo _service = ServiceRepo();
+
+  // ✅ AuthViewModel injected — no BuildContext needed for token lookups
+  final AuthViewModel _authViewModel;
+
+  DoctorViewModel(this._authViewModel);
 
   // Private state
   bool _isLoading = false;
@@ -41,15 +46,13 @@ class DoctorViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get access token with proactive refresh
-  Future<String?> _getAccessToken(BuildContext context) async {
+  /// ✅ Safe token retrieval — uses injected AuthViewModel, no BuildContext needed
+  Future<String?> _getAccessToken() async {
     try {
-      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-
       // Check if token is expired and refresh proactively
-      if (authViewModel.tokens?.isAccessTokenExpired == true) {
+      if (_authViewModel.tokens?.isAccessTokenExpired == true) {
         print('Token is expired, refreshing proactively...');
-        final refreshed = await authViewModel.refreshAccessToken();
+        final refreshed = await _authViewModel.refreshAccessToken();
         if (!refreshed) {
           _setError('Token refresh failed. Please login again.');
           return null;
@@ -57,11 +60,10 @@ class DoctorViewModel extends ChangeNotifier {
       }
 
       // Return current token
-      if (authViewModel.accessToken != null) {
-        return authViewModel.accessToken;
+      if (_authViewModel.accessToken != null) {
+        return _authViewModel.accessToken;
       }
 
-      // If no token available, user needs to login
       _setError('No authentication token found. Please login again.');
       return null;
     } catch (e) {
@@ -72,97 +74,52 @@ class DoctorViewModel extends ChangeNotifier {
   }
 
   /// Fetch all doctors from API
-  Future<void> fetchDoctors(BuildContext context) async {
+  Future<void> fetchDoctors({BuildContext? context}) async {
     _setLoading(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return;
       }
 
       final response = await _service.requist(
-        'organizations/doctors/all',
+        'doctors/all',
         method: 'GET',
-        useOrgApi: true, // Use organization API
+        useOrgApi: true,
         token: token,
         context: context,
       );
 
       if (response != null) {
-        print('Doctor API response: $response');
-        print('Response type: ${response.runtimeType}');
-
-        // Handle response with 'doctors' field containing nested user data
         if (response is Map<String, dynamic> && response['doctors'] != null) {
-          print('Processing doctors field response');
           final List<dynamic> doctorsData =
               response['doctors'] as List<dynamic>;
-          try {
-            _doctors = doctorsData.map((doctorJson) {
-              print('Processing doctor item from doctors: $doctorJson');
-              // Transform the nested structure to match our DoctorModel
-              final Map<String, dynamic> transformedDoc =
-                  _transformDoctorResponse(doctorJson as Map<String, dynamic>);
-              return DoctorModel.fromJson(transformedDoc);
-            }).toList();
-            print(
-              'Successfully parsed ${_doctors.length} doctors from doctors field',
-            );
-          } catch (e) {
-            print('Error parsing doctors data field: $e');
-            _setError('Error parsing doctor data: $e');
-            return;
-          }
-        }
-        // If response is a List (direct array)
-        else if (response is List) {
-          print('Processing list response with ${response.length} items');
-          try {
-            _doctors = response.map((json) {
-              print('Processing doctor item: $json');
-              final Map<String, dynamic> doctorJson =
-                  json as Map<String, dynamic>;
-              final Map<String, dynamic> transformedDoc =
-                  _transformDoctorResponse(doctorJson);
-              return DoctorModel.fromJson(transformedDoc);
-            }).toList();
-            print('Successfully parsed ${_doctors.length} doctors');
-          } catch (e) {
-            print('Error parsing doctor list: $e');
-            _setError('Error parsing doctor data: $e');
-            return;
-          }
-        }
-        // If response is a Map with 'data' field
-        else if (response is Map<String, dynamic> && response['data'] != null) {
-          print('Processing data field response');
+          _doctors = doctorsData.map((doctorJson) {
+            final Map<String, dynamic> transformedDoc =
+                _transformDoctorResponse(doctorJson as Map<String, dynamic>);
+            return DoctorModel.fromJson(transformedDoc);
+          }).toList();
+        } else if (response is List) {
+          _doctors = response.map((json) {
+            final Map<String, dynamic> transformedDoc =
+                _transformDoctorResponse(json as Map<String, dynamic>);
+            return DoctorModel.fromJson(transformedDoc);
+          }).toList();
+        } else if (response is Map<String, dynamic> &&
+            response['data'] != null) {
           final List<dynamic> doctorsData = response['data'] as List<dynamic>;
-          try {
-            _doctors = doctorsData.map((json) {
-              print('Processing doctor item from data: $json');
-              final Map<String, dynamic> doctorJson =
-                  json as Map<String, dynamic>;
-              final Map<String, dynamic> transformedDoc =
-                  _transformDoctorResponse(doctorJson);
-              return DoctorModel.fromJson(transformedDoc);
-            }).toList();
-            print(
-              'Successfully parsed ${_doctors.length} doctors from data field',
-            );
-          } catch (e) {
-            print('Error parsing doctor data field: $e');
-            _setError('Error parsing doctor data: $e');
-            return;
-          }
+          _doctors = doctorsData.map((json) {
+            final Map<String, dynamic> transformedDoc =
+                _transformDoctorResponse(json as Map<String, dynamic>);
+            return DoctorModel.fromJson(transformedDoc);
+          }).toList();
         } else {
-          print('Invalid response format: $response');
           _setError('Invalid response format');
         }
       } else {
-        print('No response received from doctor API');
         _setError('Failed to fetch doctors');
       }
     } catch (e) {
@@ -173,37 +130,112 @@ class DoctorViewModel extends ChangeNotifier {
   }
 
   /// Add a new doctor
-  Future<bool> addDoctor(DoctorModel doctor, BuildContext context) async {
+  Future<String?> addDoctor(
+    DoctorModel doctor,
+    XFile? profileImage, {
+    BuildContext? context,
+  }) async {
     _setAdding(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
-        return false;
+        return null;
       }
 
-      final response = await _service.requist(
-        'organizations/doctors',
+      final Map<String, dynamic> doctorMap = doctor.toJson();
+      final Map<String, String> fields = {};
+
+      doctorMap.forEach((key, value) {
+        if (value != null) {
+          fields[key] = value.toString();
+        }
+      });
+
+      final Map<String, XFile>? files = profileImage != null
+          ? {'profile_image': profileImage}
+          : null;
+
+      final response = await _service.multipart(
+        'doctors',
         method: 'POST',
-        body: doctor.toJson(),
-        useOrgApi: true, // Use organization API
+        fields: fields,
+        files: files,
+        useOrgApi: true,
         token: token,
         context: context,
       );
 
-      print('Doctor creation request: ${doctor.toJson()}');
-
       if (response != null) {
-        print('Doctor creation response: $response');
-        // Refresh the doctors list
-        await fetchDoctors(context);
-        return true;
+        print('✅ Add Doctor Raw Response: $response');
+        await fetchDoctors();
+        String doctorCode = '';
+        if (response is Map<String, dynamic> &&
+            response['doctor_code'] != null) {
+          doctorCode = response['doctor_code'].toString();
+        } else if (response is Map<String, dynamic> &&
+            response['data'] != null &&
+            response['data']['doctor_code'] != null) {
+          doctorCode = response['data']['doctor_code'].toString();
+        }
+        return doctorCode.isNotEmpty ? doctorCode : 'Success';
       } else {
         _setError('Failed to add doctor');
-        return false;
+        return null;
       }
+    } catch (e) {
+      _setError(AppHelpers.getErrorMessage(e));
+      return null;
+    } finally {
+      _setAdding(false);
+    }
+  }
+
+  /// Update an existing doctor
+  Future<bool> updateDoctor(
+    String doctorId,
+    DoctorModel doctor,
+    XFile? profileImage, {
+    BuildContext? context,
+  }) async {
+    _setAdding(true);
+    _clearError();
+
+    try {
+      final token = await _getAccessToken();
+      if (token == null) return false;
+
+      final Map<String, dynamic> doctorMap = doctor.toJson();
+      final Map<String, String> fields = {};
+
+      doctorMap.forEach((key, value) {
+        if (value != null && key != 'id') {
+          fields[key] = value.toString();
+        }
+      });
+
+      final Map<String, XFile>? files = profileImage != null
+          ? {'profile_image': profileImage}
+          : null;
+
+      final response = await _service.multipart(
+        'doctors/$doctorId',
+        method: 'PUT',
+        fields: fields,
+        files: files,
+        useOrgApi: true,
+        token: token,
+        context: context,
+      );
+
+      if (response != null) {
+        print('✅ Update Doctor Raw Response: $response');
+        await fetchDoctors();
+        return true;
+      }
+      return false;
     } catch (e) {
       _setError(AppHelpers.getErrorMessage(e));
       return false;
@@ -212,33 +244,61 @@ class DoctorViewModel extends ChangeNotifier {
     }
   }
 
+  /// Delete a doctor record (Hard Delete)
+  Future<bool> deleteDoctor(String doctorId, {BuildContext? context}) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      final token = await _getAccessToken();
+      if (token == null) return false;
+
+      final response = await _service.requist(
+        'doctors/$doctorId',
+        method: 'DELETE',
+        useOrgApi: true,
+        token: token,
+        context: context,
+      );
+
+      if (response != null) {
+        await fetchDoctors();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _setError(AppHelpers.getErrorMessage(e));
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   /// Transform API response to match DoctorModel structure
   Map<String, dynamic> _transformDoctorResponse(
     Map<String, dynamic> doctorJson,
   ) {
-    // Extract user data from nested user object
     final Map<String, dynamic>? userData =
         doctorJson['user'] as Map<String, dynamic>?;
 
-    // Return transformed structure that matches DoctorModel
     return {
-      // Doctor ID (this was missing! - map to 'id' in JSON)
-      'id': doctorJson['doctor_id'], // Maps to drid in DoctorModel
-      // User fields
+      'id': doctorJson['doctor_id'],
       'user_id': userData?['user_id'],
       'first_name': userData?['first_name'],
       'last_name': userData?['last_name'],
       'email': userData?['email'],
       'username': userData?['username'],
       'phone': userData?['phone'],
-
-      // Doctor fields (direct from doctorJson)
       'doctor_code': doctorJson['doctor_code'],
       'specialization': doctorJson['specialization'],
       'license_number': doctorJson['license_number'],
       'consultation_fee': doctorJson['consultation_fee'],
       'follow_up_fee': doctorJson['follow_up_fee'],
       'follow_up_days': doctorJson['follow_up_days'],
+      'profile_image': doctorJson['profile_image'],
+      'qualification': doctorJson['qualification'],
+      'experience_years': doctorJson['experience_years'],
+      'bio': doctorJson['bio'],
     };
   }
 
@@ -248,7 +308,7 @@ class DoctorViewModel extends ChangeNotifier {
   }
 
   /// Refresh doctors list
-  Future<void> refresh(BuildContext context) async {
-    await fetchDoctors(context);
+  Future<void> refresh({BuildContext? context}) async {
+    await fetchDoctors();
   }
 }

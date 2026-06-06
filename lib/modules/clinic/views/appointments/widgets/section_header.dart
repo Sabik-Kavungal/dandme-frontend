@@ -30,7 +30,7 @@ class SectionHeader extends StatelessWidget {
               padding: EdgeInsets.all(6 * scaleFactor),
               decoration: BoxDecoration(
                 color: effectiveColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(3),
                 border: Border.all(
                   color: effectiveColor.withOpacity(0.2),
                   width: 1,

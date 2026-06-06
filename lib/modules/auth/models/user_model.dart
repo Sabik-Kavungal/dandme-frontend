@@ -5,7 +5,7 @@ part '../gen/user_model.g.dart';
 
 /// Core user model with comprehensive validation and utility methods
 @freezed
-class UserModel with _$UserModel {
+abstract class UserModel with _$UserModel {
   const factory UserModel({
     String? id,
     String? firstName,
@@ -24,6 +24,7 @@ class UserModel with _$UserModel {
     String? organizationId,
     String? clinicId,
     String? serviceId,
+    String? logo,
   }) = _UserModel;
 
   const UserModel._();
@@ -117,7 +118,7 @@ class UserModel with _$UserModel {
 
 /// User role model with permission management
 @freezed
-class UserRole with _$UserRole {
+abstract class UserRole with _$UserRole {
   const factory UserRole({
     String? id,
     String? name,
@@ -156,7 +157,7 @@ class UserRole with _$UserRole {
 
 /// Login response model with enhanced functionality
 @freezed
-class LoginResponse with _$LoginResponse {
+abstract class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
     String? accessToken,
     String? email,
@@ -196,6 +197,12 @@ class LoginResponse with _$LoginResponse {
         ? roles!.first.serviceId
         : null;
 
+    // Extract logo from permissions if available
+    String? extractedLogo;
+    if (roles != null && roles!.isNotEmpty) {
+      extractedLogo = roles!.first.permissions?['logo'] as String?;
+    }
+
     return UserModel(
       id: id,
       firstName: firstName,
@@ -209,6 +216,7 @@ class LoginResponse with _$LoginResponse {
       organizationId: extractedOrganizationId ?? organizationId,
       clinicId: extractedClinicId ?? clinicId,
       serviceId: extractedServiceId ?? serviceId,
+      logo: extractedLogo,
     );
   }
 
@@ -238,7 +246,7 @@ class LoginResponse with _$LoginResponse {
 
 /// Token model with validation and utility methods
 @freezed
-class TokenModel with _$TokenModel {
+abstract class TokenModel with _$TokenModel {
   const factory TokenModel({
     String? accessToken,
     String? refreshToken,
@@ -343,17 +351,30 @@ class TokenModel with _$TokenModel {
   /// Parse JWT token and return claims
   Map<String, dynamic>? _parseJWT(String token) {
     try {
-      // JWT tokens have 3 parts separated by dots
       final parts = token.split('.');
       if (parts.length != 3) return null;
 
-      // Decode the payload (second part)
-      final payload = parts[1];
-      // Add padding if needed
-      final paddedPayload = payload + '=' * (4 - payload.length % 4);
-      final decoded = utf8.decode(base64.decode(paddedPayload));
+      String payload = parts[1];
+      // Normalize base64url to base64
+      payload = payload.replaceAll('-', '+').replaceAll('_', '/');
+      // Add padding
+      switch (payload.length % 4) {
+        case 0:
+          break;
+        case 2:
+          payload += '==';
+          break;
+        case 3:
+          payload += '=';
+          break;
+        default:
+          return null;
+      }
+
+      final decoded = utf8.decode(base64.decode(payload));
       return json.decode(decoded) as Map<String, dynamic>;
     } catch (e) {
+      print('Error parsing JWT: $e');
       return null;
     }
   }
@@ -435,7 +456,7 @@ class TokenModel with _$TokenModel {
 
 /// Authentication response model with conversion utilities
 @freezed
-class AuthResponse with _$AuthResponse {
+abstract class AuthResponse with _$AuthResponse {
   const factory AuthResponse({
     UserModel? user,
     String? accessToken,

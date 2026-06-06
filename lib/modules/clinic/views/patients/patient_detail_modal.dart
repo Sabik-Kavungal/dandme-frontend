@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
 import 'package:intl/intl.dart';
 
 class PatientDetailModal extends StatelessWidget {
@@ -60,7 +60,7 @@ class PatientDetailModal extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '📞 ${patient.phone}',
+                              '📞 ${patient.phone}${patient.age != null ? '  •  🎂 ${patient.age} years' : ''}',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
@@ -86,6 +86,36 @@ class PatientDetailModal extends StatelessWidget {
                       // MO ID
                       if (patient.moId != null && patient.moId!.isNotEmpty) ...[
                         _buildInfoRow('🆔 MO ID', patient.moId!),
+                        const SizedBox(height: 16),
+                      ],
+
+                      // Gender & Blood Group
+                      Row(
+                        children: [
+                          if (patient.gender != null)
+                            Expanded(
+                              child: _buildInfoRow(
+                                '🚻 Gender',
+                                patient.gender![0].toUpperCase() +
+                                    patient.gender!.substring(1),
+                              ),
+                            ),
+                          if (patient.bloodGroup != null)
+                            Expanded(
+                              child: _buildInfoRow(
+                                '🩸 Blood',
+                                patient.bloodGroup!,
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (patient.gender != null || patient.bloodGroup != null)
+                        const SizedBox(height: 16),
+
+                      // Address
+                      if (patient.address != null &&
+                          patient.address!.isNotEmpty) ...[
+                        _buildInfoRow('📍 Address', patient.address!),
                         const SizedBox(height: 16),
                       ],
 

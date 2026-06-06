@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
-import 'package:a/modules/clinic/viewmodels/slot_configuration_viewmodel.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:drandme/modules/clinic/viewmodels/slot_configuration_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 
 class SlotConfigurationWidget extends StatefulWidget {
   final String? doctorId; // Optional - auto-fetched from auth if not provided

@@ -3,7 +3,7 @@ part '../gen/organization_model.freezed.dart';
 part '../gen/organization_model.g.dart';
 
 @freezed
-class OrganizationModel with _$OrganizationModel {
+abstract class OrganizationModel with _$OrganizationModel {
   const factory OrganizationModel({
     String? id,
     required String name,

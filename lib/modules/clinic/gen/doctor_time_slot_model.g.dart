@@ -6,9 +6,9 @@ part of '../models/doctor_time_slot_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DoctorTimeSlotResponseImpl _$$DoctorTimeSlotResponseImplFromJson(
+_DoctorTimeSlotResponse _$DoctorTimeSlotResponseFromJson(
   Map<String, dynamic> json,
-) => _$DoctorTimeSlotResponseImpl(
+) => _DoctorTimeSlotResponse(
   id: json['id'] as String,
   doctorId: json['doctor_id'] as String,
   doctorName: json['doctor_name'] as String?,
@@ -28,6 +28,8 @@ _$DoctorTimeSlotResponseImpl _$$DoctorTimeSlotResponseImplFromJson(
   isBookable: json['is_bookable'] as bool? ?? true,
   status: json['status'] as String? ?? 'available',
   displayMessage: json['display_message'] as String? ?? 'Available',
+  startDateTime: json['start_datetime'] as String?,
+  endDateTime: json['end_datetime'] as String?,
   notes: json['notes'] as String?,
   createdAt: json['created_at'] == null
       ? null
@@ -37,17 +39,17 @@ _$DoctorTimeSlotResponseImpl _$$DoctorTimeSlotResponseImplFromJson(
       : DateTime.parse(json['updated_at'] as String),
 );
 
-Map<String, dynamic> _$$DoctorTimeSlotResponseImplToJson(
-  _$DoctorTimeSlotResponseImpl instance,
+Map<String, dynamic> _$DoctorTimeSlotResponseToJson(
+  _DoctorTimeSlotResponse instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'doctor_id': instance.doctorId,
-  if (instance.doctorName case final value?) 'doctor_name': value,
+  'doctor_name': ?instance.doctorName,
   'clinic_id': instance.clinicId,
-  if (instance.clinicName case final value?) 'clinic_name': value,
+  'clinic_name': ?instance.clinicName,
   'date': instance.date,
-  if (instance.dayOfWeek case final value?) 'day_of_week': value,
-  if (instance.dayName case final value?) 'day_name': value,
+  'day_of_week': ?instance.dayOfWeek,
+  'day_name': ?instance.dayName,
   'slot_type': instance.slotType,
   'start_time': instance.startTime,
   'end_time': instance.endTime,
@@ -59,34 +61,32 @@ Map<String, dynamic> _$$DoctorTimeSlotResponseImplToJson(
   'is_bookable': instance.isBookable,
   'status': instance.status,
   'display_message': instance.displayMessage,
-  if (instance.notes case final value?) 'notes': value,
-  if (instance.createdAt?.toIso8601String() case final value?)
-    'created_at': value,
-  if (instance.updatedAt?.toIso8601String() case final value?)
-    'updated_at': value,
+  'start_datetime': ?instance.startDateTime,
+  'end_datetime': ?instance.endDateTime,
+  'notes': ?instance.notes,
+  'created_at': ?instance.createdAt?.toIso8601String(),
+  'updated_at': ?instance.updatedAt?.toIso8601String(),
 };
 
-_$TimeSlotDefinitionImpl _$$TimeSlotDefinitionImplFromJson(
-  Map<String, dynamic> json,
-) => _$TimeSlotDefinitionImpl(
-  startTime: json['start_time'] as String,
-  endTime: json['end_time'] as String,
-  maxPatients: (json['max_patients'] as num?)?.toInt() ?? 1,
-  notes: json['notes'] as String?,
-);
+_TimeSlotDefinition _$TimeSlotDefinitionFromJson(Map<String, dynamic> json) =>
+    _TimeSlotDefinition(
+      startTime: json['start_time'] as String,
+      endTime: json['end_time'] as String,
+      maxPatients: (json['max_patients'] as num?)?.toInt() ?? 1,
+      notes: json['notes'] as String?,
+    );
 
-Map<String, dynamic> _$$TimeSlotDefinitionImplToJson(
-  _$TimeSlotDefinitionImpl instance,
-) => <String, dynamic>{
-  'start_time': instance.startTime,
-  'end_time': instance.endTime,
-  'max_patients': instance.maxPatients,
-  if (instance.notes case final value?) 'notes': value,
-};
+Map<String, dynamic> _$TimeSlotDefinitionToJson(_TimeSlotDefinition instance) =>
+    <String, dynamic>{
+      'start_time': instance.startTime,
+      'end_time': instance.endTime,
+      'max_patients': instance.maxPatients,
+      'notes': ?instance.notes,
+    };
 
-_$CreateDoctorTimeSlotInputImpl _$$CreateDoctorTimeSlotInputImplFromJson(
+_CreateDoctorTimeSlotInput _$CreateDoctorTimeSlotInputFromJson(
   Map<String, dynamic> json,
-) => _$CreateDoctorTimeSlotInputImpl(
+) => _CreateDoctorTimeSlotInput(
   doctorId: json['doctor_id'] as String,
   clinicId: json['clinic_id'] as String,
   slotType: json['slot_type'] as String,
@@ -96,8 +96,8 @@ _$CreateDoctorTimeSlotInputImpl _$$CreateDoctorTimeSlotInputImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$CreateDoctorTimeSlotInputImplToJson(
-  _$CreateDoctorTimeSlotInputImpl instance,
+Map<String, dynamic> _$CreateDoctorTimeSlotInputToJson(
+  _CreateDoctorTimeSlotInput instance,
 ) => <String, dynamic>{
   'doctor_id': instance.doctorId,
   'clinic_id': instance.clinicId,
@@ -106,25 +106,24 @@ Map<String, dynamic> _$$CreateDoctorTimeSlotInputImplToJson(
   'slots': instance.slots.map((e) => e.toJson()).toList(),
 };
 
-_$BulkCreateDoctorTimeSlotsResponseImpl
-_$$BulkCreateDoctorTimeSlotsResponseImplFromJson(Map<String, dynamic> json) =>
-    _$BulkCreateDoctorTimeSlotsResponseImpl(
-      message: json['message'] as String,
-      createdSlots:
-          (json['created_slots'] as List<dynamic>?)
-              ?.map(
-                (e) =>
-                    DoctorTimeSlotResponse.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          const [],
-      failedSlots: json['failed_slots'] as List<dynamic>? ?? const [],
-      totalCreated: (json['total_created'] as num).toInt(),
-      totalFailed: (json['total_failed'] as num).toInt(),
-    );
+_BulkCreateDoctorTimeSlotsResponse _$BulkCreateDoctorTimeSlotsResponseFromJson(
+  Map<String, dynamic> json,
+) => _BulkCreateDoctorTimeSlotsResponse(
+  message: json['message'] as String,
+  createdSlots:
+      (json['created_slots'] as List<dynamic>?)
+          ?.map(
+            (e) => DoctorTimeSlotResponse.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const [],
+  failedSlots: json['failed_slots'] as List<dynamic>? ?? const [],
+  totalCreated: (json['total_created'] as num).toInt(),
+  totalFailed: (json['total_failed'] as num).toInt(),
+);
 
-Map<String, dynamic> _$$BulkCreateDoctorTimeSlotsResponseImplToJson(
-  _$BulkCreateDoctorTimeSlotsResponseImpl instance,
+Map<String, dynamic> _$BulkCreateDoctorTimeSlotsResponseToJson(
+  _BulkCreateDoctorTimeSlotsResponse instance,
 ) => <String, dynamic>{
   'message': instance.message,
   'created_slots': instance.createdSlots.map((e) => e.toJson()).toList(),
@@ -133,8 +132,8 @@ Map<String, dynamic> _$$BulkCreateDoctorTimeSlotsResponseImplToJson(
   'total_failed': instance.totalFailed,
 };
 
-_$AvailableSlotImpl _$$AvailableSlotImplFromJson(Map<String, dynamic> json) =>
-    _$AvailableSlotImpl(
+_AvailableSlot _$AvailableSlotFromJson(Map<String, dynamic> json) =>
+    _AvailableSlot(
       id: json['id'] as String,
       clinicId: json['clinic_id'] as String,
       clinicName: json['clinic_name'] as String?,
@@ -147,36 +146,36 @@ _$AvailableSlotImpl _$$AvailableSlotImplFromJson(Map<String, dynamic> json) =>
       notes: json['notes'] as String?,
     );
 
-Map<String, dynamic> _$$AvailableSlotImplToJson(_$AvailableSlotImpl instance) =>
+Map<String, dynamic> _$AvailableSlotToJson(_AvailableSlot instance) =>
     <String, dynamic>{
       'id': instance.id,
       'clinic_id': instance.clinicId,
-      if (instance.clinicName case final value?) 'clinic_name': value,
+      'clinic_name': ?instance.clinicName,
       'day_of_week': instance.dayOfWeek,
       'day_name': instance.dayName,
       'slot_type': instance.slotType,
       'start_time': instance.startTime,
       'end_time': instance.endTime,
       'max_patients': instance.maxPatients,
-      if (instance.notes case final value?) 'notes': value,
+      'notes': ?instance.notes,
     };
 
-_$DoctorTimeSlotsResponseImpl _$$DoctorTimeSlotsResponseImplFromJson(
+_DoctorTimeSlotsResponse _$DoctorTimeSlotsResponseFromJson(
   Map<String, dynamic> json,
-) => _$DoctorTimeSlotsResponseImpl(
+) => _DoctorTimeSlotsResponse(
   availableSlots: (json['available_slots'] as List<dynamic>)
       .map((e) => AvailableSlot.fromJson(e as Map<String, dynamic>))
       .toList(),
 );
 
-Map<String, dynamic> _$$DoctorTimeSlotsResponseImplToJson(
-  _$DoctorTimeSlotsResponseImpl instance,
+Map<String, dynamic> _$DoctorTimeSlotsResponseToJson(
+  _DoctorTimeSlotsResponse instance,
 ) => <String, dynamic>{
   'available_slots': instance.availableSlots.map((e) => e.toJson()).toList(),
 };
 
-_$DaySlotGroupImpl _$$DaySlotGroupImplFromJson(Map<String, dynamic> json) =>
-    _$DaySlotGroupImpl(
+_DaySlotGroup _$DaySlotGroupFromJson(Map<String, dynamic> json) =>
+    _DaySlotGroup(
       dayName: json['day_name'] as String,
       dayOfWeek: (json['day_of_week'] as num).toInt(),
       slots:
@@ -194,7 +193,7 @@ _$DaySlotGroupImpl _$$DaySlotGroupImplFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String? ?? 'unavailable',
     );
 
-Map<String, dynamic> _$$DaySlotGroupImplToJson(_$DaySlotGroupImpl instance) =>
+Map<String, dynamic> _$DaySlotGroupToJson(_DaySlotGroup instance) =>
     <String, dynamic>{
       'day_name': instance.dayName,
       'day_of_week': instance.dayOfWeek,
@@ -206,9 +205,9 @@ Map<String, dynamic> _$$DaySlotGroupImplToJson(_$DaySlotGroupImpl instance) =>
       'status': instance.status,
     };
 
-_$GroupedTimeSlotsResponseImpl _$$GroupedTimeSlotsResponseImplFromJson(
+_GroupedTimeSlotsResponse _$GroupedTimeSlotsResponseFromJson(
   Map<String, dynamic> json,
-) => _$GroupedTimeSlotsResponseImpl(
+) => _GroupedTimeSlotsResponse(
   doctorId: json['doctor_id'] as String,
   clinicId: json['clinic_id'] as String?,
   slotType: json['slot_type'] as String?,
@@ -220,19 +219,19 @@ _$GroupedTimeSlotsResponseImpl _$$GroupedTimeSlotsResponseImplFromJson(
       const [],
 );
 
-Map<String, dynamic> _$$GroupedTimeSlotsResponseImplToJson(
-  _$GroupedTimeSlotsResponseImpl instance,
+Map<String, dynamic> _$GroupedTimeSlotsResponseToJson(
+  _GroupedTimeSlotsResponse instance,
 ) => <String, dynamic>{
   'doctor_id': instance.doctorId,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.slotType case final value?) 'slot_type': value,
-  if (instance.date case final value?) 'date': value,
+  'clinic_id': ?instance.clinicId,
+  'slot_type': ?instance.slotType,
+  'date': ?instance.date,
   'days': instance.days.map((e) => e.toJson()).toList(),
 };
 
-_$ListTimeSlotsResponseImpl _$$ListTimeSlotsResponseImplFromJson(
+_ListTimeSlotsResponse _$ListTimeSlotsResponseFromJson(
   Map<String, dynamic> json,
-) => _$ListTimeSlotsResponseImpl(
+) => _ListTimeSlotsResponse(
   doctorId: json['doctor_id'] as String,
   clinicId: json['clinic_id'] as String?,
   slotType: json['slot_type'] as String?,
@@ -247,20 +246,20 @@ _$ListTimeSlotsResponseImpl _$$ListTimeSlotsResponseImplFromJson(
   total: (json['total'] as num?)?.toInt() ?? 0,
 );
 
-Map<String, dynamic> _$$ListTimeSlotsResponseImplToJson(
-  _$ListTimeSlotsResponseImpl instance,
+Map<String, dynamic> _$ListTimeSlotsResponseToJson(
+  _ListTimeSlotsResponse instance,
 ) => <String, dynamic>{
   'doctor_id': instance.doctorId,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.slotType case final value?) 'slot_type': value,
-  if (instance.date case final value?) 'date': value,
+  'clinic_id': ?instance.clinicId,
+  'slot_type': ?instance.slotType,
+  'date': ?instance.date,
   'slots': instance.slots.map((e) => e.toJson()).toList(),
   'total': instance.total,
 };
 
-_$CreateDateSpecificSlotsInputImpl _$$CreateDateSpecificSlotsInputImplFromJson(
+_CreateDateSpecificSlotsInput _$CreateDateSpecificSlotsInputFromJson(
   Map<String, dynamic> json,
-) => _$CreateDateSpecificSlotsInputImpl(
+) => _CreateDateSpecificSlotsInput(
   doctorId: json['doctor_id'] as String,
   clinicId: json['clinic_id'] as String,
   slotType: json['slot_type'] as String,
@@ -271,19 +270,19 @@ _$CreateDateSpecificSlotsInputImpl _$$CreateDateSpecificSlotsInputImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$CreateDateSpecificSlotsInputImplToJson(
-  _$CreateDateSpecificSlotsInputImpl instance,
+Map<String, dynamic> _$CreateDateSpecificSlotsInputToJson(
+  _CreateDateSpecificSlotsInput instance,
 ) => <String, dynamic>{
   'doctor_id': instance.doctorId,
   'clinic_id': instance.clinicId,
   'slot_type': instance.slotType,
-  if (instance.date case final value?) 'date': value,
-  if (instance.dayOfWeek case final value?) 'day_of_week': value,
+  'date': ?instance.date,
+  'day_of_week': ?instance.dayOfWeek,
   'slots': instance.slots.map((e) => e.toJson()).toList(),
 };
 
-_$SimpleTimeSlotImpl _$$SimpleTimeSlotImplFromJson(Map<String, dynamic> json) =>
-    _$SimpleTimeSlotImpl(
+_SimpleTimeSlot _$SimpleTimeSlotFromJson(Map<String, dynamic> json) =>
+    _SimpleTimeSlot(
       startTime: json['start_time'] as String,
       endTime: json['end_time'] as String,
       maxPatients: (json['max_patients'] as num?)?.toInt(),
@@ -291,19 +290,18 @@ _$SimpleTimeSlotImpl _$$SimpleTimeSlotImplFromJson(Map<String, dynamic> json) =>
       notes: json['notes'] as String?,
     );
 
-Map<String, dynamic> _$$SimpleTimeSlotImplToJson(
-  _$SimpleTimeSlotImpl instance,
-) => <String, dynamic>{
-  'start_time': instance.startTime,
-  'end_time': instance.endTime,
-  if (instance.maxPatients case final value?) 'max_patients': value,
-  if (instance.dayOfWeek case final value?) 'day_of_week': value,
-  if (instance.notes case final value?) 'notes': value,
-};
+Map<String, dynamic> _$SimpleTimeSlotToJson(_SimpleTimeSlot instance) =>
+    <String, dynamic>{
+      'start_time': instance.startTime,
+      'end_time': instance.endTime,
+      'max_patients': ?instance.maxPatients,
+      'day_of_week': ?instance.dayOfWeek,
+      'notes': ?instance.notes,
+    };
 
-_$DateSpecificSlotResponseImpl _$$DateSpecificSlotResponseImplFromJson(
+_DateSpecificSlotResponse _$DateSpecificSlotResponseFromJson(
   Map<String, dynamic> json,
-) => _$DateSpecificSlotResponseImpl(
+) => _DateSpecificSlotResponse(
   id: json['id'] as String,
   doctorId: json['doctor_id'] as String,
   clinicId: json['clinic_id'] as String,
@@ -322,8 +320,8 @@ _$DateSpecificSlotResponseImpl _$$DateSpecificSlotResponseImplFromJson(
   updatedAt: json['updated_at'] as String,
 );
 
-Map<String, dynamic> _$$DateSpecificSlotResponseImplToJson(
-  _$DateSpecificSlotResponseImpl instance,
+Map<String, dynamic> _$DateSpecificSlotResponseToJson(
+  _DateSpecificSlotResponse instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'doctor_id': instance.doctorId,
@@ -333,38 +331,39 @@ Map<String, dynamic> _$$DateSpecificSlotResponseImplToJson(
   'start_time': instance.startTime,
   'end_time': instance.endTime,
   'max_patients': instance.maxPatients,
-  if (instance.bookedPatients case final value?) 'booked_patients': value,
-  if (instance.availableSpots case final value?) 'available_spots': value,
-  if (instance.isAvailable case final value?) 'is_available': value,
-  if (instance.status case final value?) 'status': value,
-  if (instance.notes case final value?) 'notes': value,
+  'booked_patients': ?instance.bookedPatients,
+  'available_spots': ?instance.availableSpots,
+  'is_available': ?instance.isAvailable,
+  'status': ?instance.status,
+  'notes': ?instance.notes,
   'is_active': instance.isActive,
   'created_at': instance.createdAt,
   'updated_at': instance.updatedAt,
 };
 
-_$CreateSlotsResponseImpl _$$CreateSlotsResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$CreateSlotsResponseImpl(
-  message: json['message'] as String,
-  createdSlots:
-      (json['created_slots'] as List<dynamic>?)
-          ?.map(
-            (e) => DateSpecificSlotResponse.fromJson(e as Map<String, dynamic>),
-          )
-          .toList() ??
-      const [],
-  failedSlots:
-      (json['failed_slots'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList() ??
-      const [],
-  totalCreated: (json['total_created'] as num).toInt(),
-  totalFailed: (json['total_failed'] as num).toInt(),
-);
+_CreateSlotsResponse _$CreateSlotsResponseFromJson(Map<String, dynamic> json) =>
+    _CreateSlotsResponse(
+      message: json['message'] as String,
+      createdSlots:
+          (json['created_slots'] as List<dynamic>?)
+              ?.map(
+                (e) => DateSpecificSlotResponse.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          const [],
+      failedSlots:
+          (json['failed_slots'] as List<dynamic>?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          const [],
+      totalCreated: (json['total_created'] as num).toInt(),
+      totalFailed: (json['total_failed'] as num).toInt(),
+    );
 
-Map<String, dynamic> _$$CreateSlotsResponseImplToJson(
-  _$CreateSlotsResponseImpl instance,
+Map<String, dynamic> _$CreateSlotsResponseToJson(
+  _CreateSlotsResponse instance,
 ) => <String, dynamic>{
   'message': instance.message,
   'created_slots': instance.createdSlots.map((e) => e.toJson()).toList(),
@@ -373,30 +372,34 @@ Map<String, dynamic> _$$CreateSlotsResponseImplToJson(
   'total_failed': instance.totalFailed,
 };
 
-_$ListSlotsResponseImpl _$$ListSlotsResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$ListSlotsResponseImpl(
-  slots:
-      (json['slots'] as List<dynamic>?)
-          ?.map(
-            (e) => DateSpecificSlotResponse.fromJson(e as Map<String, dynamic>),
-          )
-          .toList() ??
-      const [],
-  total: (json['total'] as num?)?.toInt() ?? 0,
-  doctorId: json['doctor_id'] as String?,
-  clinicId: json['clinic_id'] as String?,
-  slotType: json['slot_type'] as String?,
-  date: json['date'] as String?,
-);
+_ListSlotsResponse _$ListSlotsResponseFromJson(Map<String, dynamic> json) =>
+    _ListSlotsResponse(
+      slots:
+          (json['slots'] as List<dynamic>?)
+              ?.map(
+                (e) => DateSpecificSlotResponse.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          const [],
+      total: (json['total'] as num?)?.toInt() ?? 0,
+      doctorId: json['doctor_id'] as String?,
+      clinicId: json['clinic_id'] as String?,
+      slotType: json['slot_type'] as String?,
+      date: json['date'] as String?,
+      walkinAvailable: json['walkin_available'] as bool? ?? false,
+      walkinReason: json['walkin_reason'] as String?,
+    );
 
-Map<String, dynamic> _$$ListSlotsResponseImplToJson(
-  _$ListSlotsResponseImpl instance,
-) => <String, dynamic>{
-  'slots': instance.slots.map((e) => e.toJson()).toList(),
-  'total': instance.total,
-  if (instance.doctorId case final value?) 'doctor_id': value,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.slotType case final value?) 'slot_type': value,
-  if (instance.date case final value?) 'date': value,
-};
+Map<String, dynamic> _$ListSlotsResponseToJson(_ListSlotsResponse instance) =>
+    <String, dynamic>{
+      'slots': instance.slots.map((e) => e.toJson()).toList(),
+      'total': instance.total,
+      'doctor_id': ?instance.doctorId,
+      'clinic_id': ?instance.clinicId,
+      'slot_type': ?instance.slotType,
+      'date': ?instance.date,
+      'walkin_available': instance.walkinAvailable,
+      'walkin_reason': ?instance.walkinReason,
+    };

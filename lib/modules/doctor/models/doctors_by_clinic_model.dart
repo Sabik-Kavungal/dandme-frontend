@@ -5,7 +5,7 @@ part '../gen/doctors_by_clinic_model.g.dart';
 
 // Clinic Info Model
 @freezed
-class ClinicInfoModel with _$ClinicInfoModel {
+abstract class ClinicInfoModel with _$ClinicInfoModel {
   const factory ClinicInfoModel({
     required String id,
     @JsonKey(name: "clinic_code") required String clinicCode,
@@ -19,7 +19,7 @@ class ClinicInfoModel with _$ClinicInfoModel {
 
 // Doctor in Clinic Model
 @freezed
-class DoctorInClinicModel with _$DoctorInClinicModel {
+abstract class DoctorInClinicModel with _$DoctorInClinicModel {
   const factory DoctorInClinicModel({
     required String id,
     @JsonKey(name: "user_id") required String userId,
@@ -41,7 +41,7 @@ class DoctorInClinicModel with _$DoctorInClinicModel {
 
 // Doctors by Clinic Response Model
 @freezed
-class DoctorsByClinicResponse with _$DoctorsByClinicResponse {
+abstract class DoctorsByClinicResponse with _$DoctorsByClinicResponse {
   const factory DoctorsByClinicResponse({
     required ClinicInfoModel clinic,
     required List<DoctorInClinicModel> doctors,

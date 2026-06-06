@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 
 /// Widget that provides role-based navigation functionality
 class RoleBasedNavigation {

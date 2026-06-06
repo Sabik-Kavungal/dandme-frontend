@@ -1,8 +1,8 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/auth/views/login_view.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/views/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

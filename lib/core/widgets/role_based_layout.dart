@@ -1,8 +1,8 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:a/core/config/role_router.dart';
+import 'package:drandme/core/config/role_router.dart';
 
 class RoleBasedLayout extends StatefulWidget {
   const RoleBasedLayout({super.key});

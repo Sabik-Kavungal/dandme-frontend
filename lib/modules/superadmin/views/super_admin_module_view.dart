@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:a/core/responsive/universal_responsive_layout.dart';
-import 'package:a/modules/superadmin/views/clinics/clinics_list_view.dart';
-import 'package:a/modules/superadmin/views/dashboard/super_admin_dashboard_view.dart';
-import 'package:a/modules/superadmin/views/doctors/doctors_list_view.dart';
-import 'package:a/modules/superadmin/views/organizations/organizations_list_view.dart';
-import 'package:a/modules/superadmin/views/users/users_management_view.dart';
-import 'package:a/modules/superadmin/views/departments/departments_list_view.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/responsive/universal_responsive_layout.dart';
+import 'package:drandme/modules/superadmin/views/clinics/clinics_list_view.dart';
+import 'package:drandme/modules/superadmin/views/dashboard/super_admin_dashboard_view.dart';
+import 'package:drandme/modules/superadmin/views/doctors/doctors_list_view.dart';
+import 'package:drandme/modules/superadmin/views/organizations/organizations_list_view.dart';
+import 'package:drandme/modules/superadmin/views/users/users_management_view.dart';
+import 'package:drandme/modules/superadmin/views/departments/departments_list_view.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/core/widgets/logout_dialog.dart';
 
 class SuperAdminModuleView extends StatefulWidget {
   const SuperAdminModuleView({super.key});
@@ -33,6 +36,7 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
           SystemSettingsScreen(),
           ReportsScreen(),
           AuditLogScreen(),
+          
         ],
         navigationItems: const [
           ModuleNavItem(title: 'Dashboard', icon: Icons.dashboard, index: 0),
@@ -108,22 +112,18 @@ class _SuperAdminModuleViewState extends State<SuperAdminModuleView> {
   void _handleLogout(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => NavigationHelper.goBack(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Add logout logic here
-            },
-            child: const Text('Logout'),
-          ),
-        ],
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) => LogoutDialog(
+        onLogout: () async {
+          final authViewModel = Provider.of<AuthViewModel>(
+            context,
+            listen: false,
+          );
+          await authViewModel.logout(context);
+          if (context.mounted) {
+            NavigationHelper.goToLogin(context);
+          }
+        },
       ),
     );
   }

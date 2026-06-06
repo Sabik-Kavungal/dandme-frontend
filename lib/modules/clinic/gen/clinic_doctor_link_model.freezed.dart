@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,2348 +9,2305 @@ part of '../models/clinic_doctor_link_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-ClinicInfo _$ClinicInfoFromJson(Map<String, dynamic> json) {
-  return _ClinicInfo.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ClinicInfo {
-  @JsonKey(name: "clinic_code")
-  String get clinicCode => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+
+@JsonKey(name: "clinic_code") String get clinicCode; String get name;
+/// Create a copy of ClinicInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ClinicInfoCopyWith<ClinicInfo> get copyWith => _$ClinicInfoCopyWithImpl<ClinicInfo>(this as ClinicInfo, _$identity);
 
   /// Serializes this ClinicInfo to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ClinicInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ClinicInfoCopyWith<ClinicInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClinicInfo&&(identical(other.clinicCode, clinicCode) || other.clinicCode == clinicCode)&&(identical(other.name, name) || other.name == name));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinicCode,name);
+
+@override
+String toString() {
+  return 'ClinicInfo(clinicCode: $clinicCode, name: $name)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ClinicInfoCopyWith<$Res> {
-  factory $ClinicInfoCopyWith(
-    ClinicInfo value,
-    $Res Function(ClinicInfo) then,
-  ) = _$ClinicInfoCopyWithImpl<$Res, ClinicInfo>;
-  @useResult
-  $Res call({@JsonKey(name: "clinic_code") String clinicCode, String name});
-}
+abstract mixin class $ClinicInfoCopyWith<$Res>  {
+  factory $ClinicInfoCopyWith(ClinicInfo value, $Res Function(ClinicInfo) _then) = _$ClinicInfoCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "clinic_code") String clinicCode, String name
+});
 
+
+
+
+}
 /// @nodoc
-class _$ClinicInfoCopyWithImpl<$Res, $Val extends ClinicInfo>
+class _$ClinicInfoCopyWithImpl<$Res>
     implements $ClinicInfoCopyWith<$Res> {
-  _$ClinicInfoCopyWithImpl(this._value, this._then);
+  _$ClinicInfoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ClinicInfo _self;
+  final $Res Function(ClinicInfo) _then;
 
-  /// Create a copy of ClinicInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? clinicCode = null, Object? name = null}) {
-    return _then(
-      _value.copyWith(
-            clinicCode: null == clinicCode
-                ? _value.clinicCode
-                : clinicCode // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of ClinicInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? clinicCode = null,Object? name = null,}) {
+  return _then(_self.copyWith(
+clinicCode: null == clinicCode ? _self.clinicCode : clinicCode // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ClinicInfoImplCopyWith<$Res>
-    implements $ClinicInfoCopyWith<$Res> {
-  factory _$$ClinicInfoImplCopyWith(
-    _$ClinicInfoImpl value,
-    $Res Function(_$ClinicInfoImpl) then,
-  ) = __$$ClinicInfoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({@JsonKey(name: "clinic_code") String clinicCode, String name});
 }
 
-/// @nodoc
-class __$$ClinicInfoImplCopyWithImpl<$Res>
-    extends _$ClinicInfoCopyWithImpl<$Res, _$ClinicInfoImpl>
-    implements _$$ClinicInfoImplCopyWith<$Res> {
-  __$$ClinicInfoImplCopyWithImpl(
-    _$ClinicInfoImpl _value,
-    $Res Function(_$ClinicInfoImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ClinicInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? clinicCode = null, Object? name = null}) {
-    return _then(
-      _$ClinicInfoImpl(
-        clinicCode: null == clinicCode
-            ? _value.clinicCode
-            : clinicCode // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [ClinicInfo].
+extension ClinicInfoPatterns on ClinicInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClinicInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ClinicInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClinicInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicInfo():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClinicInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "clinic_code")  String clinicCode,  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ClinicInfo() when $default != null:
+return $default(_that.clinicCode,_that.name);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "clinic_code")  String clinicCode,  String name)  $default,) {final _that = this;
+switch (_that) {
+case _ClinicInfo():
+return $default(_that.clinicCode,_that.name);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "clinic_code")  String clinicCode,  String name)?  $default,) {final _that = this;
+switch (_that) {
+case _ClinicInfo() when $default != null:
+return $default(_that.clinicCode,_that.name);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ClinicInfoImpl implements _ClinicInfo {
-  const _$ClinicInfoImpl({
-    @JsonKey(name: "clinic_code") required this.clinicCode,
-    required this.name,
-  });
 
-  factory _$ClinicInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ClinicInfoImplFromJson(json);
+class _ClinicInfo implements ClinicInfo {
+  const _ClinicInfo({@JsonKey(name: "clinic_code") required this.clinicCode, required this.name});
+  factory _ClinicInfo.fromJson(Map<String, dynamic> json) => _$ClinicInfoFromJson(json);
 
-  @override
-  @JsonKey(name: "clinic_code")
-  final String clinicCode;
-  @override
-  final String name;
+@override@JsonKey(name: "clinic_code") final  String clinicCode;
+@override final  String name;
 
-  @override
-  String toString() {
-    return 'ClinicInfo(clinicCode: $clinicCode, name: $name)';
-  }
+/// Create a copy of ClinicInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClinicInfoCopyWith<_ClinicInfo> get copyWith => __$ClinicInfoCopyWithImpl<_ClinicInfo>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ClinicInfoImpl &&
-            (identical(other.clinicCode, clinicCode) ||
-                other.clinicCode == clinicCode) &&
-            (identical(other.name, name) || other.name == name));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, clinicCode, name);
-
-  /// Create a copy of ClinicInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ClinicInfoImplCopyWith<_$ClinicInfoImpl> get copyWith =>
-      __$$ClinicInfoImplCopyWithImpl<_$ClinicInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ClinicInfoImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ClinicInfoToJson(this, );
 }
 
-abstract class _ClinicInfo implements ClinicInfo {
-  const factory _ClinicInfo({
-    @JsonKey(name: "clinic_code") required final String clinicCode,
-    required final String name,
-  }) = _$ClinicInfoImpl;
-
-  factory _ClinicInfo.fromJson(Map<String, dynamic> json) =
-      _$ClinicInfoImpl.fromJson;
-
-  @override
-  @JsonKey(name: "clinic_code")
-  String get clinicCode;
-  @override
-  String get name;
-
-  /// Create a copy of ClinicInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ClinicInfoImplCopyWith<_$ClinicInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClinicInfo&&(identical(other.clinicCode, clinicCode) || other.clinicCode == clinicCode)&&(identical(other.name, name) || other.name == name));
 }
 
-DoctorInfo _$DoctorInfoFromJson(Map<String, dynamic> json) {
-  return _DoctorInfo.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinicCode,name);
+
+@override
+String toString() {
+  return 'ClinicInfo(clinicCode: $clinicCode, name: $name)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClinicInfoCopyWith<$Res> implements $ClinicInfoCopyWith<$Res> {
+  factory _$ClinicInfoCopyWith(_ClinicInfo value, $Res Function(_ClinicInfo) _then) = __$ClinicInfoCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "clinic_code") String clinicCode, String name
+});
+
+
+
+
+}
+/// @nodoc
+class __$ClinicInfoCopyWithImpl<$Res>
+    implements _$ClinicInfoCopyWith<$Res> {
+  __$ClinicInfoCopyWithImpl(this._self, this._then);
+
+  final _ClinicInfo _self;
+  final $Res Function(_ClinicInfo) _then;
+
+/// Create a copy of ClinicInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? clinicCode = null,Object? name = null,}) {
+  return _then(_ClinicInfo(
+clinicCode: null == clinicCode ? _self.clinicCode : clinicCode // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$DoctorInfo {
-  @JsonKey(name: "doctor_code")
-  String get doctorCode => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: "first_name")
-  String get firstName => throw _privateConstructorUsedError;
-  @JsonKey(name: "last_name")
-  String get lastName => throw _privateConstructorUsedError;
-  String get specialization => throw _privateConstructorUsedError;
-  String get username => throw _privateConstructorUsedError;
+
+@JsonKey(name: "doctor_code") String get doctorCode; String get email;@JsonKey(name: "first_name") String get firstName;@JsonKey(name: "last_name") String get lastName; String get specialization; String get username;@JsonKey(name: "profile_image") String? get profileImage;
+/// Create a copy of DoctorInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DoctorInfoCopyWith<DoctorInfo> get copyWith => _$DoctorInfoCopyWithImpl<DoctorInfo>(this as DoctorInfo, _$identity);
 
   /// Serializes this DoctorInfo to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DoctorInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DoctorInfoCopyWith<DoctorInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoctorInfo&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.username, username) || other.username == username)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,doctorCode,email,firstName,lastName,specialization,username,profileImage);
+
+@override
+String toString() {
+  return 'DoctorInfo(doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username, profileImage: $profileImage)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DoctorInfoCopyWith<$Res> {
-  factory $DoctorInfoCopyWith(
-    DoctorInfo value,
-    $Res Function(DoctorInfo) then,
-  ) = _$DoctorInfoCopyWithImpl<$Res, DoctorInfo>;
-  @useResult
-  $Res call({
-    @JsonKey(name: "doctor_code") String doctorCode,
-    String email,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String specialization,
-    String username,
-  });
-}
+abstract mixin class $DoctorInfoCopyWith<$Res>  {
+  factory $DoctorInfoCopyWith(DoctorInfo value, $Res Function(DoctorInfo) _then) = _$DoctorInfoCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "doctor_code") String doctorCode, String email,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String specialization, String username,@JsonKey(name: "profile_image") String? profileImage
+});
 
+
+
+
+}
 /// @nodoc
-class _$DoctorInfoCopyWithImpl<$Res, $Val extends DoctorInfo>
+class _$DoctorInfoCopyWithImpl<$Res>
     implements $DoctorInfoCopyWith<$Res> {
-  _$DoctorInfoCopyWithImpl(this._value, this._then);
+  _$DoctorInfoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DoctorInfo _self;
+  final $Res Function(DoctorInfo) _then;
 
-  /// Create a copy of DoctorInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? doctorCode = null,
-    Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? specialization = null,
-    Object? username = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            doctorCode: null == doctorCode
-                ? _value.doctorCode
-                : doctorCode // ignore: cast_nullable_to_non_nullable
-                      as String,
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            firstName: null == firstName
-                ? _value.firstName
-                : firstName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastName: null == lastName
-                ? _value.lastName
-                : lastName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            specialization: null == specialization
-                ? _value.specialization
-                : specialization // ignore: cast_nullable_to_non_nullable
-                      as String,
-            username: null == username
-                ? _value.username
-                : username // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of DoctorInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? doctorCode = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? specialization = null,Object? username = null,Object? profileImage = freezed,}) {
+  return _then(_self.copyWith(
+doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$DoctorInfoImplCopyWith<$Res>
-    implements $DoctorInfoCopyWith<$Res> {
-  factory _$$DoctorInfoImplCopyWith(
-    _$DoctorInfoImpl value,
-    $Res Function(_$DoctorInfoImpl) then,
-  ) = __$$DoctorInfoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(name: "doctor_code") String doctorCode,
-    String email,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String specialization,
-    String username,
-  });
 }
 
-/// @nodoc
-class __$$DoctorInfoImplCopyWithImpl<$Res>
-    extends _$DoctorInfoCopyWithImpl<$Res, _$DoctorInfoImpl>
-    implements _$$DoctorInfoImplCopyWith<$Res> {
-  __$$DoctorInfoImplCopyWithImpl(
-    _$DoctorInfoImpl _value,
-    $Res Function(_$DoctorInfoImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DoctorInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? doctorCode = null,
-    Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? specialization = null,
-    Object? username = null,
-  }) {
-    return _then(
-      _$DoctorInfoImpl(
-        doctorCode: null == doctorCode
-            ? _value.doctorCode
-            : doctorCode // ignore: cast_nullable_to_non_nullable
-                  as String,
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        firstName: null == firstName
-            ? _value.firstName
-            : firstName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastName: null == lastName
-            ? _value.lastName
-            : lastName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        specialization: null == specialization
-            ? _value.specialization
-            : specialization // ignore: cast_nullable_to_non_nullable
-                  as String,
-        username: null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DoctorInfo].
+extension DoctorInfoPatterns on DoctorInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DoctorInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DoctorInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DoctorInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorInfo():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DoctorInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "profile_image")  String? profileImage)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DoctorInfo() when $default != null:
+return $default(_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.profileImage);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "profile_image")  String? profileImage)  $default,) {final _that = this;
+switch (_that) {
+case _DoctorInfo():
+return $default(_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.profileImage);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "profile_image")  String? profileImage)?  $default,) {final _that = this;
+switch (_that) {
+case _DoctorInfo() when $default != null:
+return $default(_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.profileImage);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DoctorInfoImpl implements _DoctorInfo {
-  const _$DoctorInfoImpl({
-    @JsonKey(name: "doctor_code") required this.doctorCode,
-    required this.email,
-    @JsonKey(name: "first_name") required this.firstName,
-    @JsonKey(name: "last_name") required this.lastName,
-    required this.specialization,
-    required this.username,
-  });
 
-  factory _$DoctorInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DoctorInfoImplFromJson(json);
+class _DoctorInfo implements DoctorInfo {
+  const _DoctorInfo({@JsonKey(name: "doctor_code") required this.doctorCode, required this.email, @JsonKey(name: "first_name") required this.firstName, @JsonKey(name: "last_name") required this.lastName, required this.specialization, required this.username, @JsonKey(name: "profile_image") this.profileImage});
+  factory _DoctorInfo.fromJson(Map<String, dynamic> json) => _$DoctorInfoFromJson(json);
 
-  @override
-  @JsonKey(name: "doctor_code")
-  final String doctorCode;
-  @override
-  final String email;
-  @override
-  @JsonKey(name: "first_name")
-  final String firstName;
-  @override
-  @JsonKey(name: "last_name")
-  final String lastName;
-  @override
-  final String specialization;
-  @override
-  final String username;
+@override@JsonKey(name: "doctor_code") final  String doctorCode;
+@override final  String email;
+@override@JsonKey(name: "first_name") final  String firstName;
+@override@JsonKey(name: "last_name") final  String lastName;
+@override final  String specialization;
+@override final  String username;
+@override@JsonKey(name: "profile_image") final  String? profileImage;
 
-  @override
-  String toString() {
-    return 'DoctorInfo(doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username)';
-  }
+/// Create a copy of DoctorInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DoctorInfoCopyWith<_DoctorInfo> get copyWith => __$DoctorInfoCopyWithImpl<_DoctorInfo>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DoctorInfoImpl &&
-            (identical(other.doctorCode, doctorCode) ||
-                other.doctorCode == doctorCode) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.specialization, specialization) ||
-                other.specialization == specialization) &&
-            (identical(other.username, username) ||
-                other.username == username));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    doctorCode,
-    email,
-    firstName,
-    lastName,
-    specialization,
-    username,
-  );
-
-  /// Create a copy of DoctorInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DoctorInfoImplCopyWith<_$DoctorInfoImpl> get copyWith =>
-      __$$DoctorInfoImplCopyWithImpl<_$DoctorInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DoctorInfoImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$DoctorInfoToJson(this, );
 }
 
-abstract class _DoctorInfo implements DoctorInfo {
-  const factory _DoctorInfo({
-    @JsonKey(name: "doctor_code") required final String doctorCode,
-    required final String email,
-    @JsonKey(name: "first_name") required final String firstName,
-    @JsonKey(name: "last_name") required final String lastName,
-    required final String specialization,
-    required final String username,
-  }) = _$DoctorInfoImpl;
-
-  factory _DoctorInfo.fromJson(Map<String, dynamic> json) =
-      _$DoctorInfoImpl.fromJson;
-
-  @override
-  @JsonKey(name: "doctor_code")
-  String get doctorCode;
-  @override
-  String get email;
-  @override
-  @JsonKey(name: "first_name")
-  String get firstName;
-  @override
-  @JsonKey(name: "last_name")
-  String get lastName;
-  @override
-  String get specialization;
-  @override
-  String get username;
-
-  /// Create a copy of DoctorInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DoctorInfoImplCopyWith<_$DoctorInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoctorInfo&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.username, username) || other.username == username)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
 }
 
-ClinicDoctorLinkModel _$ClinicDoctorLinkModelFromJson(
-  Map<String, dynamic> json,
-) {
-  return _ClinicDoctorLinkModel.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,doctorCode,email,firstName,lastName,specialization,username,profileImage);
+
+@override
+String toString() {
+  return 'DoctorInfo(doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username, profileImage: $profileImage)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DoctorInfoCopyWith<$Res> implements $DoctorInfoCopyWith<$Res> {
+  factory _$DoctorInfoCopyWith(_DoctorInfo value, $Res Function(_DoctorInfo) _then) = __$DoctorInfoCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "doctor_code") String doctorCode, String email,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String specialization, String username,@JsonKey(name: "profile_image") String? profileImage
+});
+
+
+
+
+}
+/// @nodoc
+class __$DoctorInfoCopyWithImpl<$Res>
+    implements _$DoctorInfoCopyWith<$Res> {
+  __$DoctorInfoCopyWithImpl(this._self, this._then);
+
+  final _DoctorInfo _self;
+  final $Res Function(_DoctorInfo) _then;
+
+/// Create a copy of DoctorInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? doctorCode = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? specialization = null,Object? username = null,Object? profileImage = freezed,}) {
+  return _then(_DoctorInfo(
+doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$ClinicDoctorLinkModel {
-  ClinicInfo get clinic => throw _privateConstructorUsedError;
-  DoctorInfo get doctor => throw _privateConstructorUsedError;
+
+ ClinicInfo get clinic; DoctorInfo get doctor;
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ClinicDoctorLinkModelCopyWith<ClinicDoctorLinkModel> get copyWith => _$ClinicDoctorLinkModelCopyWithImpl<ClinicDoctorLinkModel>(this as ClinicDoctorLinkModel, _$identity);
 
   /// Serializes this ClinicDoctorLinkModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ClinicDoctorLinkModelCopyWith<ClinicDoctorLinkModel> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClinicDoctorLinkModel&&(identical(other.clinic, clinic) || other.clinic == clinic)&&(identical(other.doctor, doctor) || other.doctor == doctor));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinic,doctor);
+
+@override
+String toString() {
+  return 'ClinicDoctorLinkModel(clinic: $clinic, doctor: $doctor)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ClinicDoctorLinkModelCopyWith<$Res> {
-  factory $ClinicDoctorLinkModelCopyWith(
-    ClinicDoctorLinkModel value,
-    $Res Function(ClinicDoctorLinkModel) then,
-  ) = _$ClinicDoctorLinkModelCopyWithImpl<$Res, ClinicDoctorLinkModel>;
-  @useResult
-  $Res call({ClinicInfo clinic, DoctorInfo doctor});
+abstract mixin class $ClinicDoctorLinkModelCopyWith<$Res>  {
+  factory $ClinicDoctorLinkModelCopyWith(ClinicDoctorLinkModel value, $Res Function(ClinicDoctorLinkModel) _then) = _$ClinicDoctorLinkModelCopyWithImpl;
+@useResult
+$Res call({
+ ClinicInfo clinic, DoctorInfo doctor
+});
 
-  $ClinicInfoCopyWith<$Res> get clinic;
-  $DoctorInfoCopyWith<$Res> get doctor;
+
+$ClinicInfoCopyWith<$Res> get clinic;$DoctorInfoCopyWith<$Res> get doctor;
+
 }
-
 /// @nodoc
-class _$ClinicDoctorLinkModelCopyWithImpl<
-  $Res,
-  $Val extends ClinicDoctorLinkModel
->
+class _$ClinicDoctorLinkModelCopyWithImpl<$Res>
     implements $ClinicDoctorLinkModelCopyWith<$Res> {
-  _$ClinicDoctorLinkModelCopyWithImpl(this._value, this._then);
+  _$ClinicDoctorLinkModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ClinicDoctorLinkModel _self;
+  final $Res Function(ClinicDoctorLinkModel) _then;
 
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? clinic = null, Object? doctor = null}) {
-    return _then(
-      _value.copyWith(
-            clinic: null == clinic
-                ? _value.clinic
-                : clinic // ignore: cast_nullable_to_non_nullable
-                      as ClinicInfo,
-            doctor: null == doctor
-                ? _value.doctor
-                : doctor // ignore: cast_nullable_to_non_nullable
-                      as DoctorInfo,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ClinicInfoCopyWith<$Res> get clinic {
-    return $ClinicInfoCopyWith<$Res>(_value.clinic, (value) {
-      return _then(_value.copyWith(clinic: value) as $Val);
-    });
-  }
-
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DoctorInfoCopyWith<$Res> get doctor {
-    return $DoctorInfoCopyWith<$Res>(_value.doctor, (value) {
-      return _then(_value.copyWith(doctor: value) as $Val);
-    });
-  }
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? clinic = null,Object? doctor = null,}) {
+  return _then(_self.copyWith(
+clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfo,doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
+as DoctorInfo,
+  ));
+}
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
+  });
+}/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DoctorInfoCopyWith<$Res> get doctor {
+  
+  return $DoctorInfoCopyWith<$Res>(_self.doctor, (value) {
+    return _then(_self.copyWith(doctor: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$ClinicDoctorLinkModelImplCopyWith<$Res>
-    implements $ClinicDoctorLinkModelCopyWith<$Res> {
-  factory _$$ClinicDoctorLinkModelImplCopyWith(
-    _$ClinicDoctorLinkModelImpl value,
-    $Res Function(_$ClinicDoctorLinkModelImpl) then,
-  ) = __$$ClinicDoctorLinkModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({ClinicInfo clinic, DoctorInfo doctor});
 
-  @override
-  $ClinicInfoCopyWith<$Res> get clinic;
-  @override
-  $DoctorInfoCopyWith<$Res> get doctor;
+/// Adds pattern-matching-related methods to [ClinicDoctorLinkModel].
+extension ClinicDoctorLinkModelPatterns on ClinicDoctorLinkModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClinicDoctorLinkModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClinicDoctorLinkModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClinicDoctorLinkModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ClinicInfo clinic,  DoctorInfo doctor)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel() when $default != null:
+return $default(_that.clinic,_that.doctor);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ClinicInfo clinic,  DoctorInfo doctor)  $default,) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel():
+return $default(_that.clinic,_that.doctor);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ClinicInfo clinic,  DoctorInfo doctor)?  $default,) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkModel() when $default != null:
+return $default(_that.clinic,_that.doctor);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$ClinicDoctorLinkModelImplCopyWithImpl<$Res>
-    extends
-        _$ClinicDoctorLinkModelCopyWithImpl<$Res, _$ClinicDoctorLinkModelImpl>
-    implements _$$ClinicDoctorLinkModelImplCopyWith<$Res> {
-  __$$ClinicDoctorLinkModelImplCopyWithImpl(
-    _$ClinicDoctorLinkModelImpl _value,
-    $Res Function(_$ClinicDoctorLinkModelImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? clinic = null, Object? doctor = null}) {
-    return _then(
-      _$ClinicDoctorLinkModelImpl(
-        clinic: null == clinic
-            ? _value.clinic
-            : clinic // ignore: cast_nullable_to_non_nullable
-                  as ClinicInfo,
-        doctor: null == doctor
-            ? _value.doctor
-            : doctor // ignore: cast_nullable_to_non_nullable
-                  as DoctorInfo,
-      ),
-    );
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ClinicDoctorLinkModelImpl implements _ClinicDoctorLinkModel {
-  const _$ClinicDoctorLinkModelImpl({
-    required this.clinic,
-    required this.doctor,
+
+class _ClinicDoctorLinkModel implements ClinicDoctorLinkModel {
+  const _ClinicDoctorLinkModel({required this.clinic, required this.doctor});
+  factory _ClinicDoctorLinkModel.fromJson(Map<String, dynamic> json) => _$ClinicDoctorLinkModelFromJson(json);
+
+@override final  ClinicInfo clinic;
+@override final  DoctorInfo doctor;
+
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClinicDoctorLinkModelCopyWith<_ClinicDoctorLinkModel> get copyWith => __$ClinicDoctorLinkModelCopyWithImpl<_ClinicDoctorLinkModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ClinicDoctorLinkModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClinicDoctorLinkModel&&(identical(other.clinic, clinic) || other.clinic == clinic)&&(identical(other.doctor, doctor) || other.doctor == doctor));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinic,doctor);
+
+@override
+String toString() {
+  return 'ClinicDoctorLinkModel(clinic: $clinic, doctor: $doctor)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClinicDoctorLinkModelCopyWith<$Res> implements $ClinicDoctorLinkModelCopyWith<$Res> {
+  factory _$ClinicDoctorLinkModelCopyWith(_ClinicDoctorLinkModel value, $Res Function(_ClinicDoctorLinkModel) _then) = __$ClinicDoctorLinkModelCopyWithImpl;
+@override @useResult
+$Res call({
+ ClinicInfo clinic, DoctorInfo doctor
+});
+
+
+@override $ClinicInfoCopyWith<$Res> get clinic;@override $DoctorInfoCopyWith<$Res> get doctor;
+
+}
+/// @nodoc
+class __$ClinicDoctorLinkModelCopyWithImpl<$Res>
+    implements _$ClinicDoctorLinkModelCopyWith<$Res> {
+  __$ClinicDoctorLinkModelCopyWithImpl(this._self, this._then);
+
+  final _ClinicDoctorLinkModel _self;
+  final $Res Function(_ClinicDoctorLinkModel) _then;
+
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? clinic = null,Object? doctor = null,}) {
+  return _then(_ClinicDoctorLinkModel(
+clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfo,doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
+as DoctorInfo,
+  ));
+}
+
+/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
   });
-
-  factory _$ClinicDoctorLinkModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ClinicDoctorLinkModelImplFromJson(json);
-
-  @override
-  final ClinicInfo clinic;
-  @override
-  final DoctorInfo doctor;
-
-  @override
-  String toString() {
-    return 'ClinicDoctorLinkModel(clinic: $clinic, doctor: $doctor)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ClinicDoctorLinkModelImpl &&
-            (identical(other.clinic, clinic) || other.clinic == clinic) &&
-            (identical(other.doctor, doctor) || other.doctor == doctor));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, clinic, doctor);
-
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ClinicDoctorLinkModelImplCopyWith<_$ClinicDoctorLinkModelImpl>
-  get copyWith =>
-      __$$ClinicDoctorLinkModelImplCopyWithImpl<_$ClinicDoctorLinkModelImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ClinicDoctorLinkModelImplToJson(this);
-  }
+}/// Create a copy of ClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DoctorInfoCopyWith<$Res> get doctor {
+  
+  return $DoctorInfoCopyWith<$Res>(_self.doctor, (value) {
+    return _then(_self.copyWith(doctor: value));
+  });
+}
 }
 
-abstract class _ClinicDoctorLinkModel implements ClinicDoctorLinkModel {
-  const factory _ClinicDoctorLinkModel({
-    required final ClinicInfo clinic,
-    required final DoctorInfo doctor,
-  }) = _$ClinicDoctorLinkModelImpl;
-
-  factory _ClinicDoctorLinkModel.fromJson(Map<String, dynamic> json) =
-      _$ClinicDoctorLinkModelImpl.fromJson;
-
-  @override
-  ClinicInfo get clinic;
-  @override
-  DoctorInfo get doctor;
-
-  /// Create a copy of ClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ClinicDoctorLinkModelImplCopyWith<_$ClinicDoctorLinkModelImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-CreateClinicDoctorLinkModel _$CreateClinicDoctorLinkModelFromJson(
-  Map<String, dynamic> json,
-) {
-  return _CreateClinicDoctorLinkModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$CreateClinicDoctorLinkModel {
-  List<ClinicDoctorLinkModel> get links => throw _privateConstructorUsedError;
+
+ List<ClinicDoctorLinkModel> get links;
+/// Create a copy of CreateClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CreateClinicDoctorLinkModelCopyWith<CreateClinicDoctorLinkModel> get copyWith => _$CreateClinicDoctorLinkModelCopyWithImpl<CreateClinicDoctorLinkModel>(this as CreateClinicDoctorLinkModel, _$identity);
 
   /// Serializes this CreateClinicDoctorLinkModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CreateClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CreateClinicDoctorLinkModelCopyWith<CreateClinicDoctorLinkModel>
-  get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateClinicDoctorLinkModel&&const DeepCollectionEquality().equals(other.links, links));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(links));
+
+@override
+String toString() {
+  return 'CreateClinicDoctorLinkModel(links: $links)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CreateClinicDoctorLinkModelCopyWith<$Res> {
-  factory $CreateClinicDoctorLinkModelCopyWith(
-    CreateClinicDoctorLinkModel value,
-    $Res Function(CreateClinicDoctorLinkModel) then,
-  ) =
-      _$CreateClinicDoctorLinkModelCopyWithImpl<
-        $Res,
-        CreateClinicDoctorLinkModel
-      >;
-  @useResult
-  $Res call({List<ClinicDoctorLinkModel> links});
-}
+abstract mixin class $CreateClinicDoctorLinkModelCopyWith<$Res>  {
+  factory $CreateClinicDoctorLinkModelCopyWith(CreateClinicDoctorLinkModel value, $Res Function(CreateClinicDoctorLinkModel) _then) = _$CreateClinicDoctorLinkModelCopyWithImpl;
+@useResult
+$Res call({
+ List<ClinicDoctorLinkModel> links
+});
 
+
+
+
+}
 /// @nodoc
-class _$CreateClinicDoctorLinkModelCopyWithImpl<
-  $Res,
-  $Val extends CreateClinicDoctorLinkModel
->
+class _$CreateClinicDoctorLinkModelCopyWithImpl<$Res>
     implements $CreateClinicDoctorLinkModelCopyWith<$Res> {
-  _$CreateClinicDoctorLinkModelCopyWithImpl(this._value, this._then);
+  _$CreateClinicDoctorLinkModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CreateClinicDoctorLinkModel _self;
+  final $Res Function(CreateClinicDoctorLinkModel) _then;
 
-  /// Create a copy of CreateClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? links = null}) {
-    return _then(
-      _value.copyWith(
-            links: null == links
-                ? _value.links
-                : links // ignore: cast_nullable_to_non_nullable
-                      as List<ClinicDoctorLinkModel>,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of CreateClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? links = null,}) {
+  return _then(_self.copyWith(
+links: null == links ? _self.links : links // ignore: cast_nullable_to_non_nullable
+as List<ClinicDoctorLinkModel>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CreateClinicDoctorLinkModelImplCopyWith<$Res>
-    implements $CreateClinicDoctorLinkModelCopyWith<$Res> {
-  factory _$$CreateClinicDoctorLinkModelImplCopyWith(
-    _$CreateClinicDoctorLinkModelImpl value,
-    $Res Function(_$CreateClinicDoctorLinkModelImpl) then,
-  ) = __$$CreateClinicDoctorLinkModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({List<ClinicDoctorLinkModel> links});
 }
 
-/// @nodoc
-class __$$CreateClinicDoctorLinkModelImplCopyWithImpl<$Res>
-    extends
-        _$CreateClinicDoctorLinkModelCopyWithImpl<
-          $Res,
-          _$CreateClinicDoctorLinkModelImpl
-        >
-    implements _$$CreateClinicDoctorLinkModelImplCopyWith<$Res> {
-  __$$CreateClinicDoctorLinkModelImplCopyWithImpl(
-    _$CreateClinicDoctorLinkModelImpl _value,
-    $Res Function(_$CreateClinicDoctorLinkModelImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of CreateClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? links = null}) {
-    return _then(
-      _$CreateClinicDoctorLinkModelImpl(
-        links: null == links
-            ? _value._links
-            : links // ignore: cast_nullable_to_non_nullable
-                  as List<ClinicDoctorLinkModel>,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [CreateClinicDoctorLinkModel].
+extension CreateClinicDoctorLinkModelPatterns on CreateClinicDoctorLinkModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CreateClinicDoctorLinkModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CreateClinicDoctorLinkModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CreateClinicDoctorLinkModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ClinicDoctorLinkModel> links)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel() when $default != null:
+return $default(_that.links);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ClinicDoctorLinkModel> links)  $default,) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel():
+return $default(_that.links);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ClinicDoctorLinkModel> links)?  $default,) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkModel() when $default != null:
+return $default(_that.links);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$CreateClinicDoctorLinkModelImpl
-    implements _CreateClinicDoctorLinkModel {
-  const _$CreateClinicDoctorLinkModelImpl({
-    required final List<ClinicDoctorLinkModel> links,
-  }) : _links = links;
 
-  factory _$CreateClinicDoctorLinkModelImpl.fromJson(
-    Map<String, dynamic> json,
-  ) => _$$CreateClinicDoctorLinkModelImplFromJson(json);
+class _CreateClinicDoctorLinkModel implements CreateClinicDoctorLinkModel {
+  const _CreateClinicDoctorLinkModel({required final  List<ClinicDoctorLinkModel> links}): _links = links;
+  factory _CreateClinicDoctorLinkModel.fromJson(Map<String, dynamic> json) => _$CreateClinicDoctorLinkModelFromJson(json);
 
-  final List<ClinicDoctorLinkModel> _links;
-  @override
-  List<ClinicDoctorLinkModel> get links {
-    if (_links is EqualUnmodifiableListView) return _links;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_links);
-  }
-
-  @override
-  String toString() {
-    return 'CreateClinicDoctorLinkModel(links: $links)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateClinicDoctorLinkModelImpl &&
-            const DeepCollectionEquality().equals(other._links, _links));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_links));
-
-  /// Create a copy of CreateClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateClinicDoctorLinkModelImplCopyWith<_$CreateClinicDoctorLinkModelImpl>
-  get copyWith =>
-      __$$CreateClinicDoctorLinkModelImplCopyWithImpl<
-        _$CreateClinicDoctorLinkModelImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CreateClinicDoctorLinkModelImplToJson(this);
-  }
+ final  List<ClinicDoctorLinkModel> _links;
+@override List<ClinicDoctorLinkModel> get links {
+  if (_links is EqualUnmodifiableListView) return _links;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_links);
 }
 
-abstract class _CreateClinicDoctorLinkModel
-    implements CreateClinicDoctorLinkModel {
-  const factory _CreateClinicDoctorLinkModel({
-    required final List<ClinicDoctorLinkModel> links,
-  }) = _$CreateClinicDoctorLinkModelImpl;
 
-  factory _CreateClinicDoctorLinkModel.fromJson(Map<String, dynamic> json) =
-      _$CreateClinicDoctorLinkModelImpl.fromJson;
+/// Create a copy of CreateClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateClinicDoctorLinkModelCopyWith<_CreateClinicDoctorLinkModel> get copyWith => __$CreateClinicDoctorLinkModelCopyWithImpl<_CreateClinicDoctorLinkModel>(this, _$identity);
 
-  @override
-  List<ClinicDoctorLinkModel> get links;
-
-  /// Create a copy of CreateClinicDoctorLinkModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateClinicDoctorLinkModelImplCopyWith<_$CreateClinicDoctorLinkModelImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$CreateClinicDoctorLinkModelToJson(this, );
 }
 
-ClinicDoctorLinkResponse _$ClinicDoctorLinkResponseFromJson(
-  Map<String, dynamic> json,
-) {
-  return _ClinicDoctorLinkResponse.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateClinicDoctorLinkModel&&const DeepCollectionEquality().equals(other._links, _links));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_links));
+
+@override
+String toString() {
+  return 'CreateClinicDoctorLinkModel(links: $links)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateClinicDoctorLinkModelCopyWith<$Res> implements $CreateClinicDoctorLinkModelCopyWith<$Res> {
+  factory _$CreateClinicDoctorLinkModelCopyWith(_CreateClinicDoctorLinkModel value, $Res Function(_CreateClinicDoctorLinkModel) _then) = __$CreateClinicDoctorLinkModelCopyWithImpl;
+@override @useResult
+$Res call({
+ List<ClinicDoctorLinkModel> links
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreateClinicDoctorLinkModelCopyWithImpl<$Res>
+    implements _$CreateClinicDoctorLinkModelCopyWith<$Res> {
+  __$CreateClinicDoctorLinkModelCopyWithImpl(this._self, this._then);
+
+  final _CreateClinicDoctorLinkModel _self;
+  final $Res Function(_CreateClinicDoctorLinkModel) _then;
+
+/// Create a copy of CreateClinicDoctorLinkModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? links = null,}) {
+  return _then(_CreateClinicDoctorLinkModel(
+links: null == links ? _self._links : links // ignore: cast_nullable_to_non_nullable
+as List<ClinicDoctorLinkModel>,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$ClinicDoctorLinkResponse {
-  @JsonKey(name: "link_id")
-  String? get linkId => throw _privateConstructorUsedError;
-  ClinicInfo get clinic => throw _privateConstructorUsedError;
-  DoctorFullInfo get doctor => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee_offline")
-  double? get consultationFeeOffline => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee_online")
-  double? get consultationFeeOnline => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays => throw _privateConstructorUsedError;
-  String? get notes => throw _privateConstructorUsedError;
-  @JsonKey(name: "created_at")
-  String? get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: "updated_at")
-  String? get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: "is_active")
-  bool? get isActive => throw _privateConstructorUsedError;
+
+@JsonKey(name: "link_id") String? get linkId; ClinicInfo get clinic; DoctorFullInfo get doctor;@JsonKey(name: "consultation_fee_offline") double? get consultationFeeOffline;@JsonKey(name: "consultation_fee_online") double? get consultationFeeOnline;@JsonKey(name: "follow_up_fee") double? get followUpFee;@JsonKey(name: "follow_up_days") int? get followUpDays; String? get notes;@JsonKey(name: "created_at") String? get createdAt;@JsonKey(name: "updated_at") String? get updatedAt;@JsonKey(name: "is_active") bool? get isActive;
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ClinicDoctorLinkResponseCopyWith<ClinicDoctorLinkResponse> get copyWith => _$ClinicDoctorLinkResponseCopyWithImpl<ClinicDoctorLinkResponse>(this as ClinicDoctorLinkResponse, _$identity);
 
   /// Serializes this ClinicDoctorLinkResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ClinicDoctorLinkResponseCopyWith<ClinicDoctorLinkResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClinicDoctorLinkResponse&&(identical(other.linkId, linkId) || other.linkId == linkId)&&(identical(other.clinic, clinic) || other.clinic == clinic)&&(identical(other.doctor, doctor) || other.doctor == doctor)&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isActive, isActive) || other.isActive == isActive));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,linkId,clinic,doctor,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes,createdAt,updatedAt,isActive);
+
+@override
+String toString() {
+  return 'ClinicDoctorLinkResponse(linkId: $linkId, clinic: $clinic, doctor: $doctor, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ClinicDoctorLinkResponseCopyWith<$Res> {
-  factory $ClinicDoctorLinkResponseCopyWith(
-    ClinicDoctorLinkResponse value,
-    $Res Function(ClinicDoctorLinkResponse) then,
-  ) = _$ClinicDoctorLinkResponseCopyWithImpl<$Res, ClinicDoctorLinkResponse>;
-  @useResult
-  $Res call({
-    @JsonKey(name: "link_id") String? linkId,
-    ClinicInfo clinic,
-    DoctorFullInfo doctor,
-    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-    String? notes,
-    @JsonKey(name: "created_at") String? createdAt,
-    @JsonKey(name: "updated_at") String? updatedAt,
-    @JsonKey(name: "is_active") bool? isActive,
-  });
+abstract mixin class $ClinicDoctorLinkResponseCopyWith<$Res>  {
+  factory $ClinicDoctorLinkResponseCopyWith(ClinicDoctorLinkResponse value, $Res Function(ClinicDoctorLinkResponse) _then) = _$ClinicDoctorLinkResponseCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "link_id") String? linkId, ClinicInfo clinic, DoctorFullInfo doctor,@JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays, String? notes,@JsonKey(name: "created_at") String? createdAt,@JsonKey(name: "updated_at") String? updatedAt,@JsonKey(name: "is_active") bool? isActive
+});
 
-  $ClinicInfoCopyWith<$Res> get clinic;
-  $DoctorFullInfoCopyWith<$Res> get doctor;
+
+$ClinicInfoCopyWith<$Res> get clinic;$DoctorFullInfoCopyWith<$Res> get doctor;
+
 }
-
 /// @nodoc
-class _$ClinicDoctorLinkResponseCopyWithImpl<
-  $Res,
-  $Val extends ClinicDoctorLinkResponse
->
+class _$ClinicDoctorLinkResponseCopyWithImpl<$Res>
     implements $ClinicDoctorLinkResponseCopyWith<$Res> {
-  _$ClinicDoctorLinkResponseCopyWithImpl(this._value, this._then);
+  _$ClinicDoctorLinkResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ClinicDoctorLinkResponse _self;
+  final $Res Function(ClinicDoctorLinkResponse) _then;
 
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? linkId = freezed,
-    Object? clinic = null,
-    Object? doctor = null,
-    Object? consultationFeeOffline = freezed,
-    Object? consultationFeeOnline = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-    Object? notes = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
-    Object? isActive = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            linkId: freezed == linkId
-                ? _value.linkId
-                : linkId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            clinic: null == clinic
-                ? _value.clinic
-                : clinic // ignore: cast_nullable_to_non_nullable
-                      as ClinicInfo,
-            doctor: null == doctor
-                ? _value.doctor
-                : doctor // ignore: cast_nullable_to_non_nullable
-                      as DoctorFullInfo,
-            consultationFeeOffline: freezed == consultationFeeOffline
-                ? _value.consultationFeeOffline
-                : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            consultationFeeOnline: freezed == consultationFeeOnline
-                ? _value.consultationFeeOnline
-                : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpFee: freezed == followUpFee
-                ? _value.followUpFee
-                : followUpFee // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpDays: freezed == followUpDays
-                ? _value.followUpDays
-                : followUpDays // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            notes: freezed == notes
-                ? _value.notes
-                : notes // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            createdAt: freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            updatedAt: freezed == updatedAt
-                ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            isActive: freezed == isActive
-                ? _value.isActive
-                : isActive // ignore: cast_nullable_to_non_nullable
-                      as bool?,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ClinicInfoCopyWith<$Res> get clinic {
-    return $ClinicInfoCopyWith<$Res>(_value.clinic, (value) {
-      return _then(_value.copyWith(clinic: value) as $Val);
-    });
-  }
-
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DoctorFullInfoCopyWith<$Res> get doctor {
-    return $DoctorFullInfoCopyWith<$Res>(_value.doctor, (value) {
-      return _then(_value.copyWith(doctor: value) as $Val);
-    });
-  }
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? linkId = freezed,Object? clinic = null,Object? doctor = null,Object? consultationFeeOffline = freezed,Object? consultationFeeOnline = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isActive = freezed,}) {
+  return _then(_self.copyWith(
+linkId: freezed == linkId ? _self.linkId : linkId // ignore: cast_nullable_to_non_nullable
+as String?,clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfo,doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
+as DoctorFullInfo,consultationFeeOffline: freezed == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double?,consultationFeeOnline: freezed == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool?,
+  ));
 }
-
-/// @nodoc
-abstract class _$$ClinicDoctorLinkResponseImplCopyWith<$Res>
-    implements $ClinicDoctorLinkResponseCopyWith<$Res> {
-  factory _$$ClinicDoctorLinkResponseImplCopyWith(
-    _$ClinicDoctorLinkResponseImpl value,
-    $Res Function(_$ClinicDoctorLinkResponseImpl) then,
-  ) = __$$ClinicDoctorLinkResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(name: "link_id") String? linkId,
-    ClinicInfo clinic,
-    DoctorFullInfo doctor,
-    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-    String? notes,
-    @JsonKey(name: "created_at") String? createdAt,
-    @JsonKey(name: "updated_at") String? updatedAt,
-    @JsonKey(name: "is_active") bool? isActive,
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
   });
-
-  @override
-  $ClinicInfoCopyWith<$Res> get clinic;
-  @override
-  $DoctorFullInfoCopyWith<$Res> get doctor;
+}/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DoctorFullInfoCopyWith<$Res> get doctor {
+  
+  return $DoctorFullInfoCopyWith<$Res>(_self.doctor, (value) {
+    return _then(_self.copyWith(doctor: value));
+  });
+}
 }
 
-/// @nodoc
-class __$$ClinicDoctorLinkResponseImplCopyWithImpl<$Res>
-    extends
-        _$ClinicDoctorLinkResponseCopyWithImpl<
-          $Res,
-          _$ClinicDoctorLinkResponseImpl
-        >
-    implements _$$ClinicDoctorLinkResponseImplCopyWith<$Res> {
-  __$$ClinicDoctorLinkResponseImplCopyWithImpl(
-    _$ClinicDoctorLinkResponseImpl _value,
-    $Res Function(_$ClinicDoctorLinkResponseImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? linkId = freezed,
-    Object? clinic = null,
-    Object? doctor = null,
-    Object? consultationFeeOffline = freezed,
-    Object? consultationFeeOnline = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-    Object? notes = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
-    Object? isActive = freezed,
-  }) {
-    return _then(
-      _$ClinicDoctorLinkResponseImpl(
-        linkId: freezed == linkId
-            ? _value.linkId
-            : linkId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        clinic: null == clinic
-            ? _value.clinic
-            : clinic // ignore: cast_nullable_to_non_nullable
-                  as ClinicInfo,
-        doctor: null == doctor
-            ? _value.doctor
-            : doctor // ignore: cast_nullable_to_non_nullable
-                  as DoctorFullInfo,
-        consultationFeeOffline: freezed == consultationFeeOffline
-            ? _value.consultationFeeOffline
-            : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        consultationFeeOnline: freezed == consultationFeeOnline
-            ? _value.consultationFeeOnline
-            : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpFee: freezed == followUpFee
-            ? _value.followUpFee
-            : followUpFee // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpDays: freezed == followUpDays
-            ? _value.followUpDays
-            : followUpDays // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        notes: freezed == notes
-            ? _value.notes
-            : notes // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        createdAt: freezed == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        updatedAt: freezed == updatedAt
-            ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        isActive: freezed == isActive
-            ? _value.isActive
-            : isActive // ignore: cast_nullable_to_non_nullable
-                  as bool?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [ClinicDoctorLinkResponse].
+extension ClinicDoctorLinkResponsePatterns on ClinicDoctorLinkResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClinicDoctorLinkResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClinicDoctorLinkResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClinicDoctorLinkResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "link_id")  String? linkId,  ClinicInfo clinic,  DoctorFullInfo doctor, @JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes, @JsonKey(name: "created_at")  String? createdAt, @JsonKey(name: "updated_at")  String? updatedAt, @JsonKey(name: "is_active")  bool? isActive)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse() when $default != null:
+return $default(_that.linkId,_that.clinic,_that.doctor,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes,_that.createdAt,_that.updatedAt,_that.isActive);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "link_id")  String? linkId,  ClinicInfo clinic,  DoctorFullInfo doctor, @JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes, @JsonKey(name: "created_at")  String? createdAt, @JsonKey(name: "updated_at")  String? updatedAt, @JsonKey(name: "is_active")  bool? isActive)  $default,) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse():
+return $default(_that.linkId,_that.clinic,_that.doctor,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes,_that.createdAt,_that.updatedAt,_that.isActive);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "link_id")  String? linkId,  ClinicInfo clinic,  DoctorFullInfo doctor, @JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes, @JsonKey(name: "created_at")  String? createdAt, @JsonKey(name: "updated_at")  String? updatedAt, @JsonKey(name: "is_active")  bool? isActive)?  $default,) {final _that = this;
+switch (_that) {
+case _ClinicDoctorLinkResponse() when $default != null:
+return $default(_that.linkId,_that.clinic,_that.doctor,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes,_that.createdAt,_that.updatedAt,_that.isActive);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ClinicDoctorLinkResponseImpl implements _ClinicDoctorLinkResponse {
-  const _$ClinicDoctorLinkResponseImpl({
-    @JsonKey(name: "link_id") this.linkId,
-    required this.clinic,
-    required this.doctor,
-    @JsonKey(name: "consultation_fee_offline") this.consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") this.consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") this.followUpFee,
-    @JsonKey(name: "follow_up_days") this.followUpDays,
-    this.notes,
-    @JsonKey(name: "created_at") this.createdAt,
-    @JsonKey(name: "updated_at") this.updatedAt,
-    @JsonKey(name: "is_active") this.isActive,
+
+class _ClinicDoctorLinkResponse implements ClinicDoctorLinkResponse {
+  const _ClinicDoctorLinkResponse({@JsonKey(name: "link_id") this.linkId, required this.clinic, required this.doctor, @JsonKey(name: "consultation_fee_offline") this.consultationFeeOffline, @JsonKey(name: "consultation_fee_online") this.consultationFeeOnline, @JsonKey(name: "follow_up_fee") this.followUpFee, @JsonKey(name: "follow_up_days") this.followUpDays, this.notes, @JsonKey(name: "created_at") this.createdAt, @JsonKey(name: "updated_at") this.updatedAt, @JsonKey(name: "is_active") this.isActive});
+  factory _ClinicDoctorLinkResponse.fromJson(Map<String, dynamic> json) => _$ClinicDoctorLinkResponseFromJson(json);
+
+@override@JsonKey(name: "link_id") final  String? linkId;
+@override final  ClinicInfo clinic;
+@override final  DoctorFullInfo doctor;
+@override@JsonKey(name: "consultation_fee_offline") final  double? consultationFeeOffline;
+@override@JsonKey(name: "consultation_fee_online") final  double? consultationFeeOnline;
+@override@JsonKey(name: "follow_up_fee") final  double? followUpFee;
+@override@JsonKey(name: "follow_up_days") final  int? followUpDays;
+@override final  String? notes;
+@override@JsonKey(name: "created_at") final  String? createdAt;
+@override@JsonKey(name: "updated_at") final  String? updatedAt;
+@override@JsonKey(name: "is_active") final  bool? isActive;
+
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClinicDoctorLinkResponseCopyWith<_ClinicDoctorLinkResponse> get copyWith => __$ClinicDoctorLinkResponseCopyWithImpl<_ClinicDoctorLinkResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ClinicDoctorLinkResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClinicDoctorLinkResponse&&(identical(other.linkId, linkId) || other.linkId == linkId)&&(identical(other.clinic, clinic) || other.clinic == clinic)&&(identical(other.doctor, doctor) || other.doctor == doctor)&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isActive, isActive) || other.isActive == isActive));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,linkId,clinic,doctor,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes,createdAt,updatedAt,isActive);
+
+@override
+String toString() {
+  return 'ClinicDoctorLinkResponse(linkId: $linkId, clinic: $clinic, doctor: $doctor, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClinicDoctorLinkResponseCopyWith<$Res> implements $ClinicDoctorLinkResponseCopyWith<$Res> {
+  factory _$ClinicDoctorLinkResponseCopyWith(_ClinicDoctorLinkResponse value, $Res Function(_ClinicDoctorLinkResponse) _then) = __$ClinicDoctorLinkResponseCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "link_id") String? linkId, ClinicInfo clinic, DoctorFullInfo doctor,@JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays, String? notes,@JsonKey(name: "created_at") String? createdAt,@JsonKey(name: "updated_at") String? updatedAt,@JsonKey(name: "is_active") bool? isActive
+});
+
+
+@override $ClinicInfoCopyWith<$Res> get clinic;@override $DoctorFullInfoCopyWith<$Res> get doctor;
+
+}
+/// @nodoc
+class __$ClinicDoctorLinkResponseCopyWithImpl<$Res>
+    implements _$ClinicDoctorLinkResponseCopyWith<$Res> {
+  __$ClinicDoctorLinkResponseCopyWithImpl(this._self, this._then);
+
+  final _ClinicDoctorLinkResponse _self;
+  final $Res Function(_ClinicDoctorLinkResponse) _then;
+
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? linkId = freezed,Object? clinic = null,Object? doctor = null,Object? consultationFeeOffline = freezed,Object? consultationFeeOnline = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isActive = freezed,}) {
+  return _then(_ClinicDoctorLinkResponse(
+linkId: freezed == linkId ? _self.linkId : linkId // ignore: cast_nullable_to_non_nullable
+as String?,clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfo,doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
+as DoctorFullInfo,consultationFeeOffline: freezed == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double?,consultationFeeOnline: freezed == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool?,
+  ));
+}
+
+/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
   });
-
-  factory _$ClinicDoctorLinkResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ClinicDoctorLinkResponseImplFromJson(json);
-
-  @override
-  @JsonKey(name: "link_id")
-  final String? linkId;
-  @override
-  final ClinicInfo clinic;
-  @override
-  final DoctorFullInfo doctor;
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  final double? consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  final double? consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  final double? followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  final int? followUpDays;
-  @override
-  final String? notes;
-  @override
-  @JsonKey(name: "created_at")
-  final String? createdAt;
-  @override
-  @JsonKey(name: "updated_at")
-  final String? updatedAt;
-  @override
-  @JsonKey(name: "is_active")
-  final bool? isActive;
-
-  @override
-  String toString() {
-    return 'ClinicDoctorLinkResponse(linkId: $linkId, clinic: $clinic, doctor: $doctor, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ClinicDoctorLinkResponseImpl &&
-            (identical(other.linkId, linkId) || other.linkId == linkId) &&
-            (identical(other.clinic, clinic) || other.clinic == clinic) &&
-            (identical(other.doctor, doctor) || other.doctor == doctor) &&
-            (identical(other.consultationFeeOffline, consultationFeeOffline) ||
-                other.consultationFeeOffline == consultationFeeOffline) &&
-            (identical(other.consultationFeeOnline, consultationFeeOnline) ||
-                other.consultationFeeOnline == consultationFeeOnline) &&
-            (identical(other.followUpFee, followUpFee) ||
-                other.followUpFee == followUpFee) &&
-            (identical(other.followUpDays, followUpDays) ||
-                other.followUpDays == followUpDays) &&
-            (identical(other.notes, notes) || other.notes == notes) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
-            (identical(other.isActive, isActive) ||
-                other.isActive == isActive));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    linkId,
-    clinic,
-    doctor,
-    consultationFeeOffline,
-    consultationFeeOnline,
-    followUpFee,
-    followUpDays,
-    notes,
-    createdAt,
-    updatedAt,
-    isActive,
-  );
-
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ClinicDoctorLinkResponseImplCopyWith<_$ClinicDoctorLinkResponseImpl>
-  get copyWith =>
-      __$$ClinicDoctorLinkResponseImplCopyWithImpl<
-        _$ClinicDoctorLinkResponseImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ClinicDoctorLinkResponseImplToJson(this);
-  }
+}/// Create a copy of ClinicDoctorLinkResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DoctorFullInfoCopyWith<$Res> get doctor {
+  
+  return $DoctorFullInfoCopyWith<$Res>(_self.doctor, (value) {
+    return _then(_self.copyWith(doctor: value));
+  });
+}
 }
 
-abstract class _ClinicDoctorLinkResponse implements ClinicDoctorLinkResponse {
-  const factory _ClinicDoctorLinkResponse({
-    @JsonKey(name: "link_id") final String? linkId,
-    required final ClinicInfo clinic,
-    required final DoctorFullInfo doctor,
-    @JsonKey(name: "consultation_fee_offline")
-    final double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online")
-    final double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") final double? followUpFee,
-    @JsonKey(name: "follow_up_days") final int? followUpDays,
-    final String? notes,
-    @JsonKey(name: "created_at") final String? createdAt,
-    @JsonKey(name: "updated_at") final String? updatedAt,
-    @JsonKey(name: "is_active") final bool? isActive,
-  }) = _$ClinicDoctorLinkResponseImpl;
-
-  factory _ClinicDoctorLinkResponse.fromJson(Map<String, dynamic> json) =
-      _$ClinicDoctorLinkResponseImpl.fromJson;
-
-  @override
-  @JsonKey(name: "link_id")
-  String? get linkId;
-  @override
-  ClinicInfo get clinic;
-  @override
-  DoctorFullInfo get doctor;
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  double? get consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  double? get consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays;
-  @override
-  String? get notes;
-  @override
-  @JsonKey(name: "created_at")
-  String? get createdAt;
-  @override
-  @JsonKey(name: "updated_at")
-  String? get updatedAt;
-  @override
-  @JsonKey(name: "is_active")
-  bool? get isActive;
-
-  /// Create a copy of ClinicDoctorLinkResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ClinicDoctorLinkResponseImplCopyWith<_$ClinicDoctorLinkResponseImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-DoctorFullInfo _$DoctorFullInfoFromJson(Map<String, dynamic> json) {
-  return _DoctorFullInfo.fromJson(json);
-}
 
 /// @nodoc
 mixin _$DoctorFullInfo {
-  @JsonKey(name: "doctor_id")
-  String? get doctorId => throw _privateConstructorUsedError;
-  @JsonKey(name: "doctor_code")
-  String get doctorCode => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: "first_name")
-  String get firstName => throw _privateConstructorUsedError;
-  @JsonKey(name: "last_name")
-  String get lastName => throw _privateConstructorUsedError;
-  String get specialization => throw _privateConstructorUsedError;
-  String get username => throw _privateConstructorUsedError;
-  @JsonKey(name: "license_number")
-  String? get licenseNumber => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee")
-  double? get consultationFee => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays => throw _privateConstructorUsedError;
+
+@JsonKey(name: "doctor_id") String? get doctorId;@JsonKey(name: "doctor_code") String get doctorCode; String get email;@JsonKey(name: "first_name") String get firstName;@JsonKey(name: "last_name") String get lastName; String get specialization; String get username;@JsonKey(name: "license_number") String? get licenseNumber;@JsonKey(name: "consultation_fee") double? get consultationFee;@JsonKey(name: "follow_up_fee") double? get followUpFee;@JsonKey(name: "follow_up_days") int? get followUpDays;@JsonKey(name: "profile_image") String? get profileImage;
+/// Create a copy of DoctorFullInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DoctorFullInfoCopyWith<DoctorFullInfo> get copyWith => _$DoctorFullInfoCopyWithImpl<DoctorFullInfo>(this as DoctorFullInfo, _$identity);
 
   /// Serializes this DoctorFullInfo to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DoctorFullInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DoctorFullInfoCopyWith<DoctorFullInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoctorFullInfo&&(identical(other.doctorId, doctorId) || other.doctorId == doctorId)&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.username, username) || other.username == username)&&(identical(other.licenseNumber, licenseNumber) || other.licenseNumber == licenseNumber)&&(identical(other.consultationFee, consultationFee) || other.consultationFee == consultationFee)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,doctorId,doctorCode,email,firstName,lastName,specialization,username,licenseNumber,consultationFee,followUpFee,followUpDays,profileImage);
+
+@override
+String toString() {
+  return 'DoctorFullInfo(doctorId: $doctorId, doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username, licenseNumber: $licenseNumber, consultationFee: $consultationFee, followUpFee: $followUpFee, followUpDays: $followUpDays, profileImage: $profileImage)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DoctorFullInfoCopyWith<$Res> {
-  factory $DoctorFullInfoCopyWith(
-    DoctorFullInfo value,
-    $Res Function(DoctorFullInfo) then,
-  ) = _$DoctorFullInfoCopyWithImpl<$Res, DoctorFullInfo>;
-  @useResult
-  $Res call({
-    @JsonKey(name: "doctor_id") String? doctorId,
-    @JsonKey(name: "doctor_code") String doctorCode,
-    String email,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String specialization,
-    String username,
-    @JsonKey(name: "license_number") String? licenseNumber,
-    @JsonKey(name: "consultation_fee") double? consultationFee,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-  });
-}
+abstract mixin class $DoctorFullInfoCopyWith<$Res>  {
+  factory $DoctorFullInfoCopyWith(DoctorFullInfo value, $Res Function(DoctorFullInfo) _then) = _$DoctorFullInfoCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "doctor_id") String? doctorId,@JsonKey(name: "doctor_code") String doctorCode, String email,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String specialization, String username,@JsonKey(name: "license_number") String? licenseNumber,@JsonKey(name: "consultation_fee") double? consultationFee,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays,@JsonKey(name: "profile_image") String? profileImage
+});
 
+
+
+
+}
 /// @nodoc
-class _$DoctorFullInfoCopyWithImpl<$Res, $Val extends DoctorFullInfo>
+class _$DoctorFullInfoCopyWithImpl<$Res>
     implements $DoctorFullInfoCopyWith<$Res> {
-  _$DoctorFullInfoCopyWithImpl(this._value, this._then);
+  _$DoctorFullInfoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DoctorFullInfo _self;
+  final $Res Function(DoctorFullInfo) _then;
 
-  /// Create a copy of DoctorFullInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? doctorId = freezed,
-    Object? doctorCode = null,
-    Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? specialization = null,
-    Object? username = null,
-    Object? licenseNumber = freezed,
-    Object? consultationFee = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            doctorId: freezed == doctorId
-                ? _value.doctorId
-                : doctorId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            doctorCode: null == doctorCode
-                ? _value.doctorCode
-                : doctorCode // ignore: cast_nullable_to_non_nullable
-                      as String,
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            firstName: null == firstName
-                ? _value.firstName
-                : firstName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastName: null == lastName
-                ? _value.lastName
-                : lastName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            specialization: null == specialization
-                ? _value.specialization
-                : specialization // ignore: cast_nullable_to_non_nullable
-                      as String,
-            username: null == username
-                ? _value.username
-                : username // ignore: cast_nullable_to_non_nullable
-                      as String,
-            licenseNumber: freezed == licenseNumber
-                ? _value.licenseNumber
-                : licenseNumber // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            consultationFee: freezed == consultationFee
-                ? _value.consultationFee
-                : consultationFee // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpFee: freezed == followUpFee
-                ? _value.followUpFee
-                : followUpFee // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpDays: freezed == followUpDays
-                ? _value.followUpDays
-                : followUpDays // ignore: cast_nullable_to_non_nullable
-                      as int?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of DoctorFullInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? doctorId = freezed,Object? doctorCode = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? specialization = null,Object? username = null,Object? licenseNumber = freezed,Object? consultationFee = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? profileImage = freezed,}) {
+  return _then(_self.copyWith(
+doctorId: freezed == doctorId ? _self.doctorId : doctorId // ignore: cast_nullable_to_non_nullable
+as String?,doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,licenseNumber: freezed == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
+as String?,consultationFee: freezed == consultationFee ? _self.consultationFee : consultationFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$DoctorFullInfoImplCopyWith<$Res>
-    implements $DoctorFullInfoCopyWith<$Res> {
-  factory _$$DoctorFullInfoImplCopyWith(
-    _$DoctorFullInfoImpl value,
-    $Res Function(_$DoctorFullInfoImpl) then,
-  ) = __$$DoctorFullInfoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(name: "doctor_id") String? doctorId,
-    @JsonKey(name: "doctor_code") String doctorCode,
-    String email,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String specialization,
-    String username,
-    @JsonKey(name: "license_number") String? licenseNumber,
-    @JsonKey(name: "consultation_fee") double? consultationFee,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-  });
 }
 
-/// @nodoc
-class __$$DoctorFullInfoImplCopyWithImpl<$Res>
-    extends _$DoctorFullInfoCopyWithImpl<$Res, _$DoctorFullInfoImpl>
-    implements _$$DoctorFullInfoImplCopyWith<$Res> {
-  __$$DoctorFullInfoImplCopyWithImpl(
-    _$DoctorFullInfoImpl _value,
-    $Res Function(_$DoctorFullInfoImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DoctorFullInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? doctorId = freezed,
-    Object? doctorCode = null,
-    Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? specialization = null,
-    Object? username = null,
-    Object? licenseNumber = freezed,
-    Object? consultationFee = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-  }) {
-    return _then(
-      _$DoctorFullInfoImpl(
-        doctorId: freezed == doctorId
-            ? _value.doctorId
-            : doctorId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        doctorCode: null == doctorCode
-            ? _value.doctorCode
-            : doctorCode // ignore: cast_nullable_to_non_nullable
-                  as String,
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        firstName: null == firstName
-            ? _value.firstName
-            : firstName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastName: null == lastName
-            ? _value.lastName
-            : lastName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        specialization: null == specialization
-            ? _value.specialization
-            : specialization // ignore: cast_nullable_to_non_nullable
-                  as String,
-        username: null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
-                  as String,
-        licenseNumber: freezed == licenseNumber
-            ? _value.licenseNumber
-            : licenseNumber // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        consultationFee: freezed == consultationFee
-            ? _value.consultationFee
-            : consultationFee // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpFee: freezed == followUpFee
-            ? _value.followUpFee
-            : followUpFee // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpDays: freezed == followUpDays
-            ? _value.followUpDays
-            : followUpDays // ignore: cast_nullable_to_non_nullable
-                  as int?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DoctorFullInfo].
+extension DoctorFullInfoPatterns on DoctorFullInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DoctorFullInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DoctorFullInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DoctorFullInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorFullInfo():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DoctorFullInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorFullInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "doctor_id")  String? doctorId, @JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "license_number")  String? licenseNumber, @JsonKey(name: "consultation_fee")  double? consultationFee, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays, @JsonKey(name: "profile_image")  String? profileImage)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DoctorFullInfo() when $default != null:
+return $default(_that.doctorId,_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.licenseNumber,_that.consultationFee,_that.followUpFee,_that.followUpDays,_that.profileImage);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "doctor_id")  String? doctorId, @JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "license_number")  String? licenseNumber, @JsonKey(name: "consultation_fee")  double? consultationFee, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays, @JsonKey(name: "profile_image")  String? profileImage)  $default,) {final _that = this;
+switch (_that) {
+case _DoctorFullInfo():
+return $default(_that.doctorId,_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.licenseNumber,_that.consultationFee,_that.followUpFee,_that.followUpDays,_that.profileImage);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "doctor_id")  String? doctorId, @JsonKey(name: "doctor_code")  String doctorCode,  String email, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String specialization,  String username, @JsonKey(name: "license_number")  String? licenseNumber, @JsonKey(name: "consultation_fee")  double? consultationFee, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays, @JsonKey(name: "profile_image")  String? profileImage)?  $default,) {final _that = this;
+switch (_that) {
+case _DoctorFullInfo() when $default != null:
+return $default(_that.doctorId,_that.doctorCode,_that.email,_that.firstName,_that.lastName,_that.specialization,_that.username,_that.licenseNumber,_that.consultationFee,_that.followUpFee,_that.followUpDays,_that.profileImage);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DoctorFullInfoImpl implements _DoctorFullInfo {
-  const _$DoctorFullInfoImpl({
-    @JsonKey(name: "doctor_id") this.doctorId,
-    @JsonKey(name: "doctor_code") required this.doctorCode,
-    required this.email,
-    @JsonKey(name: "first_name") required this.firstName,
-    @JsonKey(name: "last_name") required this.lastName,
-    required this.specialization,
-    required this.username,
-    @JsonKey(name: "license_number") this.licenseNumber,
-    @JsonKey(name: "consultation_fee") this.consultationFee,
-    @JsonKey(name: "follow_up_fee") this.followUpFee,
-    @JsonKey(name: "follow_up_days") this.followUpDays,
-  });
 
-  factory _$DoctorFullInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DoctorFullInfoImplFromJson(json);
+class _DoctorFullInfo implements DoctorFullInfo {
+  const _DoctorFullInfo({@JsonKey(name: "doctor_id") this.doctorId, @JsonKey(name: "doctor_code") required this.doctorCode, required this.email, @JsonKey(name: "first_name") required this.firstName, @JsonKey(name: "last_name") required this.lastName, required this.specialization, required this.username, @JsonKey(name: "license_number") this.licenseNumber, @JsonKey(name: "consultation_fee") this.consultationFee, @JsonKey(name: "follow_up_fee") this.followUpFee, @JsonKey(name: "follow_up_days") this.followUpDays, @JsonKey(name: "profile_image") this.profileImage});
+  factory _DoctorFullInfo.fromJson(Map<String, dynamic> json) => _$DoctorFullInfoFromJson(json);
 
-  @override
-  @JsonKey(name: "doctor_id")
-  final String? doctorId;
-  @override
-  @JsonKey(name: "doctor_code")
-  final String doctorCode;
-  @override
-  final String email;
-  @override
-  @JsonKey(name: "first_name")
-  final String firstName;
-  @override
-  @JsonKey(name: "last_name")
-  final String lastName;
-  @override
-  final String specialization;
-  @override
-  final String username;
-  @override
-  @JsonKey(name: "license_number")
-  final String? licenseNumber;
-  @override
-  @JsonKey(name: "consultation_fee")
-  final double? consultationFee;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  final double? followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  final int? followUpDays;
+@override@JsonKey(name: "doctor_id") final  String? doctorId;
+@override@JsonKey(name: "doctor_code") final  String doctorCode;
+@override final  String email;
+@override@JsonKey(name: "first_name") final  String firstName;
+@override@JsonKey(name: "last_name") final  String lastName;
+@override final  String specialization;
+@override final  String username;
+@override@JsonKey(name: "license_number") final  String? licenseNumber;
+@override@JsonKey(name: "consultation_fee") final  double? consultationFee;
+@override@JsonKey(name: "follow_up_fee") final  double? followUpFee;
+@override@JsonKey(name: "follow_up_days") final  int? followUpDays;
+@override@JsonKey(name: "profile_image") final  String? profileImage;
 
-  @override
-  String toString() {
-    return 'DoctorFullInfo(doctorId: $doctorId, doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username, licenseNumber: $licenseNumber, consultationFee: $consultationFee, followUpFee: $followUpFee, followUpDays: $followUpDays)';
-  }
+/// Create a copy of DoctorFullInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DoctorFullInfoCopyWith<_DoctorFullInfo> get copyWith => __$DoctorFullInfoCopyWithImpl<_DoctorFullInfo>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DoctorFullInfoImpl &&
-            (identical(other.doctorId, doctorId) ||
-                other.doctorId == doctorId) &&
-            (identical(other.doctorCode, doctorCode) ||
-                other.doctorCode == doctorCode) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.specialization, specialization) ||
-                other.specialization == specialization) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.licenseNumber, licenseNumber) ||
-                other.licenseNumber == licenseNumber) &&
-            (identical(other.consultationFee, consultationFee) ||
-                other.consultationFee == consultationFee) &&
-            (identical(other.followUpFee, followUpFee) ||
-                other.followUpFee == followUpFee) &&
-            (identical(other.followUpDays, followUpDays) ||
-                other.followUpDays == followUpDays));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    doctorId,
-    doctorCode,
-    email,
-    firstName,
-    lastName,
-    specialization,
-    username,
-    licenseNumber,
-    consultationFee,
-    followUpFee,
-    followUpDays,
-  );
-
-  /// Create a copy of DoctorFullInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DoctorFullInfoImplCopyWith<_$DoctorFullInfoImpl> get copyWith =>
-      __$$DoctorFullInfoImplCopyWithImpl<_$DoctorFullInfoImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DoctorFullInfoImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$DoctorFullInfoToJson(this, );
 }
 
-abstract class _DoctorFullInfo implements DoctorFullInfo {
-  const factory _DoctorFullInfo({
-    @JsonKey(name: "doctor_id") final String? doctorId,
-    @JsonKey(name: "doctor_code") required final String doctorCode,
-    required final String email,
-    @JsonKey(name: "first_name") required final String firstName,
-    @JsonKey(name: "last_name") required final String lastName,
-    required final String specialization,
-    required final String username,
-    @JsonKey(name: "license_number") final String? licenseNumber,
-    @JsonKey(name: "consultation_fee") final double? consultationFee,
-    @JsonKey(name: "follow_up_fee") final double? followUpFee,
-    @JsonKey(name: "follow_up_days") final int? followUpDays,
-  }) = _$DoctorFullInfoImpl;
-
-  factory _DoctorFullInfo.fromJson(Map<String, dynamic> json) =
-      _$DoctorFullInfoImpl.fromJson;
-
-  @override
-  @JsonKey(name: "doctor_id")
-  String? get doctorId;
-  @override
-  @JsonKey(name: "doctor_code")
-  String get doctorCode;
-  @override
-  String get email;
-  @override
-  @JsonKey(name: "first_name")
-  String get firstName;
-  @override
-  @JsonKey(name: "last_name")
-  String get lastName;
-  @override
-  String get specialization;
-  @override
-  String get username;
-  @override
-  @JsonKey(name: "license_number")
-  String? get licenseNumber;
-  @override
-  @JsonKey(name: "consultation_fee")
-  double? get consultationFee;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays;
-
-  /// Create a copy of DoctorFullInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DoctorFullInfoImplCopyWith<_$DoctorFullInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoctorFullInfo&&(identical(other.doctorId, doctorId) || other.doctorId == doctorId)&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.username, username) || other.username == username)&&(identical(other.licenseNumber, licenseNumber) || other.licenseNumber == licenseNumber)&&(identical(other.consultationFee, consultationFee) || other.consultationFee == consultationFee)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
 }
 
-CreateClinicDoctorLinkWithFees _$CreateClinicDoctorLinkWithFeesFromJson(
-  Map<String, dynamic> json,
-) {
-  return _CreateClinicDoctorLinkWithFees.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,doctorId,doctorCode,email,firstName,lastName,specialization,username,licenseNumber,consultationFee,followUpFee,followUpDays,profileImage);
+
+@override
+String toString() {
+  return 'DoctorFullInfo(doctorId: $doctorId, doctorCode: $doctorCode, email: $email, firstName: $firstName, lastName: $lastName, specialization: $specialization, username: $username, licenseNumber: $licenseNumber, consultationFee: $consultationFee, followUpFee: $followUpFee, followUpDays: $followUpDays, profileImage: $profileImage)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DoctorFullInfoCopyWith<$Res> implements $DoctorFullInfoCopyWith<$Res> {
+  factory _$DoctorFullInfoCopyWith(_DoctorFullInfo value, $Res Function(_DoctorFullInfo) _then) = __$DoctorFullInfoCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "doctor_id") String? doctorId,@JsonKey(name: "doctor_code") String doctorCode, String email,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String specialization, String username,@JsonKey(name: "license_number") String? licenseNumber,@JsonKey(name: "consultation_fee") double? consultationFee,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays,@JsonKey(name: "profile_image") String? profileImage
+});
+
+
+
+
+}
+/// @nodoc
+class __$DoctorFullInfoCopyWithImpl<$Res>
+    implements _$DoctorFullInfoCopyWith<$Res> {
+  __$DoctorFullInfoCopyWithImpl(this._self, this._then);
+
+  final _DoctorFullInfo _self;
+  final $Res Function(_DoctorFullInfo) _then;
+
+/// Create a copy of DoctorFullInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? doctorId = freezed,Object? doctorCode = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? specialization = null,Object? username = null,Object? licenseNumber = freezed,Object? consultationFee = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? profileImage = freezed,}) {
+  return _then(_DoctorFullInfo(
+doctorId: freezed == doctorId ? _self.doctorId : doctorId // ignore: cast_nullable_to_non_nullable
+as String?,doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,licenseNumber: freezed == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
+as String?,consultationFee: freezed == consultationFee ? _self.consultationFee : consultationFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$CreateClinicDoctorLinkWithFees {
-  @JsonKey(name: "clinic_id")
-  String get clinicId => throw _privateConstructorUsedError;
-  @JsonKey(name: "doctor_id")
-  String get doctorId => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee_offline")
-  double get consultationFeeOffline => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee_online")
-  double get consultationFeeOnline => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_fee")
-  double get followUpFee => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_days")
-  int get followUpDays => throw _privateConstructorUsedError;
-  String? get notes => throw _privateConstructorUsedError;
+
+@JsonKey(name: "clinic_id") String get clinicId;@JsonKey(name: "doctor_id") String get doctorId;@JsonKey(name: "consultation_fee_offline") double get consultationFeeOffline;@JsonKey(name: "consultation_fee_online") double get consultationFeeOnline;@JsonKey(name: "follow_up_fee") double get followUpFee;@JsonKey(name: "follow_up_days") int get followUpDays; String? get notes;
+/// Create a copy of CreateClinicDoctorLinkWithFees
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CreateClinicDoctorLinkWithFeesCopyWith<CreateClinicDoctorLinkWithFees> get copyWith => _$CreateClinicDoctorLinkWithFeesCopyWithImpl<CreateClinicDoctorLinkWithFees>(this as CreateClinicDoctorLinkWithFees, _$identity);
 
   /// Serializes this CreateClinicDoctorLinkWithFees to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CreateClinicDoctorLinkWithFees
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CreateClinicDoctorLinkWithFeesCopyWith<CreateClinicDoctorLinkWithFees>
-  get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateClinicDoctorLinkWithFees&&(identical(other.clinicId, clinicId) || other.clinicId == clinicId)&&(identical(other.doctorId, doctorId) || other.doctorId == doctorId)&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinicId,doctorId,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes);
+
+@override
+String toString() {
+  return 'CreateClinicDoctorLinkWithFees(clinicId: $clinicId, doctorId: $doctorId, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CreateClinicDoctorLinkWithFeesCopyWith<$Res> {
-  factory $CreateClinicDoctorLinkWithFeesCopyWith(
-    CreateClinicDoctorLinkWithFees value,
-    $Res Function(CreateClinicDoctorLinkWithFees) then,
-  ) =
-      _$CreateClinicDoctorLinkWithFeesCopyWithImpl<
-        $Res,
-        CreateClinicDoctorLinkWithFees
-      >;
-  @useResult
-  $Res call({
-    @JsonKey(name: "clinic_id") String clinicId,
-    @JsonKey(name: "doctor_id") String doctorId,
-    @JsonKey(name: "consultation_fee_offline") double consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double followUpFee,
-    @JsonKey(name: "follow_up_days") int followUpDays,
-    String? notes,
-  });
-}
+abstract mixin class $CreateClinicDoctorLinkWithFeesCopyWith<$Res>  {
+  factory $CreateClinicDoctorLinkWithFeesCopyWith(CreateClinicDoctorLinkWithFees value, $Res Function(CreateClinicDoctorLinkWithFees) _then) = _$CreateClinicDoctorLinkWithFeesCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "clinic_id") String clinicId,@JsonKey(name: "doctor_id") String doctorId,@JsonKey(name: "consultation_fee_offline") double consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double consultationFeeOnline,@JsonKey(name: "follow_up_fee") double followUpFee,@JsonKey(name: "follow_up_days") int followUpDays, String? notes
+});
 
+
+
+
+}
 /// @nodoc
-class _$CreateClinicDoctorLinkWithFeesCopyWithImpl<
-  $Res,
-  $Val extends CreateClinicDoctorLinkWithFees
->
+class _$CreateClinicDoctorLinkWithFeesCopyWithImpl<$Res>
     implements $CreateClinicDoctorLinkWithFeesCopyWith<$Res> {
-  _$CreateClinicDoctorLinkWithFeesCopyWithImpl(this._value, this._then);
+  _$CreateClinicDoctorLinkWithFeesCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CreateClinicDoctorLinkWithFees _self;
+  final $Res Function(CreateClinicDoctorLinkWithFees) _then;
 
-  /// Create a copy of CreateClinicDoctorLinkWithFees
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clinicId = null,
-    Object? doctorId = null,
-    Object? consultationFeeOffline = null,
-    Object? consultationFeeOnline = null,
-    Object? followUpFee = null,
-    Object? followUpDays = null,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            clinicId: null == clinicId
-                ? _value.clinicId
-                : clinicId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            doctorId: null == doctorId
-                ? _value.doctorId
-                : doctorId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            consultationFeeOffline: null == consultationFeeOffline
-                ? _value.consultationFeeOffline
-                : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                      as double,
-            consultationFeeOnline: null == consultationFeeOnline
-                ? _value.consultationFeeOnline
-                : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                      as double,
-            followUpFee: null == followUpFee
-                ? _value.followUpFee
-                : followUpFee // ignore: cast_nullable_to_non_nullable
-                      as double,
-            followUpDays: null == followUpDays
-                ? _value.followUpDays
-                : followUpDays // ignore: cast_nullable_to_non_nullable
-                      as int,
-            notes: freezed == notes
-                ? _value.notes
-                : notes // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of CreateClinicDoctorLinkWithFees
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? clinicId = null,Object? doctorId = null,Object? consultationFeeOffline = null,Object? consultationFeeOnline = null,Object? followUpFee = null,Object? followUpDays = null,Object? notes = freezed,}) {
+  return _then(_self.copyWith(
+clinicId: null == clinicId ? _self.clinicId : clinicId // ignore: cast_nullable_to_non_nullable
+as String,doctorId: null == doctorId ? _self.doctorId : doctorId // ignore: cast_nullable_to_non_nullable
+as String,consultationFeeOffline: null == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double,consultationFeeOnline: null == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double,followUpFee: null == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double,followUpDays: null == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CreateClinicDoctorLinkWithFeesImplCopyWith<$Res>
-    implements $CreateClinicDoctorLinkWithFeesCopyWith<$Res> {
-  factory _$$CreateClinicDoctorLinkWithFeesImplCopyWith(
-    _$CreateClinicDoctorLinkWithFeesImpl value,
-    $Res Function(_$CreateClinicDoctorLinkWithFeesImpl) then,
-  ) = __$$CreateClinicDoctorLinkWithFeesImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(name: "clinic_id") String clinicId,
-    @JsonKey(name: "doctor_id") String doctorId,
-    @JsonKey(name: "consultation_fee_offline") double consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double followUpFee,
-    @JsonKey(name: "follow_up_days") int followUpDays,
-    String? notes,
-  });
 }
 
-/// @nodoc
-class __$$CreateClinicDoctorLinkWithFeesImplCopyWithImpl<$Res>
-    extends
-        _$CreateClinicDoctorLinkWithFeesCopyWithImpl<
-          $Res,
-          _$CreateClinicDoctorLinkWithFeesImpl
-        >
-    implements _$$CreateClinicDoctorLinkWithFeesImplCopyWith<$Res> {
-  __$$CreateClinicDoctorLinkWithFeesImplCopyWithImpl(
-    _$CreateClinicDoctorLinkWithFeesImpl _value,
-    $Res Function(_$CreateClinicDoctorLinkWithFeesImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of CreateClinicDoctorLinkWithFees
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clinicId = null,
-    Object? doctorId = null,
-    Object? consultationFeeOffline = null,
-    Object? consultationFeeOnline = null,
-    Object? followUpFee = null,
-    Object? followUpDays = null,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _$CreateClinicDoctorLinkWithFeesImpl(
-        clinicId: null == clinicId
-            ? _value.clinicId
-            : clinicId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        doctorId: null == doctorId
-            ? _value.doctorId
-            : doctorId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        consultationFeeOffline: null == consultationFeeOffline
-            ? _value.consultationFeeOffline
-            : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                  as double,
-        consultationFeeOnline: null == consultationFeeOnline
-            ? _value.consultationFeeOnline
-            : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                  as double,
-        followUpFee: null == followUpFee
-            ? _value.followUpFee
-            : followUpFee // ignore: cast_nullable_to_non_nullable
-                  as double,
-        followUpDays: null == followUpDays
-            ? _value.followUpDays
-            : followUpDays // ignore: cast_nullable_to_non_nullable
-                  as int,
-        notes: freezed == notes
-            ? _value.notes
-            : notes // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [CreateClinicDoctorLinkWithFees].
+extension CreateClinicDoctorLinkWithFeesPatterns on CreateClinicDoctorLinkWithFees {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CreateClinicDoctorLinkWithFees value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CreateClinicDoctorLinkWithFees value)  $default,){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CreateClinicDoctorLinkWithFees value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "clinic_id")  String clinicId, @JsonKey(name: "doctor_id")  String doctorId, @JsonKey(name: "consultation_fee_offline")  double consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double followUpFee, @JsonKey(name: "follow_up_days")  int followUpDays,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees() when $default != null:
+return $default(_that.clinicId,_that.doctorId,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "clinic_id")  String clinicId, @JsonKey(name: "doctor_id")  String doctorId, @JsonKey(name: "consultation_fee_offline")  double consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double followUpFee, @JsonKey(name: "follow_up_days")  int followUpDays,  String? notes)  $default,) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees():
+return $default(_that.clinicId,_that.doctorId,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "clinic_id")  String clinicId, @JsonKey(name: "doctor_id")  String doctorId, @JsonKey(name: "consultation_fee_offline")  double consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double followUpFee, @JsonKey(name: "follow_up_days")  int followUpDays,  String? notes)?  $default,) {final _that = this;
+switch (_that) {
+case _CreateClinicDoctorLinkWithFees() when $default != null:
+return $default(_that.clinicId,_that.doctorId,_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$CreateClinicDoctorLinkWithFeesImpl
-    implements _CreateClinicDoctorLinkWithFees {
-  const _$CreateClinicDoctorLinkWithFeesImpl({
-    @JsonKey(name: "clinic_id") required this.clinicId,
-    @JsonKey(name: "doctor_id") required this.doctorId,
-    @JsonKey(name: "consultation_fee_offline")
-    required this.consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online")
-    required this.consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") required this.followUpFee,
-    @JsonKey(name: "follow_up_days") required this.followUpDays,
-    this.notes,
-  });
 
-  factory _$CreateClinicDoctorLinkWithFeesImpl.fromJson(
-    Map<String, dynamic> json,
-  ) => _$$CreateClinicDoctorLinkWithFeesImplFromJson(json);
+class _CreateClinicDoctorLinkWithFees implements CreateClinicDoctorLinkWithFees {
+  const _CreateClinicDoctorLinkWithFees({@JsonKey(name: "clinic_id") required this.clinicId, @JsonKey(name: "doctor_id") required this.doctorId, @JsonKey(name: "consultation_fee_offline") required this.consultationFeeOffline, @JsonKey(name: "consultation_fee_online") required this.consultationFeeOnline, @JsonKey(name: "follow_up_fee") required this.followUpFee, @JsonKey(name: "follow_up_days") required this.followUpDays, this.notes});
+  factory _CreateClinicDoctorLinkWithFees.fromJson(Map<String, dynamic> json) => _$CreateClinicDoctorLinkWithFeesFromJson(json);
 
-  @override
-  @JsonKey(name: "clinic_id")
-  final String clinicId;
-  @override
-  @JsonKey(name: "doctor_id")
-  final String doctorId;
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  final double consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  final double consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  final double followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  final int followUpDays;
-  @override
-  final String? notes;
+@override@JsonKey(name: "clinic_id") final  String clinicId;
+@override@JsonKey(name: "doctor_id") final  String doctorId;
+@override@JsonKey(name: "consultation_fee_offline") final  double consultationFeeOffline;
+@override@JsonKey(name: "consultation_fee_online") final  double consultationFeeOnline;
+@override@JsonKey(name: "follow_up_fee") final  double followUpFee;
+@override@JsonKey(name: "follow_up_days") final  int followUpDays;
+@override final  String? notes;
 
-  @override
-  String toString() {
-    return 'CreateClinicDoctorLinkWithFees(clinicId: $clinicId, doctorId: $doctorId, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
-  }
+/// Create a copy of CreateClinicDoctorLinkWithFees
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateClinicDoctorLinkWithFeesCopyWith<_CreateClinicDoctorLinkWithFees> get copyWith => __$CreateClinicDoctorLinkWithFeesCopyWithImpl<_CreateClinicDoctorLinkWithFees>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateClinicDoctorLinkWithFeesImpl &&
-            (identical(other.clinicId, clinicId) ||
-                other.clinicId == clinicId) &&
-            (identical(other.doctorId, doctorId) ||
-                other.doctorId == doctorId) &&
-            (identical(other.consultationFeeOffline, consultationFeeOffline) ||
-                other.consultationFeeOffline == consultationFeeOffline) &&
-            (identical(other.consultationFeeOnline, consultationFeeOnline) ||
-                other.consultationFeeOnline == consultationFeeOnline) &&
-            (identical(other.followUpFee, followUpFee) ||
-                other.followUpFee == followUpFee) &&
-            (identical(other.followUpDays, followUpDays) ||
-                other.followUpDays == followUpDays) &&
-            (identical(other.notes, notes) || other.notes == notes));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    clinicId,
-    doctorId,
-    consultationFeeOffline,
-    consultationFeeOnline,
-    followUpFee,
-    followUpDays,
-    notes,
-  );
-
-  /// Create a copy of CreateClinicDoctorLinkWithFees
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateClinicDoctorLinkWithFeesImplCopyWith<
-    _$CreateClinicDoctorLinkWithFeesImpl
-  >
-  get copyWith =>
-      __$$CreateClinicDoctorLinkWithFeesImplCopyWithImpl<
-        _$CreateClinicDoctorLinkWithFeesImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CreateClinicDoctorLinkWithFeesImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$CreateClinicDoctorLinkWithFeesToJson(this, );
 }
 
-abstract class _CreateClinicDoctorLinkWithFees
-    implements CreateClinicDoctorLinkWithFees {
-  const factory _CreateClinicDoctorLinkWithFees({
-    @JsonKey(name: "clinic_id") required final String clinicId,
-    @JsonKey(name: "doctor_id") required final String doctorId,
-    @JsonKey(name: "consultation_fee_offline")
-    required final double consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online")
-    required final double consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") required final double followUpFee,
-    @JsonKey(name: "follow_up_days") required final int followUpDays,
-    final String? notes,
-  }) = _$CreateClinicDoctorLinkWithFeesImpl;
-
-  factory _CreateClinicDoctorLinkWithFees.fromJson(Map<String, dynamic> json) =
-      _$CreateClinicDoctorLinkWithFeesImpl.fromJson;
-
-  @override
-  @JsonKey(name: "clinic_id")
-  String get clinicId;
-  @override
-  @JsonKey(name: "doctor_id")
-  String get doctorId;
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  double get consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  double get consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  double get followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  int get followUpDays;
-  @override
-  String? get notes;
-
-  /// Create a copy of CreateClinicDoctorLinkWithFees
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateClinicDoctorLinkWithFeesImplCopyWith<
-    _$CreateClinicDoctorLinkWithFeesImpl
-  >
-  get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateClinicDoctorLinkWithFees&&(identical(other.clinicId, clinicId) || other.clinicId == clinicId)&&(identical(other.doctorId, doctorId) || other.doctorId == doctorId)&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
-UpdateClinicDoctorLinkFees _$UpdateClinicDoctorLinkFeesFromJson(
-  Map<String, dynamic> json,
-) {
-  return _UpdateClinicDoctorLinkFees.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinicId,doctorId,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes);
+
+@override
+String toString() {
+  return 'CreateClinicDoctorLinkWithFees(clinicId: $clinicId, doctorId: $doctorId, consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateClinicDoctorLinkWithFeesCopyWith<$Res> implements $CreateClinicDoctorLinkWithFeesCopyWith<$Res> {
+  factory _$CreateClinicDoctorLinkWithFeesCopyWith(_CreateClinicDoctorLinkWithFees value, $Res Function(_CreateClinicDoctorLinkWithFees) _then) = __$CreateClinicDoctorLinkWithFeesCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "clinic_id") String clinicId,@JsonKey(name: "doctor_id") String doctorId,@JsonKey(name: "consultation_fee_offline") double consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double consultationFeeOnline,@JsonKey(name: "follow_up_fee") double followUpFee,@JsonKey(name: "follow_up_days") int followUpDays, String? notes
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreateClinicDoctorLinkWithFeesCopyWithImpl<$Res>
+    implements _$CreateClinicDoctorLinkWithFeesCopyWith<$Res> {
+  __$CreateClinicDoctorLinkWithFeesCopyWithImpl(this._self, this._then);
+
+  final _CreateClinicDoctorLinkWithFees _self;
+  final $Res Function(_CreateClinicDoctorLinkWithFees) _then;
+
+/// Create a copy of CreateClinicDoctorLinkWithFees
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? clinicId = null,Object? doctorId = null,Object? consultationFeeOffline = null,Object? consultationFeeOnline = null,Object? followUpFee = null,Object? followUpDays = null,Object? notes = freezed,}) {
+  return _then(_CreateClinicDoctorLinkWithFees(
+clinicId: null == clinicId ? _self.clinicId : clinicId // ignore: cast_nullable_to_non_nullable
+as String,doctorId: null == doctorId ? _self.doctorId : doctorId // ignore: cast_nullable_to_non_nullable
+as String,consultationFeeOffline: null == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double,consultationFeeOnline: null == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double,followUpFee: null == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double,followUpDays: null == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$UpdateClinicDoctorLinkFees {
-  @JsonKey(name: "consultation_fee_offline")
-  double? get consultationFeeOffline => throw _privateConstructorUsedError;
-  @JsonKey(name: "consultation_fee_online")
-  double? get consultationFeeOnline => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee => throw _privateConstructorUsedError;
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays => throw _privateConstructorUsedError;
-  String? get notes => throw _privateConstructorUsedError;
+
+@JsonKey(name: "consultation_fee_offline") double? get consultationFeeOffline;@JsonKey(name: "consultation_fee_online") double? get consultationFeeOnline;@JsonKey(name: "follow_up_fee") double? get followUpFee;@JsonKey(name: "follow_up_days") int? get followUpDays; String? get notes;
+/// Create a copy of UpdateClinicDoctorLinkFees
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateClinicDoctorLinkFeesCopyWith<UpdateClinicDoctorLinkFees> get copyWith => _$UpdateClinicDoctorLinkFeesCopyWithImpl<UpdateClinicDoctorLinkFees>(this as UpdateClinicDoctorLinkFees, _$identity);
 
   /// Serializes this UpdateClinicDoctorLinkFees to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of UpdateClinicDoctorLinkFees
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $UpdateClinicDoctorLinkFeesCopyWith<UpdateClinicDoctorLinkFees>
-  get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateClinicDoctorLinkFees&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes);
+
+@override
+String toString() {
+  return 'UpdateClinicDoctorLinkFees(consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $UpdateClinicDoctorLinkFeesCopyWith<$Res> {
-  factory $UpdateClinicDoctorLinkFeesCopyWith(
-    UpdateClinicDoctorLinkFees value,
-    $Res Function(UpdateClinicDoctorLinkFees) then,
-  ) =
-      _$UpdateClinicDoctorLinkFeesCopyWithImpl<
-        $Res,
-        UpdateClinicDoctorLinkFees
-      >;
-  @useResult
-  $Res call({
-    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-    String? notes,
-  });
-}
+abstract mixin class $UpdateClinicDoctorLinkFeesCopyWith<$Res>  {
+  factory $UpdateClinicDoctorLinkFeesCopyWith(UpdateClinicDoctorLinkFees value, $Res Function(UpdateClinicDoctorLinkFees) _then) = _$UpdateClinicDoctorLinkFeesCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays, String? notes
+});
 
+
+
+
+}
 /// @nodoc
-class _$UpdateClinicDoctorLinkFeesCopyWithImpl<
-  $Res,
-  $Val extends UpdateClinicDoctorLinkFees
->
+class _$UpdateClinicDoctorLinkFeesCopyWithImpl<$Res>
     implements $UpdateClinicDoctorLinkFeesCopyWith<$Res> {
-  _$UpdateClinicDoctorLinkFeesCopyWithImpl(this._value, this._then);
+  _$UpdateClinicDoctorLinkFeesCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final UpdateClinicDoctorLinkFees _self;
+  final $Res Function(UpdateClinicDoctorLinkFees) _then;
 
-  /// Create a copy of UpdateClinicDoctorLinkFees
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? consultationFeeOffline = freezed,
-    Object? consultationFeeOnline = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            consultationFeeOffline: freezed == consultationFeeOffline
-                ? _value.consultationFeeOffline
-                : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            consultationFeeOnline: freezed == consultationFeeOnline
-                ? _value.consultationFeeOnline
-                : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpFee: freezed == followUpFee
-                ? _value.followUpFee
-                : followUpFee // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            followUpDays: freezed == followUpDays
-                ? _value.followUpDays
-                : followUpDays // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            notes: freezed == notes
-                ? _value.notes
-                : notes // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of UpdateClinicDoctorLinkFees
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? consultationFeeOffline = freezed,Object? consultationFeeOnline = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? notes = freezed,}) {
+  return _then(_self.copyWith(
+consultationFeeOffline: freezed == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double?,consultationFeeOnline: freezed == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$UpdateClinicDoctorLinkFeesImplCopyWith<$Res>
-    implements $UpdateClinicDoctorLinkFeesCopyWith<$Res> {
-  factory _$$UpdateClinicDoctorLinkFeesImplCopyWith(
-    _$UpdateClinicDoctorLinkFeesImpl value,
-    $Res Function(_$UpdateClinicDoctorLinkFeesImpl) then,
-  ) = __$$UpdateClinicDoctorLinkFeesImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") double? followUpFee,
-    @JsonKey(name: "follow_up_days") int? followUpDays,
-    String? notes,
-  });
 }
 
-/// @nodoc
-class __$$UpdateClinicDoctorLinkFeesImplCopyWithImpl<$Res>
-    extends
-        _$UpdateClinicDoctorLinkFeesCopyWithImpl<
-          $Res,
-          _$UpdateClinicDoctorLinkFeesImpl
-        >
-    implements _$$UpdateClinicDoctorLinkFeesImplCopyWith<$Res> {
-  __$$UpdateClinicDoctorLinkFeesImplCopyWithImpl(
-    _$UpdateClinicDoctorLinkFeesImpl _value,
-    $Res Function(_$UpdateClinicDoctorLinkFeesImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of UpdateClinicDoctorLinkFees
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? consultationFeeOffline = freezed,
-    Object? consultationFeeOnline = freezed,
-    Object? followUpFee = freezed,
-    Object? followUpDays = freezed,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _$UpdateClinicDoctorLinkFeesImpl(
-        consultationFeeOffline: freezed == consultationFeeOffline
-            ? _value.consultationFeeOffline
-            : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        consultationFeeOnline: freezed == consultationFeeOnline
-            ? _value.consultationFeeOnline
-            : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpFee: freezed == followUpFee
-            ? _value.followUpFee
-            : followUpFee // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        followUpDays: freezed == followUpDays
-            ? _value.followUpDays
-            : followUpDays // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        notes: freezed == notes
-            ? _value.notes
-            : notes // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [UpdateClinicDoctorLinkFees].
+extension UpdateClinicDoctorLinkFeesPatterns on UpdateClinicDoctorLinkFees {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UpdateClinicDoctorLinkFees value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UpdateClinicDoctorLinkFees value)  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UpdateClinicDoctorLinkFees value)?  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees() when $default != null:
+return $default(_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes)  $default,) {final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees():
+return $default(_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "consultation_fee_offline")  double? consultationFeeOffline, @JsonKey(name: "consultation_fee_online")  double? consultationFeeOnline, @JsonKey(name: "follow_up_fee")  double? followUpFee, @JsonKey(name: "follow_up_days")  int? followUpDays,  String? notes)?  $default,) {final _that = this;
+switch (_that) {
+case _UpdateClinicDoctorLinkFees() when $default != null:
+return $default(_that.consultationFeeOffline,_that.consultationFeeOnline,_that.followUpFee,_that.followUpDays,_that.notes);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$UpdateClinicDoctorLinkFeesImpl implements _UpdateClinicDoctorLinkFees {
-  const _$UpdateClinicDoctorLinkFeesImpl({
-    @JsonKey(name: "consultation_fee_offline") this.consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") this.consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") this.followUpFee,
-    @JsonKey(name: "follow_up_days") this.followUpDays,
-    this.notes,
-  });
 
-  factory _$UpdateClinicDoctorLinkFeesImpl.fromJson(
-    Map<String, dynamic> json,
-  ) => _$$UpdateClinicDoctorLinkFeesImplFromJson(json);
+class _UpdateClinicDoctorLinkFees implements UpdateClinicDoctorLinkFees {
+  const _UpdateClinicDoctorLinkFees({@JsonKey(name: "consultation_fee_offline") this.consultationFeeOffline, @JsonKey(name: "consultation_fee_online") this.consultationFeeOnline, @JsonKey(name: "follow_up_fee") this.followUpFee, @JsonKey(name: "follow_up_days") this.followUpDays, this.notes});
+  factory _UpdateClinicDoctorLinkFees.fromJson(Map<String, dynamic> json) => _$UpdateClinicDoctorLinkFeesFromJson(json);
 
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  final double? consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  final double? consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  final double? followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  final int? followUpDays;
-  @override
-  final String? notes;
+@override@JsonKey(name: "consultation_fee_offline") final  double? consultationFeeOffline;
+@override@JsonKey(name: "consultation_fee_online") final  double? consultationFeeOnline;
+@override@JsonKey(name: "follow_up_fee") final  double? followUpFee;
+@override@JsonKey(name: "follow_up_days") final  int? followUpDays;
+@override final  String? notes;
 
-  @override
-  String toString() {
-    return 'UpdateClinicDoctorLinkFees(consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
-  }
+/// Create a copy of UpdateClinicDoctorLinkFees
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateClinicDoctorLinkFeesCopyWith<_UpdateClinicDoctorLinkFees> get copyWith => __$UpdateClinicDoctorLinkFeesCopyWithImpl<_UpdateClinicDoctorLinkFees>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UpdateClinicDoctorLinkFeesImpl &&
-            (identical(other.consultationFeeOffline, consultationFeeOffline) ||
-                other.consultationFeeOffline == consultationFeeOffline) &&
-            (identical(other.consultationFeeOnline, consultationFeeOnline) ||
-                other.consultationFeeOnline == consultationFeeOnline) &&
-            (identical(other.followUpFee, followUpFee) ||
-                other.followUpFee == followUpFee) &&
-            (identical(other.followUpDays, followUpDays) ||
-                other.followUpDays == followUpDays) &&
-            (identical(other.notes, notes) || other.notes == notes));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    consultationFeeOffline,
-    consultationFeeOnline,
-    followUpFee,
-    followUpDays,
-    notes,
-  );
-
-  /// Create a copy of UpdateClinicDoctorLinkFees
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$UpdateClinicDoctorLinkFeesImplCopyWith<_$UpdateClinicDoctorLinkFeesImpl>
-  get copyWith =>
-      __$$UpdateClinicDoctorLinkFeesImplCopyWithImpl<
-        _$UpdateClinicDoctorLinkFeesImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$UpdateClinicDoctorLinkFeesImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$UpdateClinicDoctorLinkFeesToJson(this, );
 }
 
-abstract class _UpdateClinicDoctorLinkFees
-    implements UpdateClinicDoctorLinkFees {
-  const factory _UpdateClinicDoctorLinkFees({
-    @JsonKey(name: "consultation_fee_offline")
-    final double? consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online")
-    final double? consultationFeeOnline,
-    @JsonKey(name: "follow_up_fee") final double? followUpFee,
-    @JsonKey(name: "follow_up_days") final int? followUpDays,
-    final String? notes,
-  }) = _$UpdateClinicDoctorLinkFeesImpl;
-
-  factory _UpdateClinicDoctorLinkFees.fromJson(Map<String, dynamic> json) =
-      _$UpdateClinicDoctorLinkFeesImpl.fromJson;
-
-  @override
-  @JsonKey(name: "consultation_fee_offline")
-  double? get consultationFeeOffline;
-  @override
-  @JsonKey(name: "consultation_fee_online")
-  double? get consultationFeeOnline;
-  @override
-  @JsonKey(name: "follow_up_fee")
-  double? get followUpFee;
-  @override
-  @JsonKey(name: "follow_up_days")
-  int? get followUpDays;
-  @override
-  String? get notes;
-
-  /// Create a copy of UpdateClinicDoctorLinkFees
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UpdateClinicDoctorLinkFeesImplCopyWith<_$UpdateClinicDoctorLinkFeesImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateClinicDoctorLinkFees&&(identical(other.consultationFeeOffline, consultationFeeOffline) || other.consultationFeeOffline == consultationFeeOffline)&&(identical(other.consultationFeeOnline, consultationFeeOnline) || other.consultationFeeOnline == consultationFeeOnline)&&(identical(other.followUpFee, followUpFee) || other.followUpFee == followUpFee)&&(identical(other.followUpDays, followUpDays) || other.followUpDays == followUpDays)&&(identical(other.notes, notes) || other.notes == notes));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,consultationFeeOffline,consultationFeeOnline,followUpFee,followUpDays,notes);
+
+@override
+String toString() {
+  return 'UpdateClinicDoctorLinkFees(consultationFeeOffline: $consultationFeeOffline, consultationFeeOnline: $consultationFeeOnline, followUpFee: $followUpFee, followUpDays: $followUpDays, notes: $notes)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateClinicDoctorLinkFeesCopyWith<$Res> implements $UpdateClinicDoctorLinkFeesCopyWith<$Res> {
+  factory _$UpdateClinicDoctorLinkFeesCopyWith(_UpdateClinicDoctorLinkFees value, $Res Function(_UpdateClinicDoctorLinkFees) _then) = __$UpdateClinicDoctorLinkFeesCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,@JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,@JsonKey(name: "follow_up_fee") double? followUpFee,@JsonKey(name: "follow_up_days") int? followUpDays, String? notes
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdateClinicDoctorLinkFeesCopyWithImpl<$Res>
+    implements _$UpdateClinicDoctorLinkFeesCopyWith<$Res> {
+  __$UpdateClinicDoctorLinkFeesCopyWithImpl(this._self, this._then);
+
+  final _UpdateClinicDoctorLinkFees _self;
+  final $Res Function(_UpdateClinicDoctorLinkFees) _then;
+
+/// Create a copy of UpdateClinicDoctorLinkFees
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? consultationFeeOffline = freezed,Object? consultationFeeOnline = freezed,Object? followUpFee = freezed,Object? followUpDays = freezed,Object? notes = freezed,}) {
+  return _then(_UpdateClinicDoctorLinkFees(
+consultationFeeOffline: freezed == consultationFeeOffline ? _self.consultationFeeOffline : consultationFeeOffline // ignore: cast_nullable_to_non_nullable
+as double?,consultationFeeOnline: freezed == consultationFeeOnline ? _self.consultationFeeOnline : consultationFeeOnline // ignore: cast_nullable_to_non_nullable
+as double?,followUpFee: freezed == followUpFee ? _self.followUpFee : followUpFee // ignore: cast_nullable_to_non_nullable
+as double?,followUpDays: freezed == followUpDays ? _self.followUpDays : followUpDays // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

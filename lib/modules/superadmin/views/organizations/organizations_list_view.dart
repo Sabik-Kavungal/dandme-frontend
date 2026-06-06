@@ -1,10 +1,22 @@
-import 'package:a/modules/organization/models/organization_model.dart';
-import 'package:a/modules/organization/viewmodels/organization_viewmodel.dart';
-import 'package:a/modules/superadmin/views/organizations/add_organization_view.dart';
-import 'package:a/modules/superadmin/views/organizations/organization_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/widgets/app_loader.dart';
+
+import 'package:drandme/modules/organization/viewmodels/organization_viewmodel.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/superadmin/views/organizations/add_organization_view.dart';
+import 'package:drandme/modules/superadmin/views/organizations/organization_details_view.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/impressive_appointment_container.dart';
+import 'dart:async';
+
+// --- VISUAL CONSTANTS (Elite Healthcare Aesthetic) ---
+const kBgColor = Color(0xFFF8FAFC); // Very Light Slate
+const kCardBg = Colors.white;
+const kPrimaryText = Color(0xFF0F172A); // Slate 900
+const kSecondaryText = Color(0xFF64748B); // Slate 500
+const kAccentColor = Color(0xFF0F172A); // Deep Executive Navy
+const kMedicalRed = Color(0xFFE11D48); // Rose 600 - Medical Accent
+const kBorderColor = Color(0xFFE2E8F0); // Slate 200
 
 class OrganizationsListScreen extends StatefulWidget {
   const OrganizationsListScreen({super.key});
@@ -15,120 +27,292 @@ class OrganizationsListScreen extends StatefulWidget {
 }
 
 class _OrganizationsListScreenState extends State<OrganizationsListScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  // Local state for filtering
   String _searchQuery = '';
+  // Removed filter since organizations do not have simple categories like doctors, but kept variable to match structure
+  String _selectedFilter = 'All Organizations';
 
   @override
   void initState() {
     super.initState();
-    // Fetch organizations when screen loads
+    // Using simple provider access in initState is safe for fetch
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final orgVM = Provider.of<OrganizationViewModel>(context, listen: false);
       orgVM.fetchOrganizations(context);
     });
   }
 
-  List<OrganizationModel> get _filteredOrganizations {
-    final orgVM = Provider.of<OrganizationViewModel>(context);
-    if (_searchQuery.isEmpty) {
-      return orgVM.organizations;
+  void _onSearchChanged(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
+  void _onFilterChanged(String? filter) {
+    if (filter != null) {
+      setState(() {
+        _selectedFilter = filter;
+      });
     }
-    return orgVM.organizations.where((org) {
-      final name = org.name.toLowerCase();
-      final email = org.email?.toLowerCase() ?? '';
-      final query = _searchQuery.toLowerCase();
-      return name.contains(query) || email.contains(query);
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Consumer<OrganizationViewModel>(
-        builder: (context, orgVM, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final isMobile = constraints.maxWidth < 480;
-
-              return Column(
-                children: [
-                  // Header
-                  _buildHeader(isMobile),
-
-                  // Search Bar
-                  _buildSearchBar(isMobile),
-
-                  // Organizations List
-                  Expanded(
-                    child: orgVM.isLoading
-                        ? _buildLoadingState(isMobile)
-                        : orgVM.error != null
-                        ? _buildErrorState(isMobile, orgVM.error!)
-                        : _filteredOrganizations.isEmpty
-                        ? _buildEmptyState(isMobile)
-                        : ListView.builder(
-                            padding: EdgeInsets.all(isMobile ? 16 : 24),
-                            itemCount: _filteredOrganizations.length,
-                            itemBuilder: (context, index) {
-                              final org = _filteredOrganizations[index];
-                              return _buildOrganizationCard(org, isMobile);
-                            },
-                          ),
+      backgroundColor: kBgColor,
+      body: SafeArea(
+        bottom: false,
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ImpressiveAppointmentContainer(
+                  child: _OrganizationsContent(
+                    searchQuery: _searchQuery,
+                    selectedFilter: _selectedFilter,
+                    onSearchChanged: _onSearchChanged,
+                    onFilterChanged: _onFilterChanged,
                   ),
-                ],
-              );
-            },
-          );
-        },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(bool isMobile) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 16 : 24,
-        vertical: 16,
-      ),
-      child: Row(
-        children: [
-          // Back Button
-          IconButton(
-            onPressed: () => NavigationHelper.goBack(context),
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF333333)),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-          const SizedBox(width: 12),
+class _OrganizationsContent extends StatelessWidget {
+  final String searchQuery;
+  final String selectedFilter;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String?> onFilterChanged;
 
-          // Title
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Organizations',
-                  style: TextStyle(
-                    fontSize: isMobile ? 20 : 24,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF333333),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Manage all organizations',
-                  style: TextStyle(
-                    fontSize: isMobile ? 12 : 14,
-                    color: const Color(0xFF666666),
-                  ),
-                ),
-              ],
+  const _OrganizationsContent({
+    required this.searchQuery,
+    required this.selectedFilter,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        const SliverPadding(padding: EdgeInsets.only(top: 4)),
+
+        // Controls
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: RepaintBoundary(
+              child: _ControlsPanel(
+                selectedFilter: selectedFilter,
+                onSearchChanged: onSearchChanged,
+                onFilterChanged: onFilterChanged,
+              ),
             ),
           ),
+        ),
 
-          // Add Organization Button
+        const SliverPadding(padding: EdgeInsets.only(top: 4)),
+
+        // Content
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          sliver: Consumer<OrganizationViewModel>(
+            builder: (context, viewModel, _) {
+              if (viewModel.isLoading) {
+                return const SliverFillRemaining(
+                  child: Center(child: AppLoader(size: 50, strokeWidth: 3)),
+                );
+              }
+
+              if (viewModel.error != null) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Error: ${viewModel.error}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () =>
+                              viewModel.fetchOrganizations(context),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return _FilteredOrganizationsGrid(
+                organizations: viewModel.organizations,
+                searchQuery: searchQuery,
+                selectedFilter: selectedFilter,
+              );
+            },
+          ),
+        ),
+
+        const SliverPadding(padding: EdgeInsets.only(bottom: 2)),
+      ],
+    );
+  }
+}
+
+class _FilteredOrganizationsGrid extends StatelessWidget {
+  final List<OrganizationModel> organizations;
+  final String searchQuery;
+  final String selectedFilter;
+
+  const _FilteredOrganizationsGrid({
+    required this.organizations,
+    required this.searchQuery,
+    required this.selectedFilter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredOrganizations = organizations.where((org) {
+      final query = searchQuery.toLowerCase();
+      final name = org.name.toLowerCase();
+      final email = (org.email ?? '').toLowerCase();
+
+      // Check purely status filtering if selectedFilter changed in future. Default is All.
+      bool matchesFilter = true;
+      if (selectedFilter == 'Active') {
+        matchesFilter = org.isActive == true;
+      } else if (selectedFilter == 'Inactive') {
+        matchesFilter = org.isActive != true;
+      }
+
+      return matchesFilter && (name.contains(query) || email.contains(query));
+    }).toList();
+
+    if (filteredOrganizations.isEmpty) {
+      return const SliverToBoxAdapter(child: _EmptyState());
+    }
+
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        // High-density grid matching clinic views
+        int crossAxisCount = 7;
+        if (constraints.crossAxisExtent < 600) {
+          crossAxisCount = 2;
+        } else if (constraints.crossAxisExtent < 900) {
+          crossAxisCount = 3;
+        } else if (constraints.crossAxisExtent < 1200) {
+          crossAxisCount = 5;
+        } else if (constraints.crossAxisExtent < 1600) {
+          crossAxisCount = 6;
+        }
+
+        double aspectRatio = 0.95; // Shorter vertical height for organizations
+        if (constraints.crossAxisExtent < 600) aspectRatio = 0.85;
+
+        return SliverGrid(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: aspectRatio,
+          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final org = filteredOrganizations[index];
+            return _ClassicOrganizationCard(
+              organization: org,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OrganizationDetailsScreen(organization: org),
+                  ),
+                );
+              },
+            );
+          }, childCount: filteredOrganizations.length),
+        );
+      },
+    );
+  }
+}
+
+class _ControlsPanel extends StatelessWidget {
+  final String selectedFilter;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String?> onFilterChanged;
+
+  const _ControlsPanel({
+    required this.selectedFilter,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Search - Debounced
+          Expanded(
+            flex: 2,
+            child: _DebouncedSearchBar(onChanged: onSearchChanged),
+          ),
+          const SizedBox(width: 4),
+
+          // Filter Dropdown
+          Container(
+            height: 40,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: kBorderColor),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedFilter,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: kSecondaryText,
+                ),
+                style: const TextStyle(
+                  color: kPrimaryText,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'All Organizations',
+                    child: Text('All Organizations'),
+                  ),
+                  DropdownMenuItem(value: 'Active', child: Text('Active')),
+                  DropdownMenuItem(value: 'Inactive', child: Text('Inactive')),
+                ],
+                onChanged: onFilterChanged,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+
+          // Add Button
           ElevatedButton.icon(
             onPressed: () {
               showGeneralDialog(
@@ -137,13 +321,13 @@ class _OrganizationsListScreenState extends State<OrganizationsListScreen> {
                 barrierLabel: MaterialLocalizations.of(
                   context,
                 ).modalBarrierDismissLabel,
-                barrierColor: Colors.black.withOpacity(0.5),
+                barrierColor: Colors.black.withValues(alpha: 0.5),
                 transitionDuration: const Duration(milliseconds: 300),
                 pageBuilder: (context, animation, secondaryAnimation) {
                   return const AddOrganizationScreen();
                 },
               ).then((_) {
-                // Refresh organizations list after adding
+                if (!context.mounted) return;
                 final orgVM = Provider.of<OrganizationViewModel>(
                   context,
                   listen: false,
@@ -152,505 +336,206 @@ class _OrganizationsListScreenState extends State<OrganizationsListScreen> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3B82F6),
+              backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               elevation: 0,
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 12 : 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              fixedSize: const Size.fromHeight(40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             icon: const Icon(Icons.add, size: 16),
-            label: Text(
-              'New Organization',
-              style: TextStyle(
-                fontSize: isMobile ? 12 : 14,
-                fontWeight: FontWeight.w600,
-              ),
+            label: const Text(
+              "New",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSearchBar(bool isMobile) {
+class _DebouncedSearchBar extends StatefulWidget {
+  final ValueChanged<String> onChanged;
+  const _DebouncedSearchBar({required this.onChanged});
+
+  @override
+  State<_DebouncedSearchBar> createState() => _DebouncedSearchBarState();
+}
+
+class _DebouncedSearchBarState extends State<_DebouncedSearchBar> {
+  Timer? _debounce;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      widget.onChanged(query);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(
-        isMobile ? 16 : 24,
-        16,
-        isMobile ? 16 : 24,
-        0,
-      ),
+      height: 40,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: kBorderColor),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          const Icon(Icons.search, color: kSecondaryText, size: 18),
+          const SizedBox(width: 4),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              onChanged: _onSearchChanged,
+              style: const TextStyle(fontSize: 12, color: kPrimaryText),
+              decoration: const InputDecoration(
+                hintText: "Search organizations...",
+                hintStyle: TextStyle(fontSize: 12, color: kSecondaryText),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
           ),
         ],
       ),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search organizations...',
-          hintStyle: TextStyle(
-            color: const Color(0xFF999999),
-            fontSize: isMobile ? 13 : 14,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: Color(0xFF666666),
-            size: 20,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: isMobile ? 12 : 16,
-          ),
-        ),
-      ),
     );
   }
+}
 
-  Widget _buildOrganizationCard(OrganizationModel org, bool isMobile) {
-    // Get color or use default
-    final avatarColor = _getDefaultColor(org.name);
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            NavigationHelper.goToOrganizationDetails(context, org.id ?? '');
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Avatar with colored background
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: avatarColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      org.name[0].toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: _getTextColor(avatarColor),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-
-                // Organization Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Organization Name
-                      Text(
-                        org.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF333333),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-
-                      // Email
-                      Text(
-                        org.email ?? 'No email provided',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF666666),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Badges
-                      Row(
-                        children: [
-                          // License Badge
-                          if (org.licenseNumber != null)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFF3E0),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                'License: ${org.licenseNumber}',
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFF9800),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          const SizedBox(width: 8),
-                          // Status Badge
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: org.isActive == true
-                                  ? const Color(0xFFE8F5E8)
-                                  : const Color(0xFFFFEBEE),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              org.isActive == true ? 'Active' : 'Inactive',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: org.isActive == true
-                                    ? const Color(0xFF2E7D32)
-                                    : const Color(0xFFDC2626),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Action Buttons
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // View Details Button
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OrganizationDetailsScreen(organization: org),
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF3B82F6),
-                        side: const BorderSide(color: Color(0xFF3B82F6)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text('View', style: TextStyle(fontSize: 12)),
-                    ),
-                    const SizedBox(width: 8),
-                    // More options icon
-                    IconButton(
-                      icon: const Icon(Icons.more_horiz, size: 20),
-                      color: const Color(0xFF666666),
-                      onPressed: () => _showOptionsMenu(context, org),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _getDefaultColor(String name) {
-    // Assign colors based on name
-    final colors = [
-      const Color(0xFFE3F2FD), // Light blue
-      const Color(0xFFFFEBEE), // Light red
-      const Color(0xFFFFF3E0), // Light orange
-      const Color(0xFFF3E5F5), // Light purple
-    ];
-    final index = name.hashCode % colors.length;
-    return colors[index];
-  }
-
-  Color _getTextColor(Color backgroundColor) {
-    // Return contrasting text color based on background
-    if (backgroundColor == const Color(0xFFE3F2FD))
-      return const Color(0xFF1976D2);
-    if (backgroundColor == const Color(0xFFFFEBEE))
-      return const Color(0xFFD32F2F);
-    if (backgroundColor == const Color(0xFFFFF3E0))
-      return const Color(0xFFFF9800);
-    if (backgroundColor == const Color(0xFFF3E5F5))
-      return const Color(0xFF7B1FA2);
-    return const Color(0xFF4CAF50);
-  }
-
-  Widget _buildLoadingState(bool isMobile) {
-    return Center(
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 60, bottom: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF3B82F6)),
-          ),
-          const SizedBox(height: 16),
+        children: const [
+          Icon(Icons.business_outlined, size: 48, color: kSecondaryText),
+          SizedBox(height: 16),
           Text(
-            'Loading organizations...',
+            "No organizations found matching your criteria",
             style: TextStyle(
-              fontSize: isMobile ? 14 : 16,
-              color: const Color(0xFF666666),
+              fontSize: 14,
+              color: kSecondaryText,
+              fontFamily: 'Inter',
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildErrorState(bool isMobile, String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFEBEE),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.error_outline,
-              size: isMobile ? 48 : 64,
-              color: const Color(0xFFDC2626),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading organizations',
-            style: TextStyle(
-              fontSize: isMobile ? 16 : 18,
-              color: const Color(0xFF333333),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              error,
-              style: TextStyle(
-                fontSize: isMobile ? 13 : 14,
-                color: const Color(0xFF666666),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () {
-              final orgVM = Provider.of<OrganizationViewModel>(
-                context,
-                listen: false,
-              );
-              orgVM.fetchOrganizations(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3B82F6),
-              foregroundColor: Colors.white,
-            ),
-            icon: const Icon(Icons.refresh, size: 16),
-            label: const Text('Retry'),
-          ),
-        ],
-      ),
-    );
-  }
+class _ClassicOrganizationCard extends StatefulWidget {
+  final OrganizationModel organization;
+  final VoidCallback onTap;
 
-  Widget _buildEmptyState(bool isMobile) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F9FF),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.business_outlined,
-              size: isMobile ? 48 : 64,
-              color: const Color(0xFF2563EB),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No organizations found',
-            style: TextStyle(
-              fontSize: isMobile ? 16 : 18,
-              color: const Color(0xFF333333),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _searchQuery.isEmpty
-                ? 'Click "New Organization" to add one'
-                : 'Try a different search term',
-            style: TextStyle(
-              fontSize: isMobile ? 13 : 14,
-              color: const Color(0xFF999999),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  const _ClassicOrganizationCard({
+    required this.organization,
+    required this.onTap,
+  });
 
-  void _showOptionsMenu(BuildContext context, OrganizationModel org) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Drag handle
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.visibility, color: Color(0xFF2563EB)),
-                title: const Text('View Details'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          OrganizationDetailsScreen(organization: org),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.edit, color: Color(0xFF4CAF50)),
-                title: const Text('Edit Organization'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Edit organization - not implemented yet
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Edit functionality coming soon'),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete, color: Color(0xFFDC2626)),
-                title: const Text('Delete Organization'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _showDeleteConfirmation(context, org);
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  @override
+  State<_ClassicOrganizationCard> createState() =>
+      _ClassicOrganizationCardState();
+}
 
-  void _showDeleteConfirmation(BuildContext context, OrganizationModel org) {
+class _ClassicOrganizationCardState extends State<_ClassicOrganizationCard> {
+  bool _isHovered = false;
+
+  void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
           ),
-          title: const Text('Delete Organization'),
-          content: Text(
-            'Are you sure you want to delete "${org.name}"? This action cannot be undone.',
+          title: const Text(
+            "Confirm Deletion",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Are you sure you want to delete '${widget.organization.name}'?",
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                "This will delete the entire organization, including all associated clinics, admins, and data.",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
           actions: [
             TextButton(
-              onPressed: () => NavigationHelper.goBack(context),
-              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: kSecondaryText),
+              ),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Organization "${org.name}" deleted'),
-                    backgroundColor: const Color(0xFFDC2626),
-                  ),
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+                final orgVM = Provider.of<OrganizationViewModel>(
+                  context,
+                  listen: false,
                 );
-                // TODO: Implement delete API call
+                final success = await orgVM.deleteOrganization(
+                  widget.organization.id ?? '',
+                  context,
+                );
+                if (success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Organization deleted successfully"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        orgVM.error ?? "Failed to delete organization",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDC2626),
-                elevation: 0,
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-              child: const Text('Delete'),
+              child: const Text("Delete"),
             ),
           ],
         );
@@ -658,9 +543,211 @@ class _OrganizationsListScreenState extends State<OrganizationsListScreen> {
     );
   }
 
+  Color _getDefaultColor(String name) {
+    final colors = [
+      const Color(0xFF6366F1), // Indigo
+      const Color(0xFFEC4899), // Pink
+      const Color(0xFFF59E0B), // Amber
+      const Color(0xFF10B981), // Emerald
+      const Color(0xFF3B82F6), // Blue
+    ];
+    return colors[name.length % colors.length];
+  }
+
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    final name = widget.organization.name;
+    final email = widget.organization.email ?? "No Email";
+    final isActive = widget.organization.isActive ?? false;
+    final themeColor = _getDefaultColor(name);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: _isHovered
+                    ? kMedicalRed.withValues(alpha: 0.5)
+                    : kBorderColor,
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: _isHovered ? 12 : 6,
+                  offset: Offset(0, _isHovered ? 6 : 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 1. Clean Organization Header
+                Expanded(
+                  flex: 10,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: themeColor.withValues(alpha: 0.04),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(8),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        // Simple Status Indicator
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isActive
+                                      ? const Color(0xFF10B981)
+                                      : Colors.grey[400],
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                isActive ? 'Active' : 'Inactive',
+                                style: const TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w600,
+                                  color: kSecondaryText,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Center(
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 3),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: themeColor.withValues(alpha: 0.1),
+                              ),
+                              child: Icon(
+                                Icons.business,
+                                size: 32,
+                                color: themeColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // 2. Simple Information Section
+                Expanded(
+                  flex: 9,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          name.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: kPrimaryText,
+                            fontFamily: 'Inter',
+                            letterSpacing: 0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          email.toLowerCase(),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: kSecondaryText,
+                            fontFamily: 'Inter',
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _confirmDelete(context),
+                              child: Icon(
+                                Icons.delete_outline_rounded,
+                                size: 16,
+                                color: _isHovered
+                                    ? Colors.red
+                                    : kSecondaryText.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "View Details",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: _isHovered
+                                        ? kMedicalRed
+                                        : kPrimaryText,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 10,
+                                  color: _isHovered
+                                      ? kMedicalRed
+                                      : kSecondaryText,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

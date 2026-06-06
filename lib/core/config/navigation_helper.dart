@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a/core/config/app_router.dart';
+import 'package:drandme/core/config/app_router.dart';
 
 /// Navigation helper class to provide easy access to navigation methods
 /// This class wraps the AppRouter methods for easier usage throughout the app

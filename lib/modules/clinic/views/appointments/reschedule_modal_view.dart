@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:drandme/modules/clinic/models/doctor_session_slot_model.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:intl/intl.dart';
+import 'widgets/time_slot_section.dart';
+
+const kBgColor = Color(0xFFF4F8FB);
+const kCardColor = Colors.white;
+const kPrimaryText = Color(0xFF1B2A41);
+const kSecondaryText = Color(0xFF6B7C93);
+const kAccentColor = Color(0xFF1B2A41); // Medical Blue
+const kSuccessColor = Color(0xFF16A34A);
+const kErrorColor = Color(0xFFDC2626);
+const kBorderColor = Color(0xFFE6EEF5);
 
 class RescheduleModal extends StatefulWidget {
   final String? appointmentId;
@@ -26,7 +38,6 @@ class _RescheduleModalState extends State<RescheduleModal>
       Provider.of<AuthViewModel>(context, listen: false),
     );
 
-    // Initialize the viewmodel and load appointment data
     _viewModel.initialize().then((_) {
       if (widget.appointmentId != null) {
         _viewModel.loadAppointmentForReschedule(widget.appointmentId!);
@@ -37,7 +48,7 @@ class _RescheduleModalState extends State<RescheduleModal>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    // Slide animation from right (for desktop/tablet right-side panel)
+
     _slideAnimation =
         Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
           CurvedAnimation(
@@ -45,6 +56,7 @@ class _RescheduleModalState extends State<RescheduleModal>
             curve: Curves.easeInOut,
           ),
         );
+
     _animationController.forward();
   }
 
@@ -55,182 +67,52 @@ class _RescheduleModalState extends State<RescheduleModal>
     super.dispose();
   }
 
-  void _closePanel() async {
+  Future<void> _closePanel({bool didReschedule = false}) async {
     await _animationController.reverse();
     if (mounted) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(didReschedule);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final isMobile = screenWidth < 480;
-    final isTablet = screenWidth >= 480 && screenWidth < 1024;
-
-    // Check if actually being shown as bottom sheet by checking route
-    final route = ModalRoute.of(context);
-    final showAsBottomSheet = isMobile && route != null;
-
-    if (showAsBottomSheet) {
-      // Mobile Bottom Sheet Layout
-      return Container(
-        height: screenHeight * 0.9,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            // Header with drag handle
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Drag handle
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE0E0E0),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  // Title and close button
-                  Row(
-                    children: [
-                      const Text(
-                        'Reschedule',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF333333),
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: _closePanel,
-                        icon: const Icon(Icons.close),
-                        color: const Color(0xFF666666),
-                        iconSize: 24,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            // Scrollable content
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: _buildFormContent(isMobile),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Desktop/Tablet Right-Side Panel Layout
-    double panelWidth;
-    if (isTablet) {
-      panelWidth = 400;
-    } else {
-      panelWidth = 440;
-    }
+    final panelWidth = isMobile ? screenWidth : 460.0;
 
     return Material(
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.black.withOpacity(0.4),
       child: GestureDetector(
-        onTap: _closePanel,
+        onTap: () => _closePanel(),
         child: Stack(
           children: [
-            // Main content area (dismisses on tap)
-            Container(color: Colors.transparent),
-            // Right side panel
             Align(
               alignment: Alignment.centerRight,
               child: SlideTransition(
                 position: _slideAnimation,
                 child: GestureDetector(
-                  onTap: () {}, // Prevent closing when tapping inside panel
+                  onTap: () {},
                   child: Container(
                     width: panelWidth,
                     height: double.infinity,
-                    constraints: BoxConstraints(
-                      maxWidth: panelWidth,
-                      minWidth: 400,
-                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(0),
-                        bottomLeft: Radius.circular(0),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF4F8FB), Color(0xFFEAF3FA)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 20,
-                          offset: const Offset(-2, 0),
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 30,
+                          offset: const Offset(-6, 0),
                         ),
                       ],
                     ),
                     child: Column(
                       children: [
-                        // Header with close button
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color(0xFFE0E0E0),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Reschedule',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF333333),
-                                ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: _closePanel,
-                                icon: const Icon(Icons.close),
-                                color: const Color(0xFF666666),
-                                iconSize: 24,
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Scrollable content
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.all(20),
-                            child: _buildFormContent(false),
-                          ),
-                        ),
+                        _buildHeader(),
+                        Expanded(child: _buildFormContent(isMobile)),
                       ],
                     ),
                   ),
@@ -242,6 +124,51 @@ class _RescheduleModalState extends State<RescheduleModal>
       ),
     );
   }
+
+  /// ================= HEADER =================
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: kBorderColor)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: kAccentColor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.calendar_today_rounded,
+              color: kAccentColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
+          const Text(
+            'Reschedule Appointment',
+            style: TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.w700,
+              color: kPrimaryText,
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () => _closePanel(),
+            icon: const Icon(Icons.close_rounded),
+            color: kSecondaryText,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ================= FORM =================
 
   Widget _buildFormContent(bool isMobile) {
     return ChangeNotifierProvider.value(
@@ -249,263 +176,60 @@ class _RescheduleModalState extends State<RescheduleModal>
       child: Consumer<NewAppointmentViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: kAccentColor),
+            );
           }
 
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Select Department
-              _buildSectionTitle('Select Department'),
-              const SizedBox(height: 8),
-              _buildDepartmentDropdown(viewModel),
-              const SizedBox(height: 20),
-
-              // Select Doctor
-              _buildSectionTitle('Select Doctor'),
-              const SizedBox(height: 8),
-              _buildDoctorDropdown(viewModel),
-              const SizedBox(height: 20),
-
-              // Reason or Add Notes
-              _buildSectionTitle('Reason or Add Notes'),
-              const SizedBox(height: 8),
-              Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE0E0E0)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Add Patient Note',
-                    hintStyle: TextStyle(color: Color(0xFF999999)),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(12),
-                  ),
-                  maxLines: 3,
-                  controller: TextEditingController(
-                    text: viewModel.patientNotes,
-                  ),
-                  onChanged: viewModel.setPatientNotes,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Available Slots
-              _buildSectionTitle('Available Slots'),
-              const SizedBox(height: 16),
-
-              // Date Selector
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          viewModel.selectedDate,
-                          style: const TextStyle(color: Color(0xFF333333)),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(
-                          Icons.calendar_today,
-                          size: 16,
-                          color: Color(0xFF666666),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  // Legend
-                  Row(
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF4A90E2),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                      _buildSectionHeader(
+                        '1',
+                        'Select New Date',
+                        Icons.calendar_month_rounded,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(height: 16),
+                      _buildDatePicker(context, viewModel),
+                      const SizedBox(height: 30),
+                      _buildSectionHeader(
+                        '2',
+                        'Consultation Type',
+                        Icons.local_hospital_rounded,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildConsultationTypeSelector(viewModel),
+                      const SizedBox(height: 30),
+                      _buildSectionHeader(
+                        '3',
+                        'Select Time Slot',
+                        Icons.access_time_filled_rounded,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSlotsLegend(),
+                      const SizedBox(height: 16),
+                      _buildTimeSlotsSection(viewModel, isMobile),
+                      const SizedBox(height: 30),
                       const Text(
-                        'Current Slot',
+                        'Reason for Rescheduling (Optional)',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF666666),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: kPrimaryText,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE0E0E0),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Available Slots',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF666666),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFDE7E7),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Booked Slots',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF666666),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
+                      const SizedBox(height: 12),
+                      _buildReasonBox(viewModel),
                     ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Time Slots
-              _buildTimeSlotsSection(viewModel),
-              const SizedBox(height: 20),
-
-              // Add More Appointment Button
-              Center(
-                child: OutlinedButton.icon(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF333333),
-                    side: const BorderSide(color: Color(0xFFE0E0E0)),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(Icons.add, size: 16),
-                  label: const Text('Add More Appointment'),
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Action Buttons
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _closePanel,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF333333),
-                        side: const BorderSide(color: Color(0xFFE0E0E0)),
-                        padding: EdgeInsets.symmetric(
-                          vertical: isMobile ? 14 : 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: viewModel.isCreating
-                          ? null
-                          : () async {
-                              if (widget.appointmentId != null) {
-                                final success = await viewModel
-                                    .rescheduleAppointment(
-                                      widget.appointmentId!,
-                                    );
-                                if (success && mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Appointment rescheduled successfully',
-                                      ),
-                                      backgroundColor: Color(0xFF10B981),
-                                    ),
-                                  );
-                                  _closePanel();
-                                } else if (mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(viewModel.error),
-                                      backgroundColor: const Color(0xFFDC2626),
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: EdgeInsets.symmetric(
-                          vertical: isMobile ? 14 : 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: viewModel.isCreating
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                              ),
-                            )
-                          : const Text(
-                              'Save',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildFooter(viewModel),
             ],
           );
         },
@@ -513,258 +237,619 @@ class _RescheduleModalState extends State<RescheduleModal>
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: Color(0xFF333333),
+  Widget _buildReasonBox(NewAppointmentViewModel viewModel) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: kBorderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: TextEditingController(text: viewModel.patientNotes)
+          ..selection = TextSelection.fromPosition(
+            TextPosition(offset: viewModel.patientNotes.length),
+          ),
+        onChanged: viewModel.setPatientNotes,
+        maxLines: 3,
+        decoration: const InputDecoration(
+          hintText: 'e.g., Schedule conflict...',
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(16),
+        ),
       ),
     );
   }
 
-  Widget _buildDepartmentDropdown(NewAppointmentViewModel viewModel) {
+  Widget _buildFooter(NewAppointmentViewModel viewModel) {
     return Container(
-      height: 44,
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-        borderRadius: BorderRadius.circular(8),
+        border: Border(top: BorderSide(color: kBorderColor)),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: viewModel.selectedDepartment.isNotEmpty
-              ? viewModel.selectedDepartment
-              : null,
-          onChanged: (value) {
-            if (value != null) {
-              viewModel.setDepartment(value);
-            }
-          },
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          isExpanded: true,
-          items: viewModel.departments.map((department) {
-            return DropdownMenuItem(
-              value: department.name ?? '',
-              child: Text(department.name ?? ''),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () => _closePanel(),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: const Text("Cancel"),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed:
+                  viewModel.isCreating || viewModel.selectedSlotId == null
+                  ? null
+                  : () async {
+                      if (widget.appointmentId != null) {
+                        final success = await viewModel.rescheduleAppointment(
+                          widget.appointmentId!,
+                        );
+
+                        if (success && mounted) {
+                          await _closePanel(didReschedule: true);
+                        }
+                      }
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kAccentColor,
+                elevation: 4,
+                shadowColor: kAccentColor.withOpacity(0.3),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: viewModel.isCreating
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text(
+                      'Confirm Reschedule',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String number, String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: kAccentColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: kAccentColor.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            number,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: kPrimaryText,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDatePicker(
+    BuildContext context,
+    NewAppointmentViewModel viewModel,
+  ) {
+    final dateFormat = DateFormat('EEEE, MMMM d, yyyy');
+    DateTime selectedDate;
+    try {
+      selectedDate = viewModel.selectedSlotDate;
+    } catch (e) {
+      selectedDate = DateTime.now();
+    }
+
+    return InkWell(
+      onTap: () async {
+        final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: selectedDate,
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 90)),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: kAccentColor,
+                  onPrimary: Colors.white,
+                  onSurface: kPrimaryText,
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(foregroundColor: kAccentColor),
+                ),
+              ),
+              child: child!,
             );
-          }).toList(),
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            color: Color(0xFF666666),
-            size: 20,
-          ),
-          style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
+          },
+        );
+        if (picked != null) {
+          viewModel.selectDateAndReloadSlots(picked);
+        }
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: kBorderColor, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.01),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.calendar_month_outlined,
+              color: kAccentColor,
+              size: 22,
+            ),
+            const SizedBox(width: 4),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Appointment Date',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: kSecondaryText,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  dateFormat.format(selectedDate),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: kPrimaryText,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: kSecondaryText,
+              size: 24,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildDoctorDropdown(NewAppointmentViewModel viewModel) {
+  Widget _buildConsultationTypeSelector(NewAppointmentViewModel viewModel) {
     return Container(
-      height: 44,
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: kBorderColor, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.01),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: viewModel.selectedDoctor.isNotEmpty
-              ? viewModel.selectedDoctor
-              : null,
-          onChanged: (value) {
-            if (value != null) {
-              viewModel.setDoctor(value);
+          value: viewModel.selectedConsultationType,
+          isExpanded: true,
+          icon: const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: kSecondaryText,
+            size: 24,
+          ),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: kPrimaryText,
+          ),
+          onChanged: (String? newValue) {
+            if (newValue != null) {
+              viewModel.setConsultationType(newValue);
             }
           },
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          isExpanded: true,
-          items: viewModel.doctors.map((doctor) {
-            final doctorName = '${doctor.firstName} ${doctor.lastName}';
-            return DropdownMenuItem(value: doctorName, child: Text(doctorName));
-          }).toList(),
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            color: Color(0xFF666666),
-            size: 20,
-          ),
-          style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
+          items: [
+            _buildDropdownItem(
+              'clinic_visit',
+              'Clinic Visit',
+              Icons.person_pin_circle_rounded,
+            ),
+            _buildDropdownItem(
+              'video_consultation',
+              'Video Consultation',
+              Icons.video_camera_front_rounded,
+            ),
+            // Add other types if needed
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTimeSlotsSection(NewAppointmentViewModel viewModel) {
-    final morningSlots = viewModel.morningSlots;
-    final afternoonSlots = viewModel.afternoonSlots;
+  DropdownMenuItem<String> _buildDropdownItem(
+    String value,
+    String label,
+    IconData icon,
+  ) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: kAccentColor),
+          const SizedBox(width: 4),
+          Text(label),
+        ],
+      ),
+    );
+  }
 
-    if (morningSlots.isEmpty && afternoonSlots.isEmpty) {
-      return const Center(
-        child: Text(
-          'No available slots for selected date',
-          style: TextStyle(color: Color(0xFF666666)),
+  Widget _buildSlotsLegend() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        _buildLegendItem(kAccentColor, 'Selected', true),
+        const SizedBox(width: 4),
+        _buildLegendItem(
+          const Color(0xFFF0FDF4),
+          'Available',
+          true,
+          hasBorder: true,
+        ),
+        const SizedBox(width: 4),
+        _buildLegendItem(const Color(0xFFFEF2F2), 'Booked', true),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(
+    Color color,
+    String label,
+    bool isCircle, {
+    bool hasBorder = false,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
+            border: hasBorder ? Border.all(color: kBorderColor) : null,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: kSecondaryText,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimeSlotsSection(
+    NewAppointmentViewModel viewModel,
+    bool isMobile,
+  ) {
+    if (viewModel.isLoadingSlots) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: const Center(
+          child: CircularProgressIndicator(color: kAccentColor, strokeWidth: 2),
         ),
       );
     }
 
-    return Column(
-      children: [
-        if (morningSlots.isNotEmpty) ...[
-          _buildTimeSlotSection('Morning Slots', morningSlots, viewModel),
-          const SizedBox(height: 16),
-        ],
-        if (afternoonSlots.isNotEmpty) ...[
-          _buildTimeSlotSection('Afternoon Slots', afternoonSlots, viewModel),
-        ],
-      ],
-    );
-  }
+    if (viewModel.groupedTimeSlots == null ||
+        (viewModel.groupedTimeSlots!.days.isEmpty) ||
+        (viewModel.groupedTimeSlots!.days.every((day) => !day.hasSlots))) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: kBorderColor, style: BorderStyle.solid),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.event_busy_rounded,
+              size: 48,
+              color: kSecondaryText.withOpacity(0.3),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'No time slots available for this date.',
+              style: TextStyle(
+                color: kPrimaryText,
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Please select a different date or doctor.',
+              style: TextStyle(color: kSecondaryText, fontSize: 13),
+            ),
+          ],
+        ),
+      );
+    }
 
-  Widget _buildTimeSlotSection(
-    String title,
-    List<DoctorTimeSlotResponse> slots,
-    NewAppointmentViewModel viewModel,
-  ) {
+    // ✅ Try to use session-based grouping if available (Similar to NewAppointmentView)
+    final sessionResponse = viewModel.sessionSlotsResponse;
+    if (sessionResponse != null && sessionResponse.slots.isNotEmpty) {
+      return _buildSessionBasedSlots(sessionResponse, viewModel, isMobile);
+    }
+
+    // Fallback logic
+    final morningSlots = viewModel.morningSlots;
+    final afternoonSlots = viewModel.afternoonSlots;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF333333),
+        if (morningSlots.isNotEmpty) ...[
+          TimeSlotSection(
+            title: 'Morning Slots',
+            slots: morningSlots,
+            viewModel: viewModel,
+            isMorning: true,
+            isMobile: isMobile,
           ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 65,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: slots.length,
-            itemBuilder: (context, index) {
-              final slot = slots[index];
-              final formattedTime = _formatTimeForDisplay(slot.startTime);
-
-              // Check if this slot is selected (by ID to be precise)
-              final isSelected = viewModel.selectedSlotId == slot.id;
-
-              final availableSpots = slot.availableSpots;
-              final isBooked = availableSpots <= 0;
-
-              Color backgroundColor;
-              Color textColor;
-              Color subTextColor;
-              String statusText;
-
-              if (isSelected) {
-                // Selected slot (auto-selected or user-selected) - BLUE
-                backgroundColor = const Color(0xFF4A90E2); // Blue for selected
-                textColor = Colors.white;
-                subTextColor = Colors.white70;
-                statusText = 'Current Slot';
-              } else if (isBooked) {
-                // Booked by others (red)
-                backgroundColor = const Color(0xFFFFEBEE);
-                textColor = const Color(0xFFD32F2F);
-                subTextColor = const Color(0xFFEF5350);
-                statusText = 'Booked';
-              } else {
-                // Available slots (green)
-                backgroundColor = const Color(0xFFE8F5E8);
-                textColor = const Color(0xFF2E7D32);
-                subTextColor = const Color(0xFF66BB6A);
-                statusText = 'Available';
-              }
-
-              return Container(
-                width: 90,
-                margin: const EdgeInsets.only(right: 12),
-                child: InkWell(
-                  onTap: isBooked
-                      ? null
-                      : () {
-                          viewModel.setTimeSlot(
-                            formattedTime,
-                            slotDetails: slot,
-                          );
-                        },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: isSelected
-                          ? null
-                          : Border.all(color: const Color(0xFFE0E0E0)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          formattedTime,
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          statusText,
-                          style: TextStyle(color: subTextColor, fontSize: 10),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+          const SizedBox(height: 4),
+        ],
+        if (afternoonSlots.isNotEmpty) ...[
+          TimeSlotSection(
+            title: 'Afternoon Slots',
+            slots: afternoonSlots,
+            viewModel: viewModel,
+            isMorning: false,
+            isMobile: isMobile,
           ),
-        ),
+        ],
       ],
     );
   }
 
-  String _formatTimeForDisplay(String time) {
-    try {
-      // Handle ISO timestamp format (0000-01-01T14:45:00Z)
-      if (time.contains('T')) {
-        final dateTime = DateTime.parse(time);
-        final hour = dateTime.hour;
-        final minute = dateTime.minute.toString().padLeft(2, '0');
+  /// Build slots grouped by sessions (from API response)
+  Widget _buildSessionBasedSlots(
+    ListSessionSlotsResponse sessionResponse,
+    NewAppointmentViewModel viewModel,
+    bool isMobile,
+  ) {
+    final sections = <Widget>[];
+    final selectedDate = viewModel.selectedSlotDate;
+    final selectedDateString = _formatDate(selectedDate);
+    final scaleFactor = 1.0;
 
-        final period = hour >= 12 ? 'PM' : 'AM';
-        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    // Process each slot day
+    for (final slotDay in sessionResponse.slots) {
+      final isRecurring = slotDay.dayOfWeek != null;
+      final resolvedDayName = _resolveDayName(slotDay.dayOfWeek, selectedDate);
+      final resolvedDayOfWeek = _resolveDayOfWeek(
+        slotDay.dayOfWeek,
+        selectedDate.weekday,
+      );
 
-        return '$displayHour:$minute $period';
+      // Process each session
+      for (final session in slotDay.sessions) {
+        // Convert individual slots to DoctorTimeSlotResponse
+        final sessionSlots = session.slots.map((slot) {
+          final slotDate = (slotDay.date != null && slotDay.date!.isNotEmpty)
+              ? slotDay.date!
+              : selectedDateString;
+          final doctorId =
+              slotDay.doctorId ??
+              (viewModel.selectedDoctorObject?.doctorId ??
+                  viewModel.selectedDoctorObject?.id ??
+                  '');
+          final clinicId = slot.clinicId ?? slotDay.clinicId ?? '';
+
+          return DoctorTimeSlotResponse(
+            id: slot.id,
+            doctorId: doctorId,
+            clinicId: clinicId,
+            date: slotDate,
+            dayOfWeek: resolvedDayOfWeek,
+            dayName: resolvedDayName,
+            slotType: slotDay.slotType ?? 'clinic_visit',
+            startTime: slot.slotStart ?? '00:00',
+            endTime: slot.slotEnd ?? '00:00',
+            startDateTime: slot.startDatetime,
+            endDateTime: slot.endDatetime,
+            maxPatients: slot.maxPatients,
+            bookedPatients: slot.bookedCount,
+            availableSpots: slot.isBookable && !slot.isBooked
+                ? slot.availableCount
+                : 0,
+            isAvailable:
+                slot.isBookable && !slot.isBooked && slot.status == 'available',
+            isBookable: slot.isBookable,
+            status: slot.status,
+            displayMessage: slot.displayMessage,
+            notes: slot.notes,
+            isActive: true,
+          );
+        }).toList();
+
+        if (sessionSlots.isNotEmpty) {
+          final sessionTitle = _buildSessionTitle(
+            session.sessionName ?? 'Session',
+            session.availableSlots,
+            session.generatedSlots,
+            isRecurring,
+          );
+
+          sections.add(
+            TimeSlotSection(
+              title: sessionTitle,
+              slots: sessionSlots,
+              viewModel: viewModel,
+              scaleFactor: scaleFactor,
+              isMorning: _isMorningSession(
+                session.startTime ?? '',
+                session.startDatetime,
+              ),
+              isMobile: isMobile,
+            ),
+          );
+          sections.add(const SizedBox(height: 4));
+        }
       }
-
-      // Handle HH:MM:SS format
-      final parts = time.split(':');
-      if (parts.length >= 2) {
-        final hour = int.parse(parts[0]);
-        final minute = parts[1];
-
-        final period = hour >= 12 ? 'PM' : 'AM';
-        final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-
-        return '$displayHour:$minute $period';
-      }
-
-      return time;
-    } catch (e) {
-      print('⚠️ Error formatting time: $time - $e');
-      return time;
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: sections,
+    );
+  }
+
+  /// Build session title with availability info and recurring badge
+  String _buildSessionTitle(
+    String sessionName,
+    int available,
+    int total,
+    bool isRecurring,
+  ) {
+    final recurringBadge = isRecurring ? ' 🔄' : '';
+    return '$sessionName ($available/$total available)$recurringBadge';
+  }
+
+  /// Check if session is morning session
+  bool _isMorningSession(String startTime, [String? startDatetime]) {
+    try {
+      if (startDatetime != null && startDatetime.isNotEmpty) {
+        final dateTime = DateTime.parse(startDatetime).toLocal();
+        return dateTime.hour < 12;
+      }
+
+      if (startTime.contains('T')) {
+        final dateTime = DateTime.parse(startTime);
+        return dateTime.hour < 12;
+      }
+
+      // Handle AM/PM format (e.g. "01:28 PM")
+      final upperStartTime = startTime.toUpperCase();
+      if (upperStartTime.contains('PM') || upperStartTime.contains('AM')) {
+        final parts = startTime.split(' ');
+        if (parts.length >= 2) {
+          final timeParts = parts[0].split(':');
+          if (timeParts.isNotEmpty) {
+            var hour = int.tryParse(timeParts[0]) ?? 0;
+            final isPM = parts[1].toUpperCase() == 'PM';
+            final isAM = parts[1].toUpperCase() == 'AM';
+
+            if (isPM && hour < 12) hour += 12;
+            if (isAM && hour == 12) hour = 0;
+
+            return hour < 12;
+          }
+        }
+      }
+
+      final hourPart = startTime.split(':').first;
+      final hour = int.tryParse(hourPart) ?? 0;
+      return hour < 12;
+    } catch (e) {
+      return true; // Default to morning
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  String _resolveDayName(int? apiDayOfWeek, DateTime selectedDate) {
+    const weekdayNames = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    if (apiDayOfWeek != null &&
+        apiDayOfWeek >= 0 &&
+        apiDayOfWeek < weekdayNames.length) {
+      return weekdayNames[apiDayOfWeek];
+    }
+
+    return weekdayNames[(selectedDate.weekday % 7)];
+  }
+
+  int? _resolveDayOfWeek(int? apiDayOfWeek, int selectedDayOfWeek) {
+    if (apiDayOfWeek == null) {
+      return selectedDayOfWeek;
+    }
+
+    if (apiDayOfWeek == 0) {
+      return 7; // Sunday in Dart DateTime
+    }
+
+    return apiDayOfWeek;
   }
 }

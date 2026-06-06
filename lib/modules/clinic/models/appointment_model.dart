@@ -4,7 +4,7 @@ part '../gen/appointment_model.freezed.dart';
 part '../gen/appointment_model.g.dart';
 
 @freezed
-class AppointmentDetails with _$AppointmentDetails {
+abstract class AppointmentDetails with _$AppointmentDetails {
   const factory AppointmentDetails({
     String? id,
     @JsonKey(name: "token_number", fromJson: _tokenNumberFromJson)
@@ -30,6 +30,10 @@ class AppointmentDetails with _$AppointmentDetails {
     @JsonKey(name: "doctor_name") String? doctorName,
     String? department,
     @JsonKey(name: "clinic_patient_id") String? clinicPatientId,
+    @JsonKey(name: "clinic_id") String? clinicId,
+    @JsonKey(name: "display_token") String? displayToken,
+    @JsonKey(name: "booking_mode") String? bookingMode,
+    @JsonKey(name: "queue_position") int? queuePosition,
     // Nested objects (for compatibility)
     PatientDetails? patient,
     DoctorDetails? doctor,
@@ -41,7 +45,7 @@ class AppointmentDetails with _$AppointmentDetails {
 }
 
 @freezed
-class PatientDetails with _$PatientDetails {
+abstract class PatientDetails with _$PatientDetails {
   const factory PatientDetails({
     String? name,
     String? phone,
@@ -55,7 +59,7 @@ class PatientDetails with _$PatientDetails {
 }
 
 @freezed
-class DoctorDetails with _$DoctorDetails {
+abstract class DoctorDetails with _$DoctorDetails {
   const factory DoctorDetails({String? id, String? name}) = _DoctorDetails;
 
   factory DoctorDetails.fromJson(Map<String, dynamic> json) =>
@@ -63,7 +67,7 @@ class DoctorDetails with _$DoctorDetails {
 }
 
 @freezed
-class DepartmentDetails with _$DepartmentDetails {
+abstract class DepartmentDetails with _$DepartmentDetails {
   const factory DepartmentDetails({String? id, String? name}) =
       _DepartmentDetails;
 
@@ -72,7 +76,7 @@ class DepartmentDetails with _$DepartmentDetails {
 }
 
 @freezed
-class ClinicDetails with _$ClinicDetails {
+abstract class ClinicDetails with _$ClinicDetails {
   const factory ClinicDetails({String? id, String? name}) = _ClinicDetails;
 
   factory ClinicDetails.fromJson(Map<String, dynamic> json) =>
@@ -80,7 +84,7 @@ class ClinicDetails with _$ClinicDetails {
 }
 
 @freezed
-class SlotDetails with _$SlotDetails {
+abstract class SlotDetails with _$SlotDetails {
   const factory SlotDetails({
     @JsonKey(name: "slot_id") String? slotId,
     @JsonKey(name: "slot_status") String? slotStatus,
@@ -96,7 +100,7 @@ class SlotDetails with _$SlotDetails {
 }
 
 @freezed
-class Appointment with _$Appointment {
+abstract class Appointment with _$Appointment {
   const factory Appointment({
     String? id,
     @JsonKey(name: "token_number") int? tokenNumber,
@@ -133,7 +137,7 @@ class Appointment with _$Appointment {
 }
 
 @freezed
-class AppointmentListResponse with _$AppointmentListResponse {
+abstract class AppointmentListResponse with _$AppointmentListResponse {
   const factory AppointmentListResponse({
     required List<Appointment> appointments,
     @JsonKey(name: "total_count") int? totalCount,
@@ -144,7 +148,7 @@ class AppointmentListResponse with _$AppointmentListResponse {
 }
 
 @freezed
-class Patient with _$Patient {
+abstract class Patient with _$Patient {
   const factory Patient({
     String? id,
     String? firstName,
@@ -171,7 +175,7 @@ class Patient with _$Patient {
 }
 
 @freezed
-class Doctor with _$Doctor {
+abstract class Doctor with _$Doctor {
   const factory Doctor({
     String? id,
     String? firstName,
@@ -192,7 +196,7 @@ class Doctor with _$Doctor {
 }
 
 @freezed
-class TimeSlot with _$TimeSlot {
+abstract class TimeSlot with _$TimeSlot {
   const factory TimeSlot({
     String? id,
     String? time,
@@ -207,7 +211,7 @@ class TimeSlot with _$TimeSlot {
 }
 
 @freezed
-class VitalSigns with _$VitalSigns {
+abstract class VitalSigns with _$VitalSigns {
   const factory VitalSigns({
     String? bloodPressure,
     String? temperature,
@@ -221,12 +225,30 @@ class VitalSigns with _$VitalSigns {
 }
 
 @freezed
-class AppointmentSummary with _$AppointmentSummary {
+abstract class AppointmentSummaryCounts with _$AppointmentSummaryCounts {
+  const factory AppointmentSummaryCounts({
+    int? total,
+    int? confirmed,
+    int? arrived,
+    int? completed,
+    int? cancelled,
+    @JsonKey(name: 'no_show') int? noShow,
+    int? pending,
+  }) = _AppointmentSummaryCounts;
+
+  factory AppointmentSummaryCounts.fromJson(Map<String, dynamic> json) =>
+      _$AppointmentSummaryCountsFromJson(json);
+}
+
+@freezed
+abstract class AppointmentSummary with _$AppointmentSummary {
   const factory AppointmentSummary({
-    int? todayAppointments,
-    int? upcomingAppointments,
-    int? completedAppointments,
-    int? cancelledAppointments,
+    bool? success,
+    @JsonKey(name: 'clinic_id') String? clinicId,
+    String? date,
+    @JsonKey(name: 'doctor_id') String? doctorId,
+    String? status,
+    @JsonKey(name: 'summary') AppointmentSummaryCounts? counts,
   }) = _AppointmentSummary;
 
   factory AppointmentSummary.fromJson(Map<String, dynamic> json) =>
@@ -234,7 +256,7 @@ class AppointmentSummary with _$AppointmentSummary {
 }
 
 @freezed
-class SimpleAppointment with _$SimpleAppointment {
+abstract class SimpleAppointment with _$SimpleAppointment {
   const factory SimpleAppointment({
     required String id,
     @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,
@@ -260,7 +282,7 @@ class SimpleAppointment with _$SimpleAppointment {
 }
 
 @freezed
-class SimpleAppointmentResponse with _$SimpleAppointmentResponse {
+abstract class SimpleAppointmentResponse with _$SimpleAppointmentResponse {
   const factory SimpleAppointmentResponse({
     required String message,
     required SimpleAppointment appointment,
@@ -291,7 +313,7 @@ class SimpleAppointmentResponse with _$SimpleAppointmentResponse {
 
 /// ✅ NEW: Follow-up information model
 @freezed
-class FollowUpInfo with _$FollowUpInfo {
+abstract class FollowUpInfo with _$FollowUpInfo {
   const factory FollowUpInfo({
     String? id,
     @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
@@ -323,7 +345,7 @@ class FollowUpInfo with _$FollowUpInfo {
 
 /// ✅ NEW: Clinic patient update information
 @freezed
-class ClinicPatientUpdate with _$ClinicPatientUpdate {
+abstract class ClinicPatientUpdate with _$ClinicPatientUpdate {
   const factory ClinicPatientUpdate({
     @JsonKey(name: 'current_followup_status') String? currentFollowupStatus,
     @JsonKey(name: 'last_appointment_id') String? lastAppointmentId,
@@ -336,7 +358,7 @@ class ClinicPatientUpdate with _$ClinicPatientUpdate {
 
 /// ✅ NEW: Renewal options
 @freezed
-class RenewalOptions with _$RenewalOptions {
+abstract class RenewalOptions with _$RenewalOptions {
   const factory RenewalOptions({
     @JsonKey(name: 'can_renew') bool? canRenew,
     String? message,
@@ -348,7 +370,7 @@ class RenewalOptions with _$RenewalOptions {
 }
 
 @freezed
-class Department with _$Department {
+abstract class Department with _$Department {
   const factory Department({
     String? id,
     String? name,
@@ -361,7 +383,7 @@ class Department with _$Department {
 }
 
 @freezed
-class ConsultationType with _$ConsultationType {
+abstract class ConsultationType with _$ConsultationType {
   const factory ConsultationType({
     String? id,
     String? name,
@@ -374,7 +396,7 @@ class ConsultationType with _$ConsultationType {
 }
 
 @freezed
-class PaymentMethod with _$PaymentMethod {
+abstract class PaymentMethod with _$PaymentMethod {
   const factory PaymentMethod({
     String? id,
     String? name,
@@ -387,7 +409,7 @@ class PaymentMethod with _$PaymentMethod {
 }
 
 @freezed
-class MedicalRecord with _$MedicalRecord {
+abstract class MedicalRecord with _$MedicalRecord {
   const factory MedicalRecord({
     String? id,
     String? patientId,
@@ -404,7 +426,7 @@ class MedicalRecord with _$MedicalRecord {
 }
 
 @freezed
-class Prescription with _$Prescription {
+abstract class Prescription with _$Prescription {
   const factory Prescription({
     String? id,
     String? patientId,

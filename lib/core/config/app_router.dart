@@ -1,55 +1,56 @@
-import 'package:a/modules/organization/models/organization_model.dart';
-import 'package:a/modules/clinic/models/clinic_model.dart';
+import 'package:drandme/modules/clinic/views/appointments/new_appointment_view_refactored.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 // Auth imports
-import 'package:a/modules/auth/views/login_view.dart';
-import 'package:a/modules/auth/views/profile_view.dart' as auth;
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/views/login_view.dart';
+import 'package:drandme/modules/auth/views/profile_view.dart' as auth;
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 
 // Module imports
-import 'package:a/modules/superadmin/views/super_admin_module_view.dart';
-import 'package:a/modules/organization/views/organization_admin_module_view.dart';
-import 'package:a/modules/patient/views/patient_module_view.dart';
-import 'package:a/modules/doctor/views/doctor_module_view.dart';
-import 'package:a/modules/patient/views/pharmacist_module_view.dart';
-import 'package:a/modules/clinic/views/clinic_module_view.dart';
+import 'package:drandme/modules/superadmin/views/super_admin_module_view.dart';
+import 'package:drandme/modules/organization/views/organization_admin_module_view.dart';
+import 'package:drandme/modules/patient/views/patient_module_view.dart';
+import 'package:drandme/modules/doctor/views/doctor_module_view.dart';
+import 'package:drandme/modules/patient/views/pharmacist_module_view.dart';
+import 'package:drandme/modules/clinic/views/clinic_module_view.dart';
 
 // SuperAdmin specific views
-import 'package:a/modules/superadmin/views/dashboard/super_admin_dashboard_view.dart';
-import 'package:a/modules/superadmin/views/clinics/add_clinic_new_view.dart';
-import 'package:a/modules/superadmin/views/clinics/clinics_list_view.dart';
-import 'package:a/modules/superadmin/views/clinics/clinic_details_view.dart';
-import 'package:a/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
-import 'package:a/modules/superadmin/views/clinics/clinic_doctor_links_list_view.dart';
-import 'package:a/modules/superadmin/views/doctors/add_doctor_view.dart';
-import 'package:a/modules/superadmin/views/doctors/doctors_list_view.dart';
-import 'package:a/modules/superadmin/views/organizations/add_organization_view.dart';
-import 'package:a/modules/superadmin/views/organizations/organizations_list_view.dart';
-import 'package:a/modules/superadmin/views/organizations/organization_details_view.dart';
-import 'package:a/modules/superadmin/views/users/users_management_view.dart'
+import 'package:drandme/modules/superadmin/views/dashboard/super_admin_dashboard_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/add_clinic_new_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/clinics_list_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/clinic_details_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/clinic_doctor_links_list_view.dart';
+import 'package:drandme/modules/superadmin/views/doctors/add_doctor_view.dart';
+import 'package:drandme/modules/superadmin/views/doctors/doctors_list_view.dart';
+import 'package:drandme/modules/superadmin/views/organizations/add_organization_view.dart';
+import 'package:drandme/modules/superadmin/views/organizations/organizations_list_view.dart';
+import 'package:drandme/modules/superadmin/views/organizations/organization_details_view.dart';
+import 'package:drandme/modules/superadmin/views/users/users_management_view.dart'
     as users;
 
 // Clinic specific views (includes appointment management)
-import 'package:a/modules/clinic/views/clinic_admin_dashboard_view.dart';
-import 'package:a/modules/clinic/views/appointments/appointments_dashboard_view_refactored.dart';
-import 'package:a/modules/clinic/views/appointments/new_appointment_view_refactored.dart';
-import 'package:a/modules/clinic/views/appointments/appointment_details_view.dart';
-import 'package:a/modules/clinic/views/doctor_details_content.dart';
+import 'package:drandme/modules/clinic/views/clinic_admin_dashboard_view.dart';
+import 'package:drandme/modules/clinic/views/appointments/appointments_dashboard_view_refactored.dart';
+
+import 'package:drandme/modules/clinic/views/appointments/appointment_details_view.dart';
+import 'package:drandme/modules/clinic/views/doctor_details_content.dart';
 
 // Doctor specific views
-import 'package:a/modules/doctor/views/doctor_dashboard_view.dart';
+import 'package:drandme/modules/doctor/views/doctor_dashboard_view.dart';
 
 // Organization specific views
-import 'package:a/modules/organization/views/organization_admin_dashboard_view.dart';
+import 'package:drandme/modules/organization/views/organization_admin_dashboard_view.dart';
 
 // Patient specific views
-import 'package:a/modules/patient/views/pharmacist_dashboard_view.dart';
+import 'package:drandme/modules/patient/views/pharmacist_dashboard_view.dart';
 
 // Intro/Landing page
-import 'package:a/views/intro_page.dart';
+import 'package:drandme/views/intro_page.dart';
 
 /// Centralized router configuration using go_router
 class AppRouter {

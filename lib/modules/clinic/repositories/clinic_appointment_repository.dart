@@ -1,21 +1,92 @@
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/models/appointment_model.dart';
-import 'package:a/modules/clinic/models/appointment_list_item_model.dart';
-import 'package:a/modules/clinic/models/appointment_history_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/models/appointment_model.dart';
+import 'package:drandme/modules/clinic/models/appointment_list_item_model.dart';
+import 'package:drandme/modules/clinic/models/appointment_history_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_dashboard_model.dart'; // ✅ Import new model
 
 class ClinicAppointmentRepository {
   final ServiceRepo _serviceRepo = ServiceRepo();
 
-  // Get appointment summary statistics
-  Future<AppointmentSummary?> getAppointmentSummary(String token) async {
+  // ✅ Cache latest payments response to bypass Freezed compilation requirements
+  static Map<String, dynamic>? latestPayments;
+
+  // Get clinic dashboard data
+  Future<ClinicDashboardResponse?> getClinicDashboard({
+    required String token,
+    required String clinicId,
+    String? date,
+    String? startDate,
+    String? endDate,
+  }) async {
+    final queryParams = <String, String>{'clinic_id': clinicId};
+    // Prefer start_date/end_date for ranges; fall back to single date
+    if (startDate != null && startDate.isNotEmpty) {
+      queryParams['start_date'] = startDate;
+      queryParams['end_date'] = endDate ?? startDate;
+    } else if (date != null && date.isNotEmpty) {
+      queryParams['date'] = date;
+    }
+
+    final queryString = queryParams.entries
+        .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+
     final response = await _serviceRepo.requist(
-      'appointments/summary',
+      'appointments/dashboard?$queryString',
       method: 'GET',
       token: token,
       useAppointmentsApi: true,
     );
 
     if (response != null && response is Map<String, dynamic>) {
+      if (response['success'] == true) {
+        return ClinicDashboardResponse.fromJson(response);
+      }
+    }
+    return null;
+  }
+
+  // Get appointment summary statistics
+  Future<AppointmentSummary?> getAppointmentSummary({
+    required String token,
+    required String clinicId,
+    String? date,
+    String? doctorId, // ✅ Optional doctor filter
+    String? status, // ✅ Optional status filter
+  }) async {
+    final queryParams = <String, String>{'clinic_id': clinicId};
+
+    if (date != null && date.isNotEmpty) {
+      queryParams['date'] = date;
+    }
+
+    // ✅ Add doctor_id to query if provided and not "all"
+    if (doctorId != null && doctorId.isNotEmpty && doctorId != 'all') {
+      queryParams['doctor_id'] = doctorId;
+    }
+
+    // ✅ Add status to query if provided
+    if (status != null && status.isNotEmpty && status != 'all') {
+      queryParams['status'] = status;
+    }
+
+    final queryString = queryParams.entries
+        .map((entry) => '${entry.key}=${Uri.encodeComponent(entry.value)}')
+        .join('&');
+
+    final endpoint = queryString.isNotEmpty
+        ? 'appointments/summary?$queryString'
+        : 'appointments/summary';
+
+    final response = await _serviceRepo.requist(
+      endpoint,
+      method: 'GET',
+      token: token,
+      useAppointmentsApi: true,
+    );
+
+    if (response != null && response is Map<String, dynamic>) {
+      latestPayments = response['payments'] as Map<String, dynamic>?;
       return AppointmentSummary.fromJson(response);
     }
     return null;
@@ -213,6 +284,8 @@ class ClinicAppointmentRepository {
     String? notes,
     String? paymentMethod, // ✅ Optional for follow-ups
     String? paymentType,
+    String? bookingMode, // ✅ NEW: slot or walk_in
+    String? appointmentMode, // ✅ NEW: online or offline
   }) async {
     try {
       print('');
@@ -233,6 +306,7 @@ class ClinicAppointmentRepository {
       print('📅 Date: $appointmentDate');
       print('🕐 Time: $appointmentTime');
       print('💻 Type: $consultationType');
+      print('🎫 Booking Mode: $bookingMode');
       final isFollowUp = consultationType.startsWith('follow-up');
       print('🔄 Is Follow-Up: $isFollowUp (auto-detected from type)');
       if (paymentMethod != null) {
@@ -251,11 +325,17 @@ class ClinicAppointmentRepository {
         'clinic_id': clinicId,
         if (departmentId != null && departmentId.isNotEmpty)
           'department_id': departmentId,
-        'individual_slot_id': individualSlotId,
+        // ✅ Rule: individual_slot_id must be null or omitted for walk_in
+        // ✅ Rule: individual_slot_id must be null for walk_in
+        'individual_slot_id': bookingMode == 'walk_in'
+            ? null
+            : individualSlotId,
         'appointment_date': appointmentDate,
         'appointment_time': appointmentTime,
         'consultation_type':
             consultationType, // ✅ Backend auto-detects is_follow_up from this
+        'booking_mode': bookingMode ?? 'slot', // ✅ NEW: booking_mode support
+        if (appointmentMode != null) 'appointment_mode': appointmentMode,
         if (reason != null && reason.isNotEmpty) 'reason': reason,
         if (notes != null && notes.isNotEmpty) 'notes': notes,
         if (paymentMethod != null) 'payment_method': paymentMethod,
@@ -462,7 +542,38 @@ class ClinicAppointmentRepository {
       useAppointmentsApi: true,
     );
 
-    return response != null;
+    if (response != null && response is Map<String, dynamic>) {
+      return response['success'] == true;
+    }
+
+    return false;
+  }
+
+  // Record payment for an existing appointment using the new /record-payment API
+  Future<bool> recordPayment({
+    required String token,
+    required String appointmentId,
+    required String paymentMethod,
+    required double paidAmount,
+  }) async {
+    final body = {
+      'payment_method': paymentMethod,
+      'paid_amount': paidAmount,
+    };
+
+    final response = await _serviceRepo.requist(
+      'appointments/$appointmentId/record-payment',
+      method: 'POST',
+      body: body,
+      token: token,
+      useAppointmentsApi: true,
+    );
+
+    if (response != null && response is Map<String, dynamic>) {
+      return response['success'] == true;
+    }
+
+    return false;
   }
 
   // Reschedule simple appointment
@@ -470,19 +581,23 @@ class ClinicAppointmentRepository {
     required String token,
     required String appointmentId,
     required String doctorId,
+    String? clinicId,
     required String individualSlotId,
     required String appointmentDate,
     required String appointmentTime,
     String? departmentId,
+    String? consultationType,
     String? reason,
     String? notes,
   }) async {
     final rescheduleData = {
       'doctor_id': doctorId,
+      'clinic_id': clinicId,
       'individual_slot_id': individualSlotId,
       'appointment_date': appointmentDate,
       'appointment_time': appointmentTime,
       if (departmentId != null) 'department_id': departmentId,
+      if (consultationType != null) 'consultation_type': consultationType,
       if (reason != null) 'reason': reason,
       if (notes != null) 'notes': notes,
     };
@@ -504,15 +619,42 @@ class ClinicAppointmentRepository {
   }
 
   // Cancel appointment
-  Future<bool> cancelAppointment(String token, String appointmentId) async {
+  Future<Map<String, dynamic>?> cancelAppointment({
+    required String token,
+    required String appointmentId,
+    String? reason,
+    String? notes,
+  }) async {
+    final body = <String, dynamic>{};
+    if (reason != null && reason.isNotEmpty) {
+      body['reason'] = reason;
+    }
+    if (notes != null && notes.isNotEmpty) {
+      body['notes'] = notes;
+    }
+
     final response = await _serviceRepo.requist(
       'appointments/$appointmentId/cancel',
-      method: 'PUT',
+      method: 'POST',
       token: token,
       useAppointmentsApi: true,
+      body: body.isNotEmpty ? body : null,
     );
 
-    return response != null;
+    if (response != null && response is Map<String, dynamic>) {
+      // Check if response contains error
+      if (response.containsKey('error')) {
+        final errorMessage =
+            response['error'] as String? ??
+            response['message'] as String? ??
+            'Failed to cancel appointment';
+        throw Exception(errorMessage);
+      }
+      return response;
+    }
+
+    // Return null if no response - viewmodel will handle error display
+    return null;
   }
 
   // Get doctors by department
@@ -742,7 +884,7 @@ class ClinicAppointmentRepository {
   }
 
   /// Update appointment status
-  /// PATCH /api/v1/appointments/simple/:id/status
+  /// PUT /api/v1/appointments/:id
   Future<Map<String, dynamic>?> updateAppointmentStatus({
     required String token,
     required String appointmentId,
@@ -760,35 +902,26 @@ class ClinicAppointmentRepository {
       print(
         '╚════════════════════════════════════════════════════════════════╝',
       );
-      print('📤 PATCH /appointments/simple/$appointmentId/status');
+      print('📤 PUT /appointments/$appointmentId');
       print('   appointment_id: $appointmentId');
-      print('   clinic_patient_id: $clinicPatientId');
       print('   status: $status');
-      if (clinicId != null) {
-        print('   clinic_id: $clinicId');
-      }
-      if (notes != null && notes.isNotEmpty) {
-        print('   notes: $notes');
-      }
-      print('');
-
-      final queryParams = <String, String>{
-        'clinic_patient_id': clinicPatientId,
-      };
-      if (clinicId != null && clinicId.isNotEmpty) {
-        queryParams['clinic_id'] = clinicId;
-      }
-
-      final queryString = Uri(queryParameters: queryParams).query;
 
       final requestBody = <String, dynamic>{'status': status};
       if (notes != null && notes.isNotEmpty) {
         requestBody['notes'] = notes;
       }
 
+      // Also include patient and clinic IDs if needed by backend validation
+      if (clinicPatientId.isNotEmpty) {
+        requestBody['clinic_patient_id'] = clinicPatientId;
+      }
+      if (clinicId != null && clinicId.isNotEmpty) {
+        requestBody['clinic_id'] = clinicId;
+      }
+
       final response = await _serviceRepo.requist(
-        'appointments/simple/$appointmentId/status?$queryString',
-        method: 'PATCH',
+        'appointments/$appointmentId',
+        method: 'PUT',
         token: token,
         useAppointmentsApi: true,
         body: requestBody,
@@ -803,33 +936,11 @@ class ClinicAppointmentRepository {
         if (response is Map<String, dynamic>) {
           if (response.containsKey('error')) {
             final errorMsg = response['error']?.toString() ?? 'Unknown error';
-            final details = response['details']?.toString();
-            final fullError = details != null && details.isNotEmpty
-                ? '$errorMsg: $details'
-                : errorMsg;
-            print('❌ API Error: $fullError');
+            print('❌ API Error: $errorMsg');
             print('');
-            // Return error response so ViewModel can extract the error message
-            return response;
+            return null;
           }
-
-          // Check for success response
-          if (response.containsKey('success') && response['success'] == true) {
-            print('✅ SUCCESS: Appointment status updated successfully');
-            print('');
-            return response;
-          }
-        }
-
-        // If response is not a map or doesn't have expected structure, try to return it
-        try {
-          print('✅ SUCCESS: Appointment status updated successfully');
-          print('');
-          return response as Map<String, dynamic>;
-        } catch (e) {
-          print('❌ Error parsing status update response: $e');
-          print('');
-          return null;
+          return response;
         }
       }
 
@@ -841,5 +952,38 @@ class ClinicAppointmentRepository {
       print('');
       return null;
     }
+  }
+
+  // Fetch collections summary
+  Future<Map<String, dynamic>?> getCollections({
+    required String token,
+    required String clinicId,
+    String? date,
+    String? doctorId,
+  }) async {
+    final queryParams = <String, String>{'clinic_id': clinicId};
+    if (date != null && date.isNotEmpty) {
+      queryParams['date'] = date;
+    }
+    if (doctorId != null && doctorId.isNotEmpty && doctorId != 'all') {
+      queryParams['doctor_id'] = doctorId;
+    }
+    final queryString = queryParams.entries
+        .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+
+    final response = await _serviceRepo.requist(
+      'appointments/collections?$queryString',
+      method: 'GET',
+      token: token,
+      useAppointmentsApi: true,
+    );
+
+    if (response != null && response is Map<String, dynamic>) {
+      if (response['success'] == true) {
+        return response['data'] as Map<String, dynamic>?;
+      }
+    }
+    return null;
   }
 }

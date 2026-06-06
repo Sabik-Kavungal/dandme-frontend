@@ -10,18 +10,18 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 // ViewModel imports
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/organization/viewmodels/organization_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/doctor/viewmodels/doctor_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/user_management_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/role_management_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/department_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/doctor_details_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_settings_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/organization/viewmodels/organization_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/doctor/viewmodels/doctor_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/user_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/role_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/department_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/doctor_details_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_settings_viewmodel.dart';
 
 // Role-based provider configuration
-import 'package:a/core/config/role_based_providers.dart';
+import 'package:drandme/core/config/role_based_providers.dart';
 
 /// Application Providers Configuration
 ///
@@ -55,7 +55,7 @@ class AppProviders {
 
       // Doctor Provider
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
 
@@ -73,7 +73,7 @@ class AppProviders {
 
       // Department Provider
       ChangeNotifierProvider<DepartmentViewModel>(
-        create: (context) => DepartmentViewModel(),
+        create: (context) => DepartmentViewModel(authViewModel),
         lazy: lazy,
       ),
 
@@ -133,7 +133,7 @@ class AppProviders {
         ChangeNotifierProvider<DoctorViewModel>.value(value: doctorViewModel)
       else
         ChangeNotifierProvider<DoctorViewModel>(
-          create: (context) => DoctorViewModel(),
+          create: (context) => DoctorViewModel(authViewModel),
           lazy: true,
         ),
 
@@ -163,7 +163,7 @@ class AppProviders {
         )
       else
         ChangeNotifierProvider<DepartmentViewModel>(
-          create: (context) => DepartmentViewModel(),
+          create: (context) => DepartmentViewModel(authViewModel),
           lazy: true,
         ),
     ];

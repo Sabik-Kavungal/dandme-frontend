@@ -60,7 +60,7 @@ extension PaymentMethodExtension on PaymentMethod {
       case PaymentMethod.payLater:
         return 'Pay Later';
       case PaymentMethod.wayOff:
-        return 'Way Off (Free)';
+        return 'No Fee';
     }
   }
 
@@ -79,7 +79,7 @@ extension PaymentMethodExtension on PaymentMethod {
 
 /// Payment Configuration Model
 @freezed
-class AppointmentPayment with _$AppointmentPayment {
+abstract class AppointmentPayment with _$AppointmentPayment {
   const factory AppointmentPayment({
     required PaymentMethod method,
     PaymentType? type, // Required only for payNow

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/superadmin/viewmodels/role_management_viewmodel.dart';
-import 'package:a/modules/superadmin/views/roles/add_edit_role_view.dart';
-import 'package:a/modules/superadmin/views/roles/role_details_view.dart';
+import 'package:drandme/modules/superadmin/viewmodels/role_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/views/roles/add_edit_role_view.dart';
+import 'package:drandme/modules/superadmin/views/roles/role_details_view.dart';
 
 class RolesListView extends StatefulWidget {
   const RolesListView({super.key});

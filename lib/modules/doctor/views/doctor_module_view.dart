@@ -6,14 +6,14 @@
 // doctor-specific screens and navigation.
 // ============================================================================
 
-import 'package:a/core/responsive/universal_responsive_layout.dart';
-import 'package:a/modules/doctor/viewmodels/doctor_viewmodel.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/core/utils/app_helpers.dart';
-import 'package:a/core/constants/app_constants.dart';
+import 'package:drandme/core/responsive/universal_responsive_layout.dart';
+import 'package:drandme/modules/doctor/viewmodels/doctor_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
+import 'package:drandme/core/constants/app_constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
 
 class DoctorModuleView extends StatefulWidget {
   const DoctorModuleView({super.key});
@@ -29,7 +29,8 @@ class _DoctorModuleViewState extends State<DoctorModuleView> {
   @override
   void initState() {
     super.initState();
-    _viewModel = DoctorViewModel();
+    final authViewModel = context.read<AuthViewModel>();
+    _viewModel = DoctorViewModel(authViewModel);
   }
 
   @override
@@ -123,7 +124,6 @@ class _DoctorModuleViewState extends State<DoctorModuleView> {
       ),
     );
   }
-
 
   void _handleLogout(BuildContext context) {
     showDialog(

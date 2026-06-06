@@ -1,6 +1,6 @@
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/models/appointment_model.dart';
-import 'package:a/modules/clinic/models/clinic_doctor_links_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/models/appointment_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_doctor_links_model.dart';
 
 class DoctorDetailsRepository {
   final ServiceRepo _serviceRepo = ServiceRepo();
@@ -24,7 +24,7 @@ class DoctorDetailsRepository {
       print('👨‍⚕️ Doctor ID: $doctorId');
 
       final response = await _serviceRepo.requist(
-        'organizations/clinic-doctor-links/doctor/$doctorId',
+        'clinic-doctor-links/doctor/$doctorId',
         method: 'GET',
         token: token,
         useOrgApi: true,

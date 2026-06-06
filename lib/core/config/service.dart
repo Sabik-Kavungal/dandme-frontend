@@ -1,16 +1,16 @@
-import 'package:a/core/config/localDB.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/core/config/localDB.dart';
+import 'package:drandme/core/constants/app_constants.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class ServiceRepo {
-  final String authBaseUrl =
-      "http://172.20.10.7:8080/api"; // Authentication API
-  final String orgBaseUrl = "http://172.20.10.7:8081/api"; // Organization API
+  final String authBaseUrl = AppConstants.apiBaseUrl; // Authentication API
+  final String orgBaseUrl = AppConstants.apiBaseUrl; // Organization API
   final String appointmentsBaseUrl =
-      "http://localhost:8082/api/v1"; // Appointments Microservice
+      "${AppConstants.apiBaseUrl}/v1"; // Appointments Microservice
 
   final LocalDatabaseService db = LocalDatabaseService();
 
@@ -34,6 +34,11 @@ class ServiceRepo {
     }
 
     final url = Uri.parse('$baseUrl/$endpoint');
+
+    print('API Request: $method $url');
+    if (body != null) {
+      print('API Request Body: ${jsonEncode(body)}');
+    }
 
     final headers = {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -88,6 +93,7 @@ class ServiceRepo {
       // Handle successful responses (2xx) and partial content (207)
       if ((response.statusCode >= 200 && response.statusCode < 300) ||
           response.statusCode == 207) {
+        print('API Response ($endpoint): ${response.statusCode} ${response.body}');
         return response.body.isNotEmpty ? jsonDecode(response.body) : null;
       } else if (response.statusCode == 401) {
         print('Unauthorized request (401): ${response.body}');
@@ -198,6 +204,81 @@ class ServiceRepo {
       }
     } catch (error, stack) {
       print('Request error: $error\n$stack');
+      return null;
+    }
+  }
+
+  Future<dynamic> multipart(
+    String endpoint, {
+    required String method,
+    Map<String, String>? fields,
+    Map<String, dynamic>? files, // Map of field name to File
+    String? token,
+    bool useOrgApi = false,
+    bool useAppointmentsApi = false,
+    BuildContext? context,
+  }) async {
+    // Determine which base URL to use
+    final String baseUrl;
+    if (useAppointmentsApi) {
+      baseUrl = appointmentsBaseUrl;
+    } else if (useOrgApi) {
+      baseUrl = orgBaseUrl;
+    } else {
+      baseUrl = authBaseUrl;
+    }
+
+    final url = Uri.parse('$baseUrl/$endpoint');
+    print('API Multipart Request: $method $url');
+    if (fields != null) {
+      print('API Multipart Fields: $fields');
+    }
+    
+    var request = http.MultipartRequest(method, url);
+
+    // Add headers
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+
+    // Add fields
+    if (fields != null) {
+      request.fields.addAll(fields);
+    }
+
+    // Add files
+    if (files != null) {
+      for (var entry in files.entries) {
+        final file = entry.value;
+        if (file != null) {
+          // Use fromBytes for cross-platform compatibility (works on Web and Mobile)
+          final bytes = await file.readAsBytes();
+          final multipartFile = http.MultipartFile.fromBytes(
+            entry.key,
+            bytes,
+            filename: file.name,
+          );
+          request.files.add(multipartFile);
+        }
+      }
+    }
+
+    try {
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 45),
+      );
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if ((response.statusCode >= 200 && response.statusCode < 300) ||
+          response.statusCode == 201) {
+        print('API Multipart Response ($endpoint): ${response.statusCode} ${response.body}');
+        return response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      } else {
+        print('Multipart failed: ${response.statusCode} ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Multipart error: $e');
       return null;
     }
   }

@@ -7,8 +7,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../constants/app_constants.dart';
+import '../widgets/app_loader.dart';
+import 'loading_manager.dart';
 
 class AppHelpers {
+  /// Ensures that an image path is a full URL.
+  /// If it starts with 'http', it's returned as is.
+  /// Otherwise, it prepends the server's base URL.
+  static String ensureImageUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http')) return path;
+
+    // Remove leading slash if present
+    final cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    return '${AppConstants.serverUrl}/$cleanPath';
+  }
+
   // Responsive Design Helpers
   static bool isMobile(BuildContext context) {
     return MediaQuery.of(context).size.width < AppConstants.mobileBreakpoint;
@@ -271,15 +285,20 @@ class AppHelpers {
   }
 
   // Loading State Helpers
-  static Widget buildLoadingIndicator({double size = 20.0}) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: const CircularProgressIndicator(
-        strokeWidth: 2,
-        valueColor: AlwaysStoppedAnimation<Color>(AppConstants.primaryColor),
-      ),
+  static Widget buildLoadingIndicator({double size = 20.0, Color? color}) {
+    return AppLoader(
+      size: size,
+      strokeWidth: 2,
+      color: color ?? AppConstants.primaryColor,
     );
+  }
+
+  static void showLoading({String? message}) {
+    LoadingManager.show(message: message);
+  }
+
+  static void hideLoading() {
+    LoadingManager.hide();
   }
 
   static Widget buildErrorWidget(String error, VoidCallback onRetry) {

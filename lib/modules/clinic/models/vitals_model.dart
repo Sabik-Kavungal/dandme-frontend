@@ -5,7 +5,7 @@ part '../gen/vitals_model.g.dart';
 
 /// Vitals record model matching the API structure
 @freezed
-class VitalsRecord with _$VitalsRecord {
+abstract class VitalsRecord with _$VitalsRecord {
   const factory VitalsRecord({
     String? id,
     @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
@@ -22,6 +22,8 @@ class VitalsRecord with _$VitalsRecord {
     @JsonKey(name: 'height_cm') int? heightCm,
     @JsonKey(name: 'weight_kg') double? weightKg,
     double? bmi,
+    @JsonKey(name: 'smoking_status') String? smokingStatus,
+    @JsonKey(name: 'alcohol_use') String? alcoholUse,
     String? notes,
     @JsonKey(name: 'recorded_by') String? recordedBy,
     @JsonKey(name: 'recorded_at') String? recordedAt,
@@ -33,7 +35,7 @@ class VitalsRecord with _$VitalsRecord {
 
 /// Vitals history response model
 @freezed
-class VitalsHistoryResponse with _$VitalsHistoryResponse {
+abstract class VitalsHistoryResponse with _$VitalsHistoryResponse {
   const factory VitalsHistoryResponse({
     @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,
     required int total,
@@ -46,11 +48,12 @@ class VitalsHistoryResponse with _$VitalsHistoryResponse {
 
 /// Create vitals request model
 @freezed
-class CreateVitalsRequest with _$CreateVitalsRequest {
+abstract class CreateVitalsRequest with _$CreateVitalsRequest {
   const factory CreateVitalsRequest({
-    @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,
+    @JsonKey(name: 'appointment_id') required String appointmentId,
+    @JsonKey(name: 'recorded_by') required String recordedBy,
+    @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
     @JsonKey(name: 'clinic_id') String? clinicId,
-    @JsonKey(name: 'appointment_id') String? appointmentId,
     @JsonKey(name: 'systolic_bp') int? systolicBp,
     @JsonKey(name: 'diastolic_bp') int? diastolicBp,
     @JsonKey(name: 'blood_pressure') String? bloodPressure,
@@ -61,8 +64,10 @@ class CreateVitalsRequest with _$CreateVitalsRequest {
     @JsonKey(name: 'sugar_mgdl') double? sugarMgdl,
     @JsonKey(name: 'height_cm') int? heightCm,
     @JsonKey(name: 'weight_kg') double? weightKg,
+    double? bmi,
+    @JsonKey(name: 'smoking_status') String? smokingStatus,
+    @JsonKey(name: 'alcohol_use') String? alcoholUse,
     String? notes,
-    @JsonKey(name: 'recorded_by') required String recordedBy,
   }) = _CreateVitalsRequest;
 
   factory CreateVitalsRequest.fromJson(Map<String, dynamic> json) =>
@@ -71,12 +76,13 @@ class CreateVitalsRequest with _$CreateVitalsRequest {
 
 /// Update vitals request model
 @freezed
-class UpdateVitalsRequest with _$UpdateVitalsRequest {
+abstract class UpdateVitalsRequest with _$UpdateVitalsRequest {
   const factory UpdateVitalsRequest({
-    required String id,
-    @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,
-    @JsonKey(name: 'clinic_id') String? clinicId,
+    @JsonKey(includeToJson: false) required String id,
     @JsonKey(name: 'appointment_id') String? appointmentId,
+    @JsonKey(name: 'recorded_by') String? recordedBy,
+    @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
+    @JsonKey(name: 'clinic_id') String? clinicId,
     @JsonKey(name: 'systolic_bp') int? systolicBp,
     @JsonKey(name: 'diastolic_bp') int? diastolicBp,
     @JsonKey(name: 'blood_pressure') String? bloodPressure,
@@ -87,8 +93,10 @@ class UpdateVitalsRequest with _$UpdateVitalsRequest {
     @JsonKey(name: 'sugar_mgdl') double? sugarMgdl,
     @JsonKey(name: 'height_cm') int? heightCm,
     @JsonKey(name: 'weight_kg') double? weightKg,
+    double? bmi,
+    @JsonKey(name: 'smoking_status') String? smokingStatus,
+    @JsonKey(name: 'alcohol_use') String? alcoholUse,
     String? notes,
-    @JsonKey(name: 'recorded_by') required String recordedBy,
   }) = _UpdateVitalsRequest;
 
   factory UpdateVitalsRequest.fromJson(Map<String, dynamic> json) =>

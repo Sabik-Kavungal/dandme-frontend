@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
+import 'package:drandme/modules/clinic/models/patient_full_details_model.dart';
 
 class ClinicPatientRepository {
   final ServiceRepo _serviceRepo;
@@ -18,6 +19,7 @@ class ClinicPatientRepository {
     String? dateOfBirth,
     int? age,
     String? gender,
+    String? address,
     String? address1,
     String? address2,
     String? district,
@@ -45,6 +47,7 @@ class ClinicPatientRepository {
       print('🏥 Clinic ID: $clinicId');
       print('👤 Name: $firstName $lastName');
       print('📞 Phone: $phone');
+      if (address != null) print('📍 Address: $address');
       if (age != null) print('🎂 Age: $age years');
       if (district != null) print('📍 District: $district');
       print('');
@@ -58,6 +61,7 @@ class ClinicPatientRepository {
         if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
         if (age != null) 'age': age,
         if (gender != null) 'gender': gender,
+        if (address != null) 'address': address,
         if (address1 != null) 'address1': address1,
         if (address2 != null) 'address2': address2,
         if (district != null) 'district': district,
@@ -77,7 +81,7 @@ class ClinicPatientRepository {
       print('');
 
       final response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients',
+        'clinic-specific-patients',
         method: 'POST',
         token: token,
         body: body,
@@ -146,14 +150,18 @@ class ClinicPatientRepository {
       };
 
       final response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients?${Uri(queryParameters: queryParams).query}',
+        'clinic-specific-patients?${Uri(queryParameters: queryParams).query}',
         method: 'GET',
         token: token,
         useOrgApi: true,
       );
 
       if (response != null) {
-        final result = ListClinicPatientsResponse.fromJson(response);
+        final sanitizedResponse = _sanitizePatientListResponse(
+          response,
+          fallbackClinicId: clinicId,
+        );
+        final result = ListClinicPatientsResponse.fromJson(sanitizedResponse);
         print('✅ Found ${result.total} patients');
 
         // ✅ ENHANCED: Log follow-up data from restored backend
@@ -228,14 +236,18 @@ class ClinicPatientRepository {
       };
 
       final response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients?${Uri(queryParameters: queryParams).query}',
+        'clinic-specific-patients?${Uri(queryParameters: queryParams).query}',
         method: 'GET',
         token: token,
         useOrgApi: true,
       );
 
       if (response != null) {
-        final result = ListClinicPatientsResponse.fromJson(response);
+        final sanitizedResponse = _sanitizePatientListResponse(
+          response,
+          fallbackClinicId: clinicId,
+        );
+        final result = ListClinicPatientsResponse.fromJson(sanitizedResponse);
         print('✅ Found ${result.total} patients matching "$searchQuery"');
 
         // ✅ ENHANCED: Log follow-up data from restored backend
@@ -314,7 +326,7 @@ class ClinicPatientRepository {
           : '';
 
       var response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients$queryString',
+        'clinic-specific-patients$queryString',
         method: 'GET',
         token: token,
         useOrgApi: true,
@@ -330,7 +342,7 @@ class ClinicPatientRepository {
             : '';
 
         response = await _serviceRepo.requist(
-          'organizations/clinic-specific-patients/$patientId$pathQueryString',
+          'clinic-specific-patients/$patientId$pathQueryString',
           method: 'GET',
           token: token,
           useOrgApi: true,
@@ -385,13 +397,13 @@ class ClinicPatientRepository {
       print(
         '╚════════════════════════════════════════════════════════════════╝',
       );
-      print('📤 PUT /organizations/clinic-specific-patients/$patientId');
+      print('📤 PUT /clinic-specific-patients/$patientId');
       print('📦 Request Body:');
       print('   ${requestBody.toString()}');
       print('');
 
       final response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients/$patientId',
+        'clinic-specific-patients/$patientId',
         method: 'PUT',
         token: token,
         body: requestBody,
@@ -437,7 +449,7 @@ class ClinicPatientRepository {
   }) async {
     try {
       final response = await _serviceRepo.requist(
-        'organizations/clinic-specific-patients/$patientId',
+        'clinic-specific-patients/$patientId',
         method: 'DELETE',
         token: token,
         useOrgApi: true,
@@ -476,10 +488,10 @@ class ClinicPatientRepository {
       };
 
       final response = await _serviceRepo.requist(
-        'organizations/appointments/followup-eligibility?${Uri(queryParameters: queryParams).query}',
+        'appointments/followup-eligibility?${Uri(queryParameters: queryParams).query}',
         method: 'GET',
         token: token,
-        useOrgApi: true,
+        useAppointmentsApi: true,
       );
 
       if (response != null) {
@@ -520,10 +532,10 @@ class ClinicPatientRepository {
       };
 
       final response = await _serviceRepo.requist(
-        'organizations/appointments/followup-eligibility/active?${Uri(queryParameters: queryParams).query}',
+        'appointments/followup-eligibility/active?${Uri(queryParameters: queryParams).query}',
         method: 'GET',
         token: token,
-        useOrgApi: true,
+        useAppointmentsApi: true,
       );
 
       if (response != null) {
@@ -543,6 +555,136 @@ class ClinicPatientRepository {
     } catch (e) {
       print('❌ Error getting active follow-ups: $e');
       return null;
+    }
+  }
+
+  Map<String, dynamic> _sanitizePatientListResponse(
+    dynamic rawResponse, {
+    required String fallbackClinicId,
+  }) {
+    if (rawResponse is! Map<String, dynamic>) {
+      return {
+        'clinic_id': fallbackClinicId,
+        'total': 0,
+        'patients': <Map<String, dynamic>>[],
+      };
+    }
+
+    final sanitized = Map<String, dynamic>.from(rawResponse);
+
+    final clinicId = sanitized['clinic_id'];
+    if (clinicId is! String || clinicId.isEmpty) {
+      sanitized['clinic_id'] = fallbackClinicId;
+    }
+
+    sanitized['patients'] = _sanitizePatientList(sanitized['patients']);
+
+    sanitized['total'] =
+        (sanitized['total'] as num?)?.toInt() ??
+        (sanitized['patients'] as List).length;
+
+    return sanitized;
+  }
+
+  List<Map<String, dynamic>> _sanitizePatientList(dynamic patients) {
+    if (patients is List) {
+      return patients
+          .whereType<Map<String, dynamic>>()
+          .map(_sanitizePatientMap)
+          .toList();
+    }
+
+    return <Map<String, dynamic>>[];
+  }
+
+  Map<String, dynamic> _sanitizePatientMap(Map<String, dynamic> patient) {
+    final sanitizedPatient = Map<String, dynamic>.from(patient);
+
+    sanitizedPatient['appointments'] = _sanitizeNestedMapList(
+      sanitizedPatient['appointments'],
+    );
+    sanitizedPatient['follow_ups'] = _sanitizeNestedMapList(
+      sanitizedPatient['follow_ups'],
+    );
+    sanitizedPatient['appointments_history'] = _sanitizeNestedMapList(
+      sanitizedPatient['appointments_history'],
+    );
+    sanitizedPatient['eligible_follow_ups'] = _sanitizeNestedMapList(
+      sanitizedPatient['eligible_follow_ups'],
+    );
+    sanitizedPatient['expired_followups'] = _sanitizeNestedMapList(
+      sanitizedPatient['expired_followups'],
+    );
+
+    return sanitizedPatient;
+  }
+
+  List<Map<String, dynamic>> _sanitizeNestedMapList(dynamic value) {
+    if (value is List) {
+      return value.whereType<Map<String, dynamic>>().toList();
+    }
+
+    return <Map<String, dynamic>>[];
+  }
+
+  /// ✅ NEW: Get Patient Full Details
+  Future<PatientFullDetailsResponse?> getPatientFullDetails({
+    required String token,
+    required String patientId,
+  }) async {
+    try {
+      print('\n🔍 GETTING PATIENT FULL DETAILS VIA API...');
+      print('   Patient ID: $patientId');
+
+      final response = await _serviceRepo.requist(
+        'clinic-specific-patients/$patientId/details',
+        method: 'GET',
+        token: token,
+        useOrgApi: true,
+      );
+
+      if (response != null) {
+        print('✅ Patient details retrieved successfully');
+        return PatientFullDetailsResponse.fromJson(response);
+      } else {
+        print('❌ Failed to get patient details');
+        return null;
+      }
+    } catch (e) {
+      print('❌ Error getting patient full details: $e');
+      return null;
+    }
+  }
+
+  /// ✅ NEW: Update Vital Signs
+  Future<bool> updateVitals({
+    required String token,
+    required String vitalsId,
+    required UpdateVitalsInput input,
+  }) async {
+    try {
+      print('\n📤 UPDATING VITALS VIA API...');
+      print('   Vitals ID: $vitalsId');
+      print('   Data: ${jsonEncode(input.toJson())}');
+
+      final response = await _serviceRepo.requist(
+        'vitals/$vitalsId',
+        method: 'PUT',
+        token: token,
+        body: input.toJson(),
+        useOrgApi: true,
+      );
+
+      if (response != null) {
+        print('✅ Vitals updated successfully');
+        return true;
+      } else {
+        print('❌ Failed to update vitals');
+        return false;
+      }
+    } catch (e) {
+      print('❌ Error updating vitals: $e');
+      return false;
     }
   }
 }

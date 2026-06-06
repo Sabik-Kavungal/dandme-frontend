@@ -173,7 +173,7 @@ Updated debug prints to show new API response fields instead of checking strings
 
 1. Run build_runner to regenerate freezed code:
    ```bash
-   flutter pub run build_runner build --delete-conflicting-outputs
+   dart run build_runner build
    ```
 
 2. Test appointment creation:

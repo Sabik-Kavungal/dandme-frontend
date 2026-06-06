@@ -5,9 +5,11 @@
 // organization admin-specific screens and navigation.
 // ============================================================================
 
-import 'package:a/core/responsive/universal_responsive_layout.dart';
+import 'package:drandme/core/responsive/universal_responsive_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:a/core/config/navigation_helper.dart';
+
+import 'package:provider/provider.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 
 class OrganizationAdminModuleView extends StatefulWidget {
   const OrganizationAdminModuleView({super.key});
@@ -17,7 +19,8 @@ class OrganizationAdminModuleView extends StatefulWidget {
       _OrganizationAdminModuleViewState();
 }
 
-class _OrganizationAdminModuleViewState extends State<OrganizationAdminModuleView> {
+class _OrganizationAdminModuleViewState
+    extends State<OrganizationAdminModuleView> {
   int _selectedIndex = 0; // Default to dashboard
 
   @override
@@ -93,8 +96,12 @@ class _OrganizationAdminModuleViewState extends State<OrganizationAdminModuleVie
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              // Add logout logic here
+              Navigator.pop(context); // Close dialog
+              final authViewModel = Provider.of<AuthViewModel>(
+                context,
+                listen: false,
+              );
+              authViewModel.logout(context);
             },
             child: const Text('Logout'),
           ),

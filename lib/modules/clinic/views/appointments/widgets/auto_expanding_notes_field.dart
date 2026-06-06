@@ -8,6 +8,7 @@ class AutoExpandingNotesField extends StatefulWidget {
   final String value;
   final Function(String) onChanged;
   final bool isMobile;
+  final FocusNode? focusNode; // ✅ New optional focus node
 
   const AutoExpandingNotesField({
     super.key,
@@ -17,6 +18,7 @@ class AutoExpandingNotesField extends StatefulWidget {
     required this.value,
     required this.onChanged,
     this.isMobile = false,
+    this.focusNode,
   });
 
   @override
@@ -26,12 +28,13 @@ class AutoExpandingNotesField extends StatefulWidget {
 
 class _AutoExpandingNotesFieldState extends State<AutoExpandingNotesField> {
   late TextEditingController _controller;
-  final FocusNode _focusNode = FocusNode();
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.value);
+    _focusNode = widget.focusNode ?? FocusNode();
   }
 
   @override
@@ -45,15 +48,17 @@ class _AutoExpandingNotesFieldState extends State<AutoExpandingNotesField> {
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final labelColor = widget.isMobile
-        ? const Color(0xFF666666)
-        : const Color(0xFF333333);
+        ? const Color(0xFF64748B) // Slate 500
+        : const Color(0xFF334155); // Slate 700
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,14 +82,14 @@ class _AutoExpandingNotesFieldState extends State<AutoExpandingNotesField> {
             maxHeight: 200 * widget.scaleFactor,
           ),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white, const Color(0xFFFAFAFA)],
+            gradient: const LinearGradient(
+              colors: [Colors.white, Color(0xFFF8FAFC)], // Slate 50
             ),
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+            border: Border.all(color: const Color(0xFFE2E8F0), width: 1), // Slate 200
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF6366F1).withOpacity(0.04),
+                color: const Color(0xFF1E293B).withOpacity(0.05), // Slate 900
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -100,7 +105,7 @@ class _AutoExpandingNotesFieldState extends State<AutoExpandingNotesField> {
             decoration: InputDecoration(
               hintText: widget.hint,
               hintStyle: TextStyle(
-                color: const Color(0xFF999999),
+                color: const Color(0xFF94A3B8), // Slate 400
                 fontSize: 14 * widget.scaleFactor,
               ),
               border: InputBorder.none,

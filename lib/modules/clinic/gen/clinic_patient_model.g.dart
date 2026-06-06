@@ -6,9 +6,9 @@ part of '../models/clinic_patient_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FollowUpEligibilityResponseImpl _$$FollowUpEligibilityResponseImplFromJson(
+_FollowUpEligibilityResponse _$FollowUpEligibilityResponseFromJson(
   Map<String, dynamic> json,
-) => _$FollowUpEligibilityResponseImpl(
+) => _FollowUpEligibilityResponse(
   isFree: json['is_free'] as bool,
   isEligible: json['is_eligible'] as bool,
   message: json['message'] as String,
@@ -19,54 +19,51 @@ _$FollowUpEligibilityResponseImpl _$$FollowUpEligibilityResponseImplFromJson(
         ),
 );
 
-Map<String, dynamic> _$$FollowUpEligibilityResponseImplToJson(
-  _$FollowUpEligibilityResponseImpl instance,
+Map<String, dynamic> _$FollowUpEligibilityResponseToJson(
+  _FollowUpEligibilityResponse instance,
 ) => <String, dynamic>{
   'is_free': instance.isFree,
   'is_eligible': instance.isEligible,
   'message': instance.message,
-  if (instance.followupDetails?.toJson() case final value?)
-    'followup_details': value,
+  'followup_details': ?instance.followupDetails?.toJson(),
 };
 
-_$FollowUpDetailsImpl _$$FollowUpDetailsImplFromJson(
-  Map<String, dynamic> json,
-) => _$FollowUpDetailsImpl(
-  followupId: json['followup_id'] as String?,
-  validUntil: json['valid_until'] as String?,
-  daysRemaining: (json['days_remaining'] as num?)?.toInt(),
-  doctorId: json['doctor_id'] as String?,
-  departmentId: json['department_id'] as String?,
-);
+_FollowUpDetails _$FollowUpDetailsFromJson(Map<String, dynamic> json) =>
+    _FollowUpDetails(
+      followupId: json['followup_id'] as String?,
+      validUntil: json['valid_until'] as String?,
+      daysRemaining: (json['days_remaining'] as num?)?.toInt(),
+      doctorId: json['doctor_id'] as String?,
+      departmentId: json['department_id'] as String?,
+    );
 
-Map<String, dynamic> _$$FollowUpDetailsImplToJson(
-  _$FollowUpDetailsImpl instance,
-) => <String, dynamic>{
-  if (instance.followupId case final value?) 'followup_id': value,
-  if (instance.validUntil case final value?) 'valid_until': value,
-  if (instance.daysRemaining case final value?) 'days_remaining': value,
-  if (instance.doctorId case final value?) 'doctor_id': value,
-  if (instance.departmentId case final value?) 'department_id': value,
-};
+Map<String, dynamic> _$FollowUpDetailsToJson(_FollowUpDetails instance) =>
+    <String, dynamic>{
+      'followup_id': ?instance.followupId,
+      'valid_until': ?instance.validUntil,
+      'days_remaining': ?instance.daysRemaining,
+      'doctor_id': ?instance.doctorId,
+      'department_id': ?instance.departmentId,
+    };
 
-_$ActiveFollowUpsResponseImpl _$$ActiveFollowUpsResponseImplFromJson(
+_ActiveFollowUpsResponse _$ActiveFollowUpsResponseFromJson(
   Map<String, dynamic> json,
-) => _$ActiveFollowUpsResponseImpl(
+) => _ActiveFollowUpsResponse(
   activeFollowups: (json['active_followups'] as List<dynamic>)
       .map((e) => ActiveFollowUp.fromJson(e as Map<String, dynamic>))
       .toList(),
   totalCount: (json['total_count'] as num).toInt(),
 );
 
-Map<String, dynamic> _$$ActiveFollowUpsResponseImplToJson(
-  _$ActiveFollowUpsResponseImpl instance,
+Map<String, dynamic> _$ActiveFollowUpsResponseToJson(
+  _ActiveFollowUpsResponse instance,
 ) => <String, dynamic>{
   'active_followups': instance.activeFollowups.map((e) => e.toJson()).toList(),
   'total_count': instance.totalCount,
 };
 
-_$ActiveFollowUpImpl _$$ActiveFollowUpImplFromJson(Map<String, dynamic> json) =>
-    _$ActiveFollowUpImpl(
+_ActiveFollowUp _$ActiveFollowUpFromJson(Map<String, dynamic> json) =>
+    _ActiveFollowUp(
       followupId: json['followup_id'] as String,
       doctorId: json['doctor_id'] as String,
       doctorName: json['doctor_name'] as String,
@@ -79,23 +76,22 @@ _$ActiveFollowUpImpl _$$ActiveFollowUpImplFromJson(Map<String, dynamic> json) =>
       isFree: json['is_free'] as bool,
     );
 
-Map<String, dynamic> _$$ActiveFollowUpImplToJson(
-  _$ActiveFollowUpImpl instance,
-) => <String, dynamic>{
-  'followup_id': instance.followupId,
-  'doctor_id': instance.doctorId,
-  'doctor_name': instance.doctorName,
-  'department_id': instance.departmentId,
-  'department_name': instance.departmentName,
-  'appointment_id': instance.appointmentId,
-  'appointment_date': instance.appointmentDate,
-  'valid_until': instance.validUntil,
-  'days_remaining': instance.daysRemaining,
-  'is_free': instance.isFree,
-};
+Map<String, dynamic> _$ActiveFollowUpToJson(_ActiveFollowUp instance) =>
+    <String, dynamic>{
+      'followup_id': instance.followupId,
+      'doctor_id': instance.doctorId,
+      'doctor_name': instance.doctorName,
+      'department_id': instance.departmentId,
+      'department_name': instance.departmentName,
+      'appointment_id': instance.appointmentId,
+      'appointment_date': instance.appointmentDate,
+      'valid_until': instance.validUntil,
+      'days_remaining': instance.daysRemaining,
+      'is_free': instance.isFree,
+    };
 
-_$ClinicPatientImpl _$$ClinicPatientImplFromJson(Map<String, dynamic> json) =>
-    _$ClinicPatientImpl(
+_ClinicPatient _$ClinicPatientFromJson(Map<String, dynamic> json) =>
+    _ClinicPatient(
       id: json['id'] as String,
       clinicId: json['clinic_id'] as String,
       firstName: json['first_name'] as String,
@@ -105,6 +101,7 @@ _$ClinicPatientImpl _$$ClinicPatientImplFromJson(Map<String, dynamic> json) =>
       dateOfBirth: json['date_of_birth'] as String?,
       age: (json['age'] as num?)?.toInt(),
       gender: json['gender'] as String?,
+      address: json['address'] as String?,
       address1: json['address1'] as String?,
       address2: json['address2'] as String?,
       district: json['district'] as String?,
@@ -167,106 +164,100 @@ _$ClinicPatientImpl _$$ClinicPatientImplFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$$ClinicPatientImplToJson(
-  _$ClinicPatientImpl instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'clinic_id': instance.clinicId,
-  'first_name': instance.firstName,
-  'last_name': instance.lastName,
-  'phone': instance.phone,
-  if (instance.email case final value?) 'email': value,
-  if (instance.dateOfBirth case final value?) 'date_of_birth': value,
-  if (instance.age case final value?) 'age': value,
-  if (instance.gender case final value?) 'gender': value,
-  if (instance.address1 case final value?) 'address1': value,
-  if (instance.address2 case final value?) 'address2': value,
-  if (instance.district case final value?) 'district': value,
-  if (instance.state case final value?) 'state': value,
-  if (instance.moId case final value?) 'mo_id': value,
-  if (instance.medicalHistory case final value?) 'medical_history': value,
-  if (instance.allergies case final value?) 'allergies': value,
-  if (instance.bloodGroup case final value?) 'blood_group': value,
-  if (instance.smokingStatus case final value?) 'smoking_status': value,
-  if (instance.alcoholUse case final value?) 'alcohol_use': value,
-  if (instance.heightCm case final value?) 'height_cm': value,
-  if (instance.weightKg case final value?) 'weight_kg': value,
-  'is_active': instance.isActive,
-  if (instance.globalPatientId case final value?) 'global_patient_id': value,
-  if (instance.createdAt case final value?) 'created_at': value,
-  if (instance.updatedAt case final value?) 'updated_at': value,
-  if (instance.currentFollowupStatus case final value?)
-    'current_followup_status': value,
-  if (instance.lastAppointmentId case final value?)
-    'last_appointment_id': value,
-  if (instance.lastFollowupId case final value?) 'last_followup_id': value,
-  'appointments': instance.appointments.map((e) => e.toJson()).toList(),
-  'follow_ups': instance.followUps.map((e) => e.toJson()).toList(),
-  if (instance.lastAppointment?.toJson() case final value?)
-    'last_appointment': value,
-  if (instance.followUpEligibility?.toJson() case final value?)
-    'follow_up_eligibility': value,
-  'total_appointments': instance.totalAppointments,
-  'appointments_history': instance.appointmentsHistory
-      .map((e) => e.toJson())
-      .toList(),
-  'eligible_follow_ups': instance.eligibleFollowUps
-      .map((e) => e.toJson())
-      .toList(),
-  'expired_followups': instance.expiredFollowups
-      .map((e) => e.toJson())
-      .toList(),
-};
+Map<String, dynamic> _$ClinicPatientToJson(_ClinicPatient instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'clinic_id': instance.clinicId,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
+      'phone': instance.phone,
+      'email': ?instance.email,
+      'date_of_birth': ?instance.dateOfBirth,
+      'age': ?instance.age,
+      'gender': ?instance.gender,
+      'address': ?instance.address,
+      'address1': ?instance.address1,
+      'address2': ?instance.address2,
+      'district': ?instance.district,
+      'state': ?instance.state,
+      'mo_id': ?instance.moId,
+      'medical_history': ?instance.medicalHistory,
+      'allergies': ?instance.allergies,
+      'blood_group': ?instance.bloodGroup,
+      'smoking_status': ?instance.smokingStatus,
+      'alcohol_use': ?instance.alcoholUse,
+      'height_cm': ?instance.heightCm,
+      'weight_kg': ?instance.weightKg,
+      'is_active': instance.isActive,
+      'global_patient_id': ?instance.globalPatientId,
+      'created_at': ?instance.createdAt,
+      'updated_at': ?instance.updatedAt,
+      'current_followup_status': ?instance.currentFollowupStatus,
+      'last_appointment_id': ?instance.lastAppointmentId,
+      'last_followup_id': ?instance.lastFollowupId,
+      'appointments': instance.appointments.map((e) => e.toJson()).toList(),
+      'follow_ups': instance.followUps.map((e) => e.toJson()).toList(),
+      'last_appointment': ?instance.lastAppointment?.toJson(),
+      'follow_up_eligibility': ?instance.followUpEligibility?.toJson(),
+      'total_appointments': instance.totalAppointments,
+      'appointments_history': instance.appointmentsHistory
+          .map((e) => e.toJson())
+          .toList(),
+      'eligible_follow_ups': instance.eligibleFollowUps
+          .map((e) => e.toJson())
+          .toList(),
+      'expired_followups': instance.expiredFollowups
+          .map((e) => e.toJson())
+          .toList(),
+    };
 
-_$LastAppointmentInfoImpl _$$LastAppointmentInfoImplFromJson(
-  Map<String, dynamic> json,
-) => _$LastAppointmentInfoImpl(
-  id: json['id'] as String,
-  doctorId: json['doctor_id'] as String,
-  doctorName: json['doctor_name'] as String,
-  departmentId: json['department_id'] as String?,
-  department: json['department'] as String?,
-  date: json['date'] as String,
-  status: json['status'] as String?,
-  daysSince: (json['days_since'] as num).toInt(),
-);
+_LastAppointmentInfo _$LastAppointmentInfoFromJson(Map<String, dynamic> json) =>
+    _LastAppointmentInfo(
+      id: json['id'] as String,
+      doctorId: json['doctor_id'] as String,
+      doctorName: json['doctor_name'] as String,
+      departmentId: json['department_id'] as String?,
+      department: json['department'] as String?,
+      date: json['date'] as String,
+      status: json['status'] as String?,
+      daysSince: (json['days_since'] as num).toInt(),
+    );
 
-Map<String, dynamic> _$$LastAppointmentInfoImplToJson(
-  _$LastAppointmentInfoImpl instance,
+Map<String, dynamic> _$LastAppointmentInfoToJson(
+  _LastAppointmentInfo instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'doctor_id': instance.doctorId,
   'doctor_name': instance.doctorName,
-  if (instance.departmentId case final value?) 'department_id': value,
-  if (instance.department case final value?) 'department': value,
+  'department_id': ?instance.departmentId,
+  'department': ?instance.department,
   'date': instance.date,
-  if (instance.status case final value?) 'status': value,
+  'status': ?instance.status,
   'days_since': instance.daysSince,
 };
 
-_$FollowUpEligibilityImpl _$$FollowUpEligibilityImplFromJson(
-  Map<String, dynamic> json,
-) => _$FollowUpEligibilityImpl(
-  eligible: json['eligible'] as bool,
-  isFree: json['is_free'] as bool? ?? false,
-  reason: json['reason'] as String?,
-  daysRemaining: (json['days_remaining'] as num?)?.toInt(),
-  message: json['message'] as String?,
-);
+_FollowUpEligibility _$FollowUpEligibilityFromJson(Map<String, dynamic> json) =>
+    _FollowUpEligibility(
+      eligible: json['eligible'] as bool,
+      isFree: json['is_free'] as bool? ?? false,
+      reason: json['reason'] as String?,
+      daysRemaining: (json['days_remaining'] as num?)?.toInt(),
+      message: json['message'] as String?,
+    );
 
-Map<String, dynamic> _$$FollowUpEligibilityImplToJson(
-  _$FollowUpEligibilityImpl instance,
+Map<String, dynamic> _$FollowUpEligibilityToJson(
+  _FollowUpEligibility instance,
 ) => <String, dynamic>{
   'eligible': instance.eligible,
   'is_free': instance.isFree,
-  if (instance.reason case final value?) 'reason': value,
-  if (instance.daysRemaining case final value?) 'days_remaining': value,
-  if (instance.message case final value?) 'message': value,
+  'reason': ?instance.reason,
+  'days_remaining': ?instance.daysRemaining,
+  'message': ?instance.message,
 };
 
-_$AppointmentHistoryItemImpl _$$AppointmentHistoryItemImplFromJson(
+_AppointmentHistoryItem _$AppointmentHistoryItemFromJson(
   Map<String, dynamic> json,
-) => _$AppointmentHistoryItemImpl(
+) => _AppointmentHistoryItem(
   appointmentId: json['appointment_id'] as String,
   doctorId: json['doctor_id'] as String,
   doctorName: json['doctor_name'] as String,
@@ -285,106 +276,100 @@ _$AppointmentHistoryItemImpl _$$AppointmentHistoryItemImplFromJson(
   note: json['note'] as String?,
 );
 
-Map<String, dynamic> _$$AppointmentHistoryItemImplToJson(
-  _$AppointmentHistoryItemImpl instance,
+Map<String, dynamic> _$AppointmentHistoryItemToJson(
+  _AppointmentHistoryItem instance,
 ) => <String, dynamic>{
   'appointment_id': instance.appointmentId,
   'doctor_id': instance.doctorId,
   'doctor_name': instance.doctorName,
-  if (instance.departmentId case final value?) 'department_id': value,
+  'department_id': ?instance.departmentId,
   'department': instance.department,
   'appointment_date': instance.appointmentDate,
   'days_since': instance.daysSince,
   'validity_days': instance.validityDays,
-  if (instance.remainingDays case final value?) 'remaining_days': value,
+  'remaining_days': ?instance.remainingDays,
   'status': instance.status,
   'follow_up_eligible': instance.followUpEligible,
   'free_follow_up_used': instance.freeFollowUpUsed,
-  if (instance.followUpStatus case final value?) 'follow_up_status': value,
-  if (instance.renewalStatus case final value?) 'renewal_status': value,
-  if (instance.nextFollowupExpiry case final value?)
-    'next_followup_expiry': value,
-  if (instance.note case final value?) 'note': value,
+  'follow_up_status': ?instance.followUpStatus,
+  'renewal_status': ?instance.renewalStatus,
+  'next_followup_expiry': ?instance.nextFollowupExpiry,
+  'note': ?instance.note,
 };
 
-_$EligibleFollowUpImpl _$$EligibleFollowUpImplFromJson(
+_EligibleFollowUp _$EligibleFollowUpFromJson(Map<String, dynamic> json) =>
+    _EligibleFollowUp(
+      followupId: json['followup_id'] as String?,
+      appointmentId: json['appointment_id'] as String?,
+      doctorId: json['doctor_id'] as String,
+      doctorName: json['doctor_name'] as String,
+      departmentId: json['department_id'] as String?,
+      department: json['department'] as String,
+      validFrom: json['valid_from'] as String?,
+      validUntil: json['valid_until'] as String?,
+      appointmentDate: json['appointment_date'] as String?,
+      remainingDays: (json['remaining_days'] as num?)?.toInt(),
+      daysRemaining: (json['days_remaining'] as num?)?.toInt(),
+      status: json['status'] as String?,
+      isFree: json['is_free'] as bool?,
+      nextFollowupExpiry: json['next_followup_expiry'] as String?,
+      note: json['note'] as String?,
+      message: json['message'] as String?,
+    );
+
+Map<String, dynamic> _$EligibleFollowUpToJson(_EligibleFollowUp instance) =>
+    <String, dynamic>{
+      'followup_id': ?instance.followupId,
+      'appointment_id': ?instance.appointmentId,
+      'doctor_id': instance.doctorId,
+      'doctor_name': instance.doctorName,
+      'department_id': ?instance.departmentId,
+      'department': instance.department,
+      'valid_from': ?instance.validFrom,
+      'valid_until': ?instance.validUntil,
+      'appointment_date': ?instance.appointmentDate,
+      'remaining_days': ?instance.remainingDays,
+      'days_remaining': ?instance.daysRemaining,
+      'status': ?instance.status,
+      'is_free': ?instance.isFree,
+      'next_followup_expiry': ?instance.nextFollowupExpiry,
+      'note': ?instance.note,
+      'message': ?instance.message,
+    };
+
+_ExpiredFollowUp _$ExpiredFollowUpFromJson(Map<String, dynamic> json) =>
+    _ExpiredFollowUp(
+      followupId: json['followup_id'] as String?,
+      appointmentId: json['appointment_id'] as String?,
+      doctorId: json['doctor_id'] as String,
+      doctorName: json['doctor_name'] as String,
+      departmentId: json['department_id'] as String?,
+      departmentName: json['department_name'] as String?,
+      department: json['department'] as String,
+      validUntil: json['valid_until'] as String?,
+      expiredOn: json['expired_on'] as String?,
+      status: json['status'] as String?,
+      note: json['note'] as String?,
+    );
+
+Map<String, dynamic> _$ExpiredFollowUpToJson(_ExpiredFollowUp instance) =>
+    <String, dynamic>{
+      'followup_id': ?instance.followupId,
+      'appointment_id': ?instance.appointmentId,
+      'doctor_id': instance.doctorId,
+      'doctor_name': instance.doctorName,
+      'department_id': ?instance.departmentId,
+      'department_name': ?instance.departmentName,
+      'department': instance.department,
+      'valid_until': ?instance.validUntil,
+      'expired_on': ?instance.expiredOn,
+      'status': ?instance.status,
+      'note': ?instance.note,
+    };
+
+_CreateClinicPatientInput _$CreateClinicPatientInputFromJson(
   Map<String, dynamic> json,
-) => _$EligibleFollowUpImpl(
-  followupId: json['followup_id'] as String?,
-  appointmentId: json['appointment_id'] as String?,
-  doctorId: json['doctor_id'] as String,
-  doctorName: json['doctor_name'] as String,
-  departmentId: json['department_id'] as String?,
-  department: json['department'] as String,
-  validFrom: json['valid_from'] as String?,
-  validUntil: json['valid_until'] as String?,
-  appointmentDate: json['appointment_date'] as String?,
-  remainingDays: (json['remaining_days'] as num?)?.toInt(),
-  daysRemaining: (json['days_remaining'] as num?)?.toInt(),
-  status: json['status'] as String?,
-  isFree: json['is_free'] as bool?,
-  nextFollowupExpiry: json['next_followup_expiry'] as String?,
-  note: json['note'] as String?,
-  message: json['message'] as String?,
-);
-
-Map<String, dynamic> _$$EligibleFollowUpImplToJson(
-  _$EligibleFollowUpImpl instance,
-) => <String, dynamic>{
-  if (instance.followupId case final value?) 'followup_id': value,
-  if (instance.appointmentId case final value?) 'appointment_id': value,
-  'doctor_id': instance.doctorId,
-  'doctor_name': instance.doctorName,
-  if (instance.departmentId case final value?) 'department_id': value,
-  'department': instance.department,
-  if (instance.validFrom case final value?) 'valid_from': value,
-  if (instance.validUntil case final value?) 'valid_until': value,
-  if (instance.appointmentDate case final value?) 'appointment_date': value,
-  if (instance.remainingDays case final value?) 'remaining_days': value,
-  if (instance.daysRemaining case final value?) 'days_remaining': value,
-  if (instance.status case final value?) 'status': value,
-  if (instance.isFree case final value?) 'is_free': value,
-  if (instance.nextFollowupExpiry case final value?)
-    'next_followup_expiry': value,
-  if (instance.note case final value?) 'note': value,
-  if (instance.message case final value?) 'message': value,
-};
-
-_$ExpiredFollowUpImpl _$$ExpiredFollowUpImplFromJson(
-  Map<String, dynamic> json,
-) => _$ExpiredFollowUpImpl(
-  followupId: json['followup_id'] as String?,
-  appointmentId: json['appointment_id'] as String?,
-  doctorId: json['doctor_id'] as String,
-  doctorName: json['doctor_name'] as String,
-  departmentId: json['department_id'] as String?,
-  departmentName: json['department_name'] as String?,
-  department: json['department'] as String,
-  validUntil: json['valid_until'] as String?,
-  expiredOn: json['expired_on'] as String?,
-  status: json['status'] as String?,
-  note: json['note'] as String?,
-);
-
-Map<String, dynamic> _$$ExpiredFollowUpImplToJson(
-  _$ExpiredFollowUpImpl instance,
-) => <String, dynamic>{
-  if (instance.followupId case final value?) 'followup_id': value,
-  if (instance.appointmentId case final value?) 'appointment_id': value,
-  'doctor_id': instance.doctorId,
-  'doctor_name': instance.doctorName,
-  if (instance.departmentId case final value?) 'department_id': value,
-  if (instance.departmentName case final value?) 'department_name': value,
-  'department': instance.department,
-  if (instance.validUntil case final value?) 'valid_until': value,
-  if (instance.expiredOn case final value?) 'expired_on': value,
-  if (instance.status case final value?) 'status': value,
-  if (instance.note case final value?) 'note': value,
-};
-
-_$CreateClinicPatientInputImpl _$$CreateClinicPatientInputImplFromJson(
-  Map<String, dynamic> json,
-) => _$CreateClinicPatientInputImpl(
+) => _CreateClinicPatientInput(
   clinicId: json['clinic_id'] as String,
   firstName: json['first_name'] as String,
   lastName: json['last_name'] as String,
@@ -393,6 +378,7 @@ _$CreateClinicPatientInputImpl _$$CreateClinicPatientInputImplFromJson(
   dateOfBirth: json['date_of_birth'] as String?,
   age: (json['age'] as num?)?.toInt(),
   gender: json['gender'] as String?,
+  address: json['address'] as String?,
   address1: json['address1'] as String?,
   address2: json['address2'] as String?,
   district: json['district'] as String?,
@@ -407,48 +393,49 @@ _$CreateClinicPatientInputImpl _$$CreateClinicPatientInputImplFromJson(
   weightKg: (json['weight_kg'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$$CreateClinicPatientInputImplToJson(
-  _$CreateClinicPatientInputImpl instance,
+Map<String, dynamic> _$CreateClinicPatientInputToJson(
+  _CreateClinicPatientInput instance,
 ) => <String, dynamic>{
   'clinic_id': instance.clinicId,
   'first_name': instance.firstName,
   'last_name': instance.lastName,
   'phone': instance.phone,
-  if (instance.email case final value?) 'email': value,
-  if (instance.dateOfBirth case final value?) 'date_of_birth': value,
-  if (instance.age case final value?) 'age': value,
-  if (instance.gender case final value?) 'gender': value,
-  if (instance.address1 case final value?) 'address1': value,
-  if (instance.address2 case final value?) 'address2': value,
-  if (instance.district case final value?) 'district': value,
-  if (instance.state case final value?) 'state': value,
-  if (instance.moId case final value?) 'mo_id': value,
-  if (instance.medicalHistory case final value?) 'medical_history': value,
-  if (instance.allergies case final value?) 'allergies': value,
-  if (instance.bloodGroup case final value?) 'blood_group': value,
-  if (instance.smokingStatus case final value?) 'smoking_status': value,
-  if (instance.alcoholUse case final value?) 'alcohol_use': value,
-  if (instance.heightCm case final value?) 'height_cm': value,
-  if (instance.weightKg case final value?) 'weight_kg': value,
+  'email': ?instance.email,
+  'date_of_birth': ?instance.dateOfBirth,
+  'age': ?instance.age,
+  'gender': ?instance.gender,
+  'address': ?instance.address,
+  'address1': ?instance.address1,
+  'address2': ?instance.address2,
+  'district': ?instance.district,
+  'state': ?instance.state,
+  'mo_id': ?instance.moId,
+  'medical_history': ?instance.medicalHistory,
+  'allergies': ?instance.allergies,
+  'blood_group': ?instance.bloodGroup,
+  'smoking_status': ?instance.smokingStatus,
+  'alcohol_use': ?instance.alcoholUse,
+  'height_cm': ?instance.heightCm,
+  'weight_kg': ?instance.weightKg,
 };
 
-_$CreateClinicPatientResponseImpl _$$CreateClinicPatientResponseImplFromJson(
+_CreateClinicPatientResponse _$CreateClinicPatientResponseFromJson(
   Map<String, dynamic> json,
-) => _$CreateClinicPatientResponseImpl(
+) => _CreateClinicPatientResponse(
   message: json['message'] as String,
   patient: ClinicPatient.fromJson(json['patient'] as Map<String, dynamic>),
 );
 
-Map<String, dynamic> _$$CreateClinicPatientResponseImplToJson(
-  _$CreateClinicPatientResponseImpl instance,
+Map<String, dynamic> _$CreateClinicPatientResponseToJson(
+  _CreateClinicPatientResponse instance,
 ) => <String, dynamic>{
   'message': instance.message,
   'patient': instance.patient.toJson(),
 };
 
-_$ListClinicPatientsResponseImpl _$$ListClinicPatientsResponseImplFromJson(
+_ListClinicPatientsResponse _$ListClinicPatientsResponseFromJson(
   Map<String, dynamic> json,
-) => _$ListClinicPatientsResponseImpl(
+) => _ListClinicPatientsResponse(
   clinicId: json['clinic_id'] as String,
   total: (json['total'] as num).toInt(),
   patients: (json['patients'] as List<dynamic>)
@@ -456,54 +443,52 @@ _$ListClinicPatientsResponseImpl _$$ListClinicPatientsResponseImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$ListClinicPatientsResponseImplToJson(
-  _$ListClinicPatientsResponseImpl instance,
+Map<String, dynamic> _$ListClinicPatientsResponseToJson(
+  _ListClinicPatientsResponse instance,
 ) => <String, dynamic>{
   'clinic_id': instance.clinicId,
   'total': instance.total,
   'patients': instance.patients.map((e) => e.toJson()).toList(),
 };
 
-_$AppointmentDetailImpl _$$AppointmentDetailImplFromJson(
-  Map<String, dynamic> json,
-) => _$AppointmentDetailImpl(
-  appointmentId: json['appointment_id'] as String,
-  doctorId: json['doctor_id'] as String,
-  departmentId: json['department_id'] as String,
-  appointmentTime: json['appointment_time'] as String,
-  slotType: json['slot_type'] as String,
-  consultationType: json['consultation_type'] as String,
-  status: json['status'] as String,
-  feeAmount: (json['fee_amount'] as num?)?.toDouble() ?? 0.0,
-  paymentStatus: json['payment_status'] as String? ?? 'pending',
-  paymentMode: json['payment_mode'] as String?,
-  isPriority: json['is_priority'] as bool? ?? false,
-  createdAt: json['created_at'] as String?,
-);
+_AppointmentDetail _$AppointmentDetailFromJson(Map<String, dynamic> json) =>
+    _AppointmentDetail(
+      appointmentId: json['appointment_id'] as String,
+      doctorId: json['doctor_id'] as String,
+      departmentId: json['department_id'] as String?,
+      appointmentTime: json['appointment_time'] as String,
+      slotType: json['slot_type'] as String,
+      consultationType: json['consultation_type'] as String,
+      status: json['status'] as String,
+      feeAmount: (json['fee_amount'] as num?)?.toDouble() ?? 0.0,
+      paymentStatus: json['payment_status'] as String? ?? 'pending',
+      paymentMode: json['payment_mode'] as String?,
+      isPriority: json['is_priority'] as bool? ?? false,
+      createdAt: json['created_at'] as String?,
+    );
 
-Map<String, dynamic> _$$AppointmentDetailImplToJson(
-  _$AppointmentDetailImpl instance,
-) => <String, dynamic>{
-  'appointment_id': instance.appointmentId,
-  'doctor_id': instance.doctorId,
-  'department_id': instance.departmentId,
-  'appointment_time': instance.appointmentTime,
-  'slot_type': instance.slotType,
-  'consultation_type': instance.consultationType,
-  'status': instance.status,
-  'fee_amount': instance.feeAmount,
-  'payment_status': instance.paymentStatus,
-  if (instance.paymentMode case final value?) 'payment_mode': value,
-  'is_priority': instance.isPriority,
-  if (instance.createdAt case final value?) 'created_at': value,
-};
+Map<String, dynamic> _$AppointmentDetailToJson(_AppointmentDetail instance) =>
+    <String, dynamic>{
+      'appointment_id': instance.appointmentId,
+      'doctor_id': instance.doctorId,
+      'department_id': ?instance.departmentId,
+      'appointment_time': instance.appointmentTime,
+      'slot_type': instance.slotType,
+      'consultation_type': instance.consultationType,
+      'status': instance.status,
+      'fee_amount': instance.feeAmount,
+      'payment_status': instance.paymentStatus,
+      'payment_mode': ?instance.paymentMode,
+      'is_priority': instance.isPriority,
+      'created_at': ?instance.createdAt,
+    };
 
-_$FollowUpDetailImpl _$$FollowUpDetailImplFromJson(Map<String, dynamic> json) =>
-    _$FollowUpDetailImpl(
+_FollowUpDetail _$FollowUpDetailFromJson(Map<String, dynamic> json) =>
+    _FollowUpDetail(
       followUpId: json['follow_up_id'] as String,
       sourceAppointmentId: json['source_appointment_id'] as String,
       doctorId: json['doctor_id'] as String,
-      departmentId: json['department_id'] as String,
+      departmentId: json['department_id'] as String?,
       status: json['status'] as String,
       isFree: json['is_free'] as bool? ?? true,
       validFrom: json['valid_from'] as String,
@@ -514,21 +499,18 @@ _$FollowUpDetailImpl _$$FollowUpDetailImplFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updated_at'] as String?,
     );
 
-Map<String, dynamic> _$$FollowUpDetailImplToJson(
-  _$FollowUpDetailImpl instance,
-) => <String, dynamic>{
-  'follow_up_id': instance.followUpId,
-  'source_appointment_id': instance.sourceAppointmentId,
-  'doctor_id': instance.doctorId,
-  'department_id': instance.departmentId,
-  'status': instance.status,
-  'is_free': instance.isFree,
-  'valid_from': instance.validFrom,
-  'valid_until': instance.validUntil,
-  if (instance.usedAppointmentId case final value?)
-    'used_appointment_id': value,
-  if (instance.renewedByAppointmentId case final value?)
-    'renewed_by_appointment_id': value,
-  if (instance.createdAt case final value?) 'created_at': value,
-  if (instance.updatedAt case final value?) 'updated_at': value,
-};
+Map<String, dynamic> _$FollowUpDetailToJson(_FollowUpDetail instance) =>
+    <String, dynamic>{
+      'follow_up_id': instance.followUpId,
+      'source_appointment_id': instance.sourceAppointmentId,
+      'doctor_id': instance.doctorId,
+      'department_id': ?instance.departmentId,
+      'status': instance.status,
+      'is_free': instance.isFree,
+      'valid_from': instance.validFrom,
+      'valid_until': instance.validUntil,
+      'used_appointment_id': ?instance.usedAppointmentId,
+      'renewed_by_appointment_id': ?instance.renewedByAppointmentId,
+      'created_at': ?instance.createdAt,
+      'updated_at': ?instance.updatedAt,
+    };

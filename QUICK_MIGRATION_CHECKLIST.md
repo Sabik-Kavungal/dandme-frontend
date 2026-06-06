@@ -187,7 +187,7 @@ docker-compose logs appointment-service | grep "Follow-up created"
 **Check:**
 ```bash
 # Verify Freezed code regenerated
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 
 # Check API response
 curl http://localhost:8080/clinic-specific-patients/patient-id?doctor_id=xxx

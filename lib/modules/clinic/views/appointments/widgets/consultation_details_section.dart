@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
 
 /// Compact consultation details section with improved UX
 class ConsultationDetailsSection extends StatelessWidget {
@@ -20,7 +20,7 @@ class ConsultationDetailsSection extends StatelessWidget {
       padding: EdgeInsets.all(12 * scaleFactor),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
         boxShadow: [
           BoxShadow(
@@ -34,75 +34,9 @@ class ConsultationDetailsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Form fields only - no header
-          if (isMobile)
-            _buildMobileLayout()
-          else
-            LayoutBuilder(
-              builder: (context, constraints) {
-                // Check if it's a tablet (600-1024px)
-                if (constraints.maxWidth < 1024 &&
-                    constraints.maxWidth >= 600) {
-                  return _buildTabletLayout();
-                } else {
-                  return _buildWebLayout();
-                }
-              },
-            ),
+          if (isMobile) _buildMobileLayout() else _buildWebLayout(),
         ],
       ),
-    );
-  }
-
-  /// Tablet layout (all dropdowns in same row)
-  Widget _buildTabletLayout() {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: _buildCompactDropdown(
-            label: 'Consultation Type',
-            value: viewModel.selectedConsultationType,
-            onChanged: (value) => viewModel.setConsultationType(value!),
-            items: viewModel.consultationTypesList,
-            icon: Icons.category,
-            color: const Color(0xFF6366F1),
-          ),
-        ),
-        SizedBox(width: 8 * scaleFactor),
-        Expanded(
-          flex: 2,
-          child: _buildCompactDropdown(
-            label: 'Department',
-            value: viewModel.selectedDepartment,
-            onChanged: (value) => viewModel.setDepartment(value!),
-            items: viewModel.departments
-                .map((dept) => dept.name ?? 'Orthology')
-                .toList(),
-            icon: Icons.business,
-            color: const Color(0xFF8B5CF6),
-          ),
-        ),
-        SizedBox(width: 8 * scaleFactor),
-        Expanded(
-          flex: 3,
-          child: _buildCompactDropdown(
-            label: 'Doctor',
-            value: viewModel.selectedDoctor,
-            onChanged: (value) => viewModel.setDoctor(value!),
-            items: viewModel.clinicDoctors.isEmpty
-                ? ['Loading...']
-                : viewModel.clinicDoctors
-                      .map(
-                        (doctor) =>
-                            doctor.fullName ??
-                            '${doctor.firstName} ${doctor.lastName}',
-                      )
-                      .toList(),
-            icon: Icons.person,
-            color: const Color(0xFF10B981),
-          ),
-        ),
-      ],
     );
   }
 
@@ -128,33 +62,16 @@ class ConsultationDetailsSection extends StatelessWidget {
             label: 'Department',
             value: viewModel.selectedDepartment,
             onChanged: (value) => viewModel.setDepartment(value!),
-            items: viewModel.departments
-                .map((dept) => dept.name ?? 'Orthology')
-                .toList(),
+            items: [
+              'Select Department',
+              ...viewModel.departments.map((dept) => dept.name ?? 'Orthology')
+            ],
             icon: Icons.business,
             color: const Color(0xFF8B5CF6),
           ),
         ),
         SizedBox(width: 8 * scaleFactor),
-        Expanded(
-          flex: 3,
-          child: _buildCompactDropdown(
-            label: 'Doctor',
-            value: viewModel.selectedDoctor,
-            onChanged: (value) => viewModel.setDoctor(value!),
-            items: viewModel.clinicDoctors.isEmpty
-                ? ['Loading...']
-                : viewModel.clinicDoctors
-                      .map(
-                        (doctor) =>
-                            doctor.fullName ??
-                            '${doctor.firstName} ${doctor.lastName}',
-                      )
-                      .toList(),
-            icon: Icons.person,
-            color: const Color(0xFF10B981),
-          ),
-        ),
+        Expanded(flex: 3, child: _buildDoctorDropdown()),
       ],
     );
   }
@@ -165,8 +82,7 @@ class ConsultationDetailsSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Flexible(
-              flex: 1,
+            Expanded(
               child: _buildCompactDropdown(
                 label: 'Consultation Type',
                 value: viewModel.selectedConsultationType,
@@ -177,16 +93,17 @@ class ConsultationDetailsSection extends StatelessWidget {
                 isMobile: true,
               ),
             ),
-            SizedBox(width: 6 * scaleFactor), // Reduced spacing
-            Flexible(
-              flex: 1,
+            SizedBox(width: 8 * scaleFactor),
+            Expanded(
               child: _buildCompactDropdown(
                 label: 'Department',
                 value: viewModel.selectedDepartment,
                 onChanged: (value) => viewModel.setDepartment(value!),
-                items: viewModel.departments
-                    .map((dept) => dept.name ?? 'Orthology')
-                    .toList(),
+                    items: [
+                      'Select Department',
+                      ...viewModel.departments
+                          .map((dept) => dept.name ?? 'Orthology')
+                    ],
                 icon: Icons.business,
                 color: const Color(0xFF8B5CF6),
                 isMobile: true,
@@ -195,22 +112,127 @@ class ConsultationDetailsSection extends StatelessWidget {
           ],
         ),
         SizedBox(height: 12 * scaleFactor),
-        _buildCompactDropdown(
-          label: 'Doctor',
-          value: viewModel.selectedDoctor,
-          onChanged: (value) => viewModel.setDoctor(value!),
-          items: viewModel.clinicDoctors.isEmpty
-              ? ['Loading...']
-              : viewModel.clinicDoctors
-                    .map(
-                      (doctor) =>
-                          doctor.fullName ??
-                          '${doctor.firstName} ${doctor.lastName}',
-                    )
-                    .toList(),
-          icon: Icons.person,
-          color: const Color(0xFF10B981),
-          isMobile: true,
+        _buildDoctorDropdown(isMobile: true),
+      ],
+    );
+  }
+
+  /// Dedicated Doctor Dropdown that handles loading state
+  Widget _buildDoctorDropdown({bool isMobile = false}) {
+    final isLoading = viewModel.isLoadingDoctors;
+    // Show hint if no department has been selected yet
+    final noDeptSelected = viewModel.noDepartmentSelectedYet;
+    final noDoctors =
+        !isLoading &&
+        !noDeptSelected &&
+        (viewModel.clinicDoctors.isEmpty ||
+            viewModel.selectedDoctor == 'No doctors available' ||
+            viewModel.selectedDoctor == 'Error loading doctors');
+
+    // Determine what to show in dropdown
+    final String hintText = noDeptSelected
+        ? 'Select a department first'
+        : isLoading
+        ? 'Loading...'
+        : noDoctors
+        ? 'No doctors in this department'
+        : viewModel.selectedDoctor;
+
+    final List<String> doctorItems = (isLoading || noDeptSelected || noDoctors)
+        ? [hintText]
+        : [
+            if (viewModel.selectedDoctor == 'Select Doctor') 'Select Doctor',
+            ...viewModel.clinicDoctors.map(
+              (doctor) =>
+                  doctor.fullName ?? '${doctor.firstName} ${doctor.lastName}',
+            ),
+          ];
+
+    final isDisabled = isLoading || noDeptSelected || noDoctors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.person,
+              size: 14 * scaleFactor,
+              color: const Color(0xFF10B981),
+            ),
+            SizedBox(width: 4 * scaleFactor),
+            Text(
+              'Doctor',
+              style: TextStyle(
+                fontSize: 12 * scaleFactor,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+            if (isLoading) ...[
+              SizedBox(width: 6 * scaleFactor),
+              const SizedBox(
+                width: 12,
+                height: 12,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: Color(0xFF10B981),
+                ),
+              ),
+            ],
+          ],
+        ),
+        SizedBox(height: 6 * scaleFactor),
+        Container(
+          height: 36 * scaleFactor,
+          decoration: BoxDecoration(
+            color: isDisabled ? const Color(0xFFF9FAFB) : Colors.white,
+            border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+            borderRadius: BorderRadius.circular(2),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF10B981).withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: hintText,
+              // Disable until department is selected and doctors loaded
+              onChanged: isDisabled
+                  ? null
+                  : (value) => viewModel.setDoctor(value!),
+              padding: EdgeInsets.symmetric(horizontal: 10 * scaleFactor),
+              items: doctorItems
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 13 * scaleFactor,
+                          color: isDisabled
+                              ? const Color(0xFF9CA3AF)
+                              : const Color(0xFF374151),
+                          fontWeight: FontWeight.w500,
+                          fontStyle: noDeptSelected
+                              ? FontStyle.italic
+                              : FontStyle.normal,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(),
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: const Color(0xFF9CA3AF),
+                size: 18 * scaleFactor,
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -233,16 +255,12 @@ class ConsultationDetailsSection extends StatelessWidget {
           children: [
             Icon(icon, size: 14 * scaleFactor, color: color),
             SizedBox(width: 4 * scaleFactor),
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12 * scaleFactor,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF6B7280),
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12 * scaleFactor,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6B7280),
               ),
             ),
           ],
@@ -250,11 +268,10 @@ class ConsultationDetailsSection extends StatelessWidget {
         SizedBox(height: 6 * scaleFactor),
         Container(
           height: 36 * scaleFactor,
-          constraints: BoxConstraints(maxWidth: double.infinity, minWidth: 0),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(2),
             boxShadow: [
               BoxShadow(
                 color: color.withOpacity(0.05),
@@ -263,35 +280,31 @@ class ConsultationDetailsSection extends StatelessWidget {
               ),
             ],
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6 * scaleFactor),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: value,
-                onChanged: onChanged,
-                isExpanded: true, // Fix overflow by expanding dropdown
-                items: items
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: Text(
-                          _getDisplayLabel(item, label),
-                          style: TextStyle(
-                            fontSize: 13 * scaleFactor,
-                            color: const Color(0xFF374151),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: value,
+              onChanged: onChanged,
+              padding: EdgeInsets.symmetric(horizontal: 10 * scaleFactor),
+              items: items
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item,
+                      child: Text(
+                        _getDisplayLabel(item, label),
+                        style: TextStyle(
+                          fontSize: 13 * scaleFactor,
+                          color: const Color(0xFF374151),
+                          fontWeight: FontWeight.w500,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    )
-                    .toList(),
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: const Color(0xFF9CA3AF),
-                  size: 18 * scaleFactor,
-                ),
+                    ),
+                  )
+                  .toList(),
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: const Color(0xFF9CA3AF),
+                size: 18 * scaleFactor,
               ),
             ),
           ),
@@ -305,7 +318,8 @@ class ConsultationDetailsSection extends StatelessWidget {
     // Add "Dr." prefix for doctor names
     if (label.toLowerCase().contains('doctor') &&
         !value.startsWith('Dr.') &&
-        value != 'Loading...') {
+        value != 'Loading...' &&
+        value != 'Select Doctor') {
       return 'Dr. $value';
     }
 

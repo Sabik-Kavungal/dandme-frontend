@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
-import 'package:a/modules/clinic/repositories/doctor_time_slot_repository.dart';
-import 'package:a/core/config/service.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:drandme/modules/clinic/repositories/doctor_time_slot_repository.dart';
+import 'package:drandme/core/config/service.dart';
 
 class SlotConfigurationViewModel extends ChangeNotifier {
   final AuthViewModel _authViewModel;

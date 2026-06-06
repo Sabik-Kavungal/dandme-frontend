@@ -1,8 +1,11 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/core/widgets/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:ui'; // For blur
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -60,6 +63,8 @@ class _LoginViewState extends State<LoginView> {
       return;
     }
 
+    // Terms agreement is implicit by clicking Sign In
+
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
     final success = await authViewModel.login(
@@ -105,6 +110,591 @@ class _LoginViewState extends State<LoginView> {
     // Navigation is handled automatically by main.dart based on authentication state
   }
 
+  void _showDisclaimerDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3B30).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFF3B30).withOpacity(0.2),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.info_outline_rounded,
+                      color: Color(0xFFFF3B30),
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Disclaimer',
+                      style: GoogleFonts.outfit(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDisclaimerSection(
+                        '1. Platform Nature & Scope',
+                        'DOCTOR AND ME (“Dr & Me”), operated by DOCTOR AND ME AI TECHNOLOGIES LLP, is a healthcare technology Software-as-a-Service (SaaS) platform. The Platform is designed to enable clinics, hospitals, pharmacies, laboratories, and licensed healthcare professionals to manage appointments, consultations, prescriptions, laboratory reports, billing, insurance, and administrative workflows.\n\nDr & Me does not operate as a medical establishment, hospital, clinic, pharmacy, or laboratory.',
+                      ),
+                      _buildDisclaimerSection(
+                        '2. No Medical Advice or Treatment',
+                        'Dr & Me does not provide medical advice, diagnosis, treatment, or clinical services of any kind.\n\nAll medical information, consultations, prescriptions, diagnoses, treatment decisions, and patient care services made available through the Platform are provided solely by independent, licensed healthcare professionals or healthcare organizations using the Platform.\n\nMedical decisions and outcomes remain the sole responsibility of the treating healthcare professional and healthcare establishment.',
+                      ),
+                      _buildDisclaimerSection(
+                        '3. No Doctor–Patient Relationship with the Company',
+                        'Use of the Platform does not create a doctor–patient, clinic–patient, or healthcare provider–patient relationship between the user or patient and DOCTOR AND ME AI TECHNOLOGIES LLP.\n\nAny doctor–patient relationship is strictly between the patient and the consulting healthcare professional or healthcare organization.',
+                      ),
+                      _buildDisclaimerSection(
+                        '4. Accuracy of Medical Information',
+                        'Dr & Me does not verify, validate, or independently confirm the accuracy, completeness, or correctness of medical data, prescriptions, clinical notes, laboratory results, billing information, or any healthcare content entered or generated by healthcare professionals or clinics on the Platform.\n\nThe Company shall not be responsible for any consequences arising from inaccurate, incomplete, outdated, or incorrect information entered by users of the Platform.',
+                      ),
+                      _buildDisclaimerSection(
+                        '5. Emergency Disclaimer',
+                        'The Platform is not intended for medical emergencies.\n\nIf a user or patient is experiencing a medical emergency, they must immediately contact local emergency services or visit the nearest medical facility. Dr & Me shall not be used as a substitute for emergency medical care.',
+                      ),
+                      _buildDisclaimerSection(
+                        '6. Technology & Availability Disclaimer',
+                        'The Platform is provided on an “as-is” and “as-available” basis.\n\nWhile reasonable efforts are made to ensure system availability and reliability, Dr & Me does not guarantee uninterrupted access, error-free operation, or continuous availability of the Platform. Service interruptions may occur due to maintenance, technical issues, third-party service failures, force majeure events, or factors beyond the Company’s control.',
+                      ),
+                      _buildDisclaimerSection(
+                        '7. Third-Party Services',
+                        'The Platform may integrate with third-party services such as payment gateways, SMS/WhatsApp providers, cloud hosting providers, pharmacies, laboratories, or other service providers.\n\nDr & Me does not control and is not responsible for the availability, accuracy, compliance, or performance of third-party services. Use of such services is subject to the respective third party’s terms and policies.',
+                      ),
+                      _buildDisclaimerSection(
+                        '8. Limitation of Liability',
+                        'To the maximum extent permitted by applicable law, DOCTOR AND ME AI TECHNOLOGIES LLP shall not be liable for any direct, indirect, incidental, consequential, or special damages, including but not limited to medical outcomes, loss of data, loss of business, loss of profits, or patient harm arising from:\n\n• Use or inability to use the Platform\n• Clinical decisions made by healthcare professionals\n• Errors or omissions in medical records or prescriptions\n• Unauthorized access or data breaches beyond reasonable control',
+                      ),
+                      _buildDisclaimerSection(
+                        '9. Regulatory & Legal Compliance',
+                        'Healthcare organizations, doctors, clinics, hospitals, pharmacies, and laboratories using the Platform are solely responsible for complying with applicable healthcare, medical, insurance, and data protection laws in their respective jurisdictions, including India and GCC countries.\n\nThe Company does not provide legal, medical, or regulatory advice.',
+                      ),
+                      _buildDisclaimerSection(
+                        '10. Acceptance of Disclaimer',
+                        'By accessing or using the Dr & Me website, web application, or mobile application, users acknowledge that they have read, understood, and agreed to this Disclaimer, along with the Privacy Policy and Terms & Conditions.',
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF3B30).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: const Color(0xFFFF3B30).withOpacity(0.2),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Contact Information',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'DOCTOR AND ME AI TECHNOLOGIES LLP\nEmail: contactus@doctorandmeonline.com',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: Colors.white70,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Close Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF3B30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDisclaimerSection(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFFFF3B30),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            content,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: Colors.white70,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPrivacyPolicyDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3B30).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFF3B30).withOpacity(0.2),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.privacy_tip_outlined,
+                      color: Color(0xFFFF3B30),
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Privacy Policy',
+                      style: GoogleFonts.outfit(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDisclaimerSection(
+                        'Introduction',
+                        'This Privacy Policy explains how DOCTOR AND ME, operated by DOCTOR AND ME AI TECHNOLOGIES LLP ("Company", "we", "our", "us"), collects, uses, stores, processes, and protects information when you access or use our website, web application, mobile application, and related services (collectively, the "Platform").\n\nThe Platform is a global healthcare technology Software-as-a-Service (SaaS) solution designed for clinics, hospitals, pharmacies, laboratories, and healthcare professionals to manage appointments, consultations, prescriptions, pharmacy, laboratory, inpatient, billing, insurance, and administrative workflows.\n\nThis Privacy Policy may be subject to further changes including as may be warranted by change in law. Upon updating the Policy, we may revise the "Updated" date at the bottom of this Policy. We therefore request you to go through our Privacy Policy frequently to be updated with changes incorporated from time to time. Your continued engagement with us will imply your acceptance of such updates to this Policy.\n\nIf you do not agree to the terms of this Privacy Policy, please do not (i) access or use our Platform, (ii) avail of services from us, and do not disclose your information to us.\n\nBy using the Platform, you acknowledge that you have read and understood this Privacy Policy.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Scope & Applicability',
+                        'This Privacy Policy applies to:\n• Clinics, hospitals, pharmacies, and laboratories using the Platform\n• Doctors, nurses, pharmacists, lab technicians, receptionists, and administrative staff\n• Patients whose information is processed through the Platform\n• Super Admin and system-level SaaS operations\n\nThis Policy applies globally and follows generally accepted data protection and privacy principles.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Roles & Responsibilities',
+                        'Data Controllers: Clinics, hospitals, pharmacies, and laboratories using the Platform act as Data Controllers for patient personal and medical data.\n\nData Processor: DOCTOR AND ME AI TECHNOLOGIES LLP acts as a Data Processor, processing data solely on behalf of the Data Controllers and in accordance with their instructions.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Information We Collect',
+                        'Patient Personal Information:\n• Full name, Age or DoB, Gender\n• Mobile number, Email (optional)\n• Appointment, booking, or token number\n\nSensitive Health & Medical Information:\n• Consultation notes and visit history\n• Prescriptions and medication details\n• Laboratory test orders and reports\n• Vital signs (BP, Temp, Pulse, BMI)\n• Allergies, symptoms, and lifestyle indicators\n• Inpatient details and discharge summaries\n\nInsurance Information:\n• Provider name, Policy ID, Validity details\n\nBilling & Payment Information:\n• Consultation, pharmacy, lab, and inpatient billing details\n• Payment mode and transaction reference\n• Important: We do not store card numbers, CVV, or banking credentials.\n\nAccuracy of Information:\nClinics and healthcare providers are solely responsible for ensuring that patient information entered into the Platform is accurate, complete, and compliant with applicable laws.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Technical & Usage Information',
+                        '• IP address\n• Device and browser details\n• Login timestamps\n• System activity and audit logs',
+                      ),
+                      _buildDisclaimerSection(
+                        'Purpose of Processing',
+                        'We process information for:\n• Appointment scheduling and patient flow\n• Clinical documentation and prescriptions\n• Pharmacy and Inventory management\n• Laboratory processing and reports\n• Inpatient tracking and discharge\n• Billing, invoicing, and insurance workflows\n• System security, auditing, and compliance\n\nWe do not use patient medical data for advertising or marketing.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Access Control & Multi-Tenant Segregation',
+                        'The Platform operates as a multi-tenant SaaS system. Each organization is assigned a unique identifier. Data is logically segregated; users from one clinic cannot access data belonging to another. Access is enforced through role-based access control (RBAC).\n\nEmployees of DOCTOR AND ME AI TECHNOLOGIES LLP do not have routine access to patient data. Limited access occurs only for maintenance, support, or legal compliance under strict confidentiality.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Cloud Infrastructure & Data Hosting',
+                        'The Platform is hosted entirely on Amazon Web Services (AWS) cloud infrastructure. We do not store Platform data on local or personal servers. AWS provides industry-standard security controls, and we implement additional application-level protections.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Data Retention & Security',
+                        'Records are retained according to clinic policy and healthcare regulations. We implement administrative, technical, and organizational safeguards including HTTPS/SSL encryption and secure authentication.\n\nWhile we implement industry-standard measures, no method of storage is completely secure. The Company shall not be liable for incidents beyond its reasonable control.',
+                      ),
+                      _buildDisclaimerSection(
+                        'Contact Information',
+                        'DOCTOR AND ME AI TECHNOLOGIES LLP\nEmail: contactus@doctorandmeonline.com\n\nPolicy Date: 01-01-2025\nLast Updated: 01-01-2025',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Close Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF3B30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTermsConditionsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3B30).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFF3B30).withOpacity(0.2),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.description_outlined,
+                      color: Color(0xFFFF3B30),
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Terms & Conditions',
+                      style: GoogleFonts.outfit(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF3B30).withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: const Color(0xFFFF3B30).withOpacity(0.2),
+                          ),
+                        ),
+                        child: Text(
+                          'Effective Date: 01-01-2026',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFFFF3B30),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'These Terms and Conditions ("Terms") govern the access to and use of the DOCTOR AND ME platform (the "Platform"), operated by DOCTOR AND ME AI TECHNOLOGIES LLP ("Company", "we", "our", "us"). By accessing or using the Platform, you agree to be bound by these Terms.',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: Colors.white70,
+                          height: 1.6,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildDisclaimerSection(
+                        '1. Nature of the Platform',
+                        'DOCTOR AND ME is a software-as-a-service (SaaS) technology platform that enables clinics, hospitals, doctors, pharmacies, laboratories, and related healthcare providers to manage appointments, patient records, prescriptions, billing, pharmacy, laboratory, and inpatient workflows.\n\nThe Platform does not provide medical advice, diagnosis, or treatment. All clinical decisions are made solely by licensed healthcare professionals.\n\nThe use of the Platform does not create a doctor-patient, clinic-patient, or healthcare provider-patient relationship between the Company and any user or patient.',
+                      ),
+                      _buildDisclaimerSection(
+                        '2. Eligibility',
+                        'You must be legally capable of entering into a binding contract to use the Platform. Healthcare providers must hold all valid licenses, registrations, and approvals required under applicable laws in their jurisdiction.',
+                      ),
+                      _buildDisclaimerSection(
+                        '3. User Roles and Accounts',
+                        'The Platform supports multiple user roles: Clinic Admin, Doctor, Nurse, Receptionist, Pharmacist, Lab Technician, Billing Staff, and Super Admin. Each user is responsible for maintaining the confidentiality of login credentials.',
+                      ),
+                      _buildDisclaimerSection(
+                        '4. Clinic and Organization Responsibilities',
+                        'Organizations using the Platform agree that:\n• They act as the data controller for patient data.\n• They are responsible for obtaining all required patient consents.\n• They must comply with healthcare, data protection, insurance, and medical record laws (including Indian DPDP Act and GCC regulations).',
+                      ),
+                      _buildDisclaimerSection(
+                        '5. Patient Data & Privacy',
+                        'Use of patient data is governed by our Privacy Policy. The Company acts as a data processor and processes data only on documented instructions from Healthcare Organizations.',
+                      ),
+                      _buildDisclaimerSection(
+                        '6. Access Control & Data Segregation',
+                        'The Platform is a multi-tenant system. Each organization accesses only its own data. Logical data segregation and role-based access controls are implemented to prevent unauthorized access.',
+                      ),
+                      _buildDisclaimerSection(
+                        '7. Data Hosting & Residency',
+                        'The Platform uses secure cloud infrastructure. Data may be stored or processed in multiple geographic regions. Organizations are responsible for complying with local data residency requirements.',
+                      ),
+                      _buildDisclaimerSection(
+                        '8. Intellectual Property',
+                        'All intellectual property rights in the Platform, including software, trademarks, logos, and content, are owned by DOCTOR AND ME AI TECHNOLOGIES LLP.',
+                      ),
+                      _buildDisclaimerSection(
+                        '9. Disclaimers & Availability',
+                        'The Platform is provided on an "as-is" basis. We do not guarantee uninterrupted availability, especially where disruptions arise from third-party services, maintenance, or force majeure events.',
+                      ),
+                      _buildDisclaimerSection(
+                        '10. Contact Information',
+                        'DOCTOR AND ME AI TECHNOLOGIES LLP\nEmail: contactus@doctorandmeonline.com\n\nBy using the Platform, you acknowledge that you have read, understood, and agreed to these Terms and Conditions.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Close Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF3B30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showHealthcareResponsibilitiesDialog() {
+    _showPolicyDialog(
+      title: 'Healthcare Partner Responsibilities',
+      icon: Icons.medical_services_outlined,
+      content:
+          'Healthcare Partner Responsibilities content will be displayed here.\n\nThis section will detail the responsibilities and obligations of healthcare partners using the platform.',
+    );
+  }
+
+  void _showPolicyDialog({
+    required String title,
+    required IconData icon,
+    required String content,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3B30).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFF3B30).withOpacity(0.2),
+                      ),
+                    ),
+                    child: Icon(icon, color: const Color(0xFFFF3B30), size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: GoogleFonts.outfit(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Text(
+                    content,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: Colors.white70,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Close Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF3B30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     loginCtrl.dispose();
@@ -116,607 +706,28 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
     final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth >= 920;
+    final isDesktop = screenWidth >= 1000;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FA),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: isDesktop
-            ? _buildDesktopExperience(context, authViewModel)
-            : _buildMobileExperience(context, authViewModel),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildRightPanel({required bool isCompact}) {
-    final padding = isCompact
-        ? const EdgeInsets.all(24)
-        : const EdgeInsets.all(48);
-    final borderRadius = BorderRadius.circular(isCompact ? 20 : 24);
-
-    Widget analyticsCard({
-      required String title,
-      required String value,
-      String? helper,
-      double? width,
-      double? minHeight,
-    }) {
-      return Container(
-        width: width,
-        padding: const EdgeInsets.all(16),
-        constraints: BoxConstraints(minHeight: minHeight ?? 110),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF312E81).withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.indigo.shade400,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF1E1B4B),
-              ),
-            ),
-            if (helper != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                helper,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF6366F1)),
-              ),
-            ],
-          ],
-        ),
-      );
-    }
-
-    Widget dashboardPreview(bool compact) {
-      Widget transactionRow({
-        required String customer,
-        required String date,
-        required String status,
-        required Color statusColor,
-        required String amount,
-      }) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 4,
-                child: Text(
-                  customer,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF111827),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Text(
-                  date,
-                  style: const TextStyle(
-                    color: Color(0xFF6B7280),
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    status,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: statusColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  amount,
-                  textAlign: TextAlign.end,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF111827),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-
-      return Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(compact ? 20 : 28),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.94),
-          borderRadius: BorderRadius.circular(compact ? 20 : 24),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1F1B4D).withOpacity(0.12),
-              blurRadius: 32,
-              offset: const Offset(0, 20),
-            ),
-          ],
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 14,
-                  children: [
-                    analyticsCard(
-                      title: 'Total Sales',
-                      value: '\$189,374',
-                      helper: 'This Month',
-                      width: compact ? double.infinity : 180,
-                      minHeight: 116,
-                    ),
-                    analyticsCard(
-                      title: 'Total Profit',
-                      value: '\$25,684',
-                      helper: 'Net margin \$4,920',
-                      width: compact ? double.infinity : 180,
-                      minHeight: 116,
-                    ),
-                    analyticsCard(
-                      title: 'Chat Performance',
-                      value: '00:01:30',
-                      helper: 'Avg. response time',
-                      width: compact ? double.infinity : 180,
-                      minHeight: 116,
-                    ),
-                    analyticsCard(
-                      title: 'Sales Overview',
-                      value: 'Weekly · Uptrend',
-                      helper: '↑ 12% vs last week',
-                      width: compact ? double.infinity : 200,
-                      minHeight: 116,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(compact ? 18 : 22),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9FAFB),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Product Transaction',
-                        style: TextStyle(
-                          fontSize: compact ? 15 : 16,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF111827),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF4338CA).withOpacity(0.12),
-                              const Color(0xFF6366F1).withOpacity(0.12),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: CustomPaint(painter: _LineChartPainter()),
-                      ),
-                      const SizedBox(height: 20),
-                      transactionRow(
-                        customer: 'Patricia Robinson',
-                        date: '19 February, 2025',
-                        status: 'Completed',
-                        statusColor: const Color(0xFF10B981),
-                        amount: '\$189',
-                      ),
-                      transactionRow(
-                        customer: 'Andrew Hopkins',
-                        date: '19 February, 2025',
-                        status: 'Pending',
-                        statusColor: const Color(0xFFF59E0B),
-                        amount: '\$248',
-                      ),
-                      transactionRow(
-                        customer: 'Angela Ruiz',
-                        date: '18 February, 2025',
-                        status: 'Processing',
-                        statusColor: const Color(0xFF3B82F6),
-                        amount: '\$410',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: compact ? 260 : 120,
-              right: compact ? 12 : -12,
-              child: Container(
-                width: compact ? 160 : 200,
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF1F1B4D).withOpacity(0.18),
-                      blurRadius: 40,
-                      offset: const Offset(0, 18),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Sales Categories',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF111827),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: compact ? 120 : 140,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            height: double.infinity,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const SweepGradient(
-                                colors: [
-                                  Color(0xFF6366F1),
-                                  Color(0xFF8B5CF6),
-                                  Color(0xFF4338CA),
-                                  Color(0xFF6366F1),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: compact ? 72 : 84,
-                            width: compact ? 72 : 84,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text(
-                                '6,248',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  color: Color(0xFF111827),
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Units',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF6B7280),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Monthly',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF6366F1),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF4338CA), Color(0xFF6366F1)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        image: const DecorationImage(
-          image: AssetImage('assets/neural-pattern-dark.png'),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Color(0xFF312E81), BlendMode.softLight),
-        ),
-        borderRadius: borderRadius,
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Stack(
-          children: [
-            Positioned(
-              top: -80,
-              right: -40,
-              child: Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
-                  borderRadius: BorderRadius.circular(200),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -60,
-              right: 40,
-              child: Container(
-                width: 180,
-                height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(140),
-                ),
-              ),
-            ),
-            SingleChildScrollView(
-              padding: padding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Effortlessly manage your team\nand operations.',
-                    style: TextStyle(
-                      fontSize: isCompact ? 22 : 30,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      height: 1.25,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Log in to access your CRM dashboard and manage your team.',
-                    style: TextStyle(
-                      fontSize: isCompact ? 13 : 15,
-                      color: Colors.white.withOpacity(0.8),
-                      height: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: isCompact ? 24 : 32),
-                  dashboardPreview(isCompact),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildInputLabel({required String label, required bool isCompact}) {
-    return Text(
-      label,
-      style: TextStyle(
-        fontSize: isCompact ? 13 : 14,
-        fontWeight: FontWeight.w600,
-        color: const Color(0xFF1F2937),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    required FormFieldValidator<String> validator,
-    TextInputType? textInputType,
-  }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
-      keyboardType: textInputType,
-      style: const TextStyle(fontSize: 14, color: Color(0xFF1F2937)),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
-        filled: true,
-        fillColor: const Color(0xFFF3F4F6),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626)),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626), width: 1.5),
-        ),
-        errorStyle: const TextStyle(fontSize: 12),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildPasswordField() {
-    return TextFormField(
-      controller: passCtrl,
-      obscureText: _obscurePassword,
-      validator: _validatePassword,
-      style: const TextStyle(fontSize: 14, color: Color(0xFF1F2937)),
-      decoration: InputDecoration(
-        hintText: 'Sellostore.',
-        hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
-            color: const Color(0xFF6B7280),
-            size: 20,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
-        ),
-        filled: true,
-        fillColor: const Color(0xFFF3F4F6),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626)),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626), width: 1.5),
-        ),
-        errorStyle: const TextStyle(fontSize: 12),
-      ),
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildSocialButton({
-    required String label,
-    required VoidCallback onPressed,
-    required SocialButtonVariant variant,
-  }) {
-    Widget leadingIcon;
-    switch (variant) {
-      case SocialButtonVariant.google:
-        leadingIcon = Container(
-          height: 28,
-          width: 28,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
-            color: Colors.white,
-          ),
-          child: const Center(
-            child: Text(
-              'G',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF4285F4),
+      backgroundColor: const Color(0xFF000000), // Premium Black
+      body: Stack(
+        children: [
+          // Background Pattern (visible on both, but obscured on desktop right side)
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                'assets/neural-pattern-dark.png',
+                fit: BoxFit.cover,
+                errorBuilder: (c, o, s) => Container(color: Colors.black),
               ),
             ),
           ),
-        );
-        break;
-      case SocialButtonVariant.apple:
-        leadingIcon = const Icon(Icons.apple, size: 24, color: Colors.black);
-        break;
-    }
 
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          side: const BorderSide(color: Color(0xFFE5E7EB)),
-          backgroundColor: Colors.white,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            leadingIcon,
-            const SizedBox(width: 12),
-            Text(
-              'Continue with $label',
-              style: const TextStyle(
-                fontSize: 13.2,
-                color: Color(0xFF1F2937),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+          isDesktop
+              ? _buildDesktopExperience(context, authViewModel)
+              : _buildMobileExperience(context, authViewModel),
+        ],
       ),
     );
   }
@@ -725,39 +736,180 @@ class _LoginViewState extends State<LoginView> {
     BuildContext context,
     AuthViewModel authViewModel,
   ) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 980),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 48,
-              offset: const Offset(0, 36),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 52),
-          child: Row(
+    return Row(
+      children: [
+        // Left Side: Login Form
+        Expanded(
+          flex: 4,
+          child: Stack(
             children: [
-              Expanded(
-                flex: 5,
-                child: _buildFormSection(
-                  context,
-                  authViewModel,
-                  isCompact: false,
+              // Breathing Glow Background
+              const Positioned(
+                top: -100,
+                left: -100,
+                child: _AnimatedBackgroundGlow(),
+              ),
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 60,
+                    vertical: 40,
+                  ),
+                  child: _buildFormSection(
+                    context,
+                    authViewModel,
+                    isCompact: false,
+                  ),
                 ),
               ),
-              const SizedBox(width: 56),
-              Expanded(flex: 5, child: _buildInfoSection(isCompact: false)),
             ],
           ),
         ),
-      ),
+
+        // Right Side: VR Image with Overlay
+        Expanded(
+          flex: 6,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                'assets/1seeee.png',
+                fit: BoxFit.cover,
+                color: const Color(0xFFFF3B30).withOpacity(0.1),
+                colorBlendMode: BlendMode.overlay,
+                errorBuilder: (c, o, s) =>
+                    Container(color: const Color(0xFF111111)),
+              ),
+
+              // Dynamic Light Source (Top Right)
+              const Positioned(
+                top: -150,
+                right: -150,
+                child: _AnimatedBackgroundGlow(),
+              ),
+
+              // Pattern Texture
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.15,
+                  child: Image.asset(
+                    'assets/neural-pattern-dark.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+
+              // Gradient Overlay for Text Readability
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xFF000000),
+                      const Color(0xFF000000).withOpacity(0.7),
+                      const Color(0xFF000000).withOpacity(0.2),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.3, 0.6, 1.0],
+                  ),
+                ),
+              ),
+              // Optional Content Overlay
+              Positioned(
+                bottom: 60,
+                left: 60,
+                right: 60,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF3B30),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.devices_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Unified Healthcare Access',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'One Account.\nEverywhere you practice.',
+                      style: GoogleFonts.outfit(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Seamlessly access patient data across Web, Mobile, and Desktop.',
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        color: Colors.white.withOpacity(0.8),
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        _buildStat('iOS/Android', 'Mobile App'),
+                        const SizedBox(width: 32),
+                        _buildStat('Web/Desktop', 'Workstation'),
+                        const SizedBox(width: 32),
+                        _buildStat('Real-time', 'Sync'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -765,15 +917,51 @@ class _LoginViewState extends State<LoginView> {
     BuildContext context,
     AuthViewModel authViewModel,
   ) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-      child: Column(
-        children: [
-          _buildFormSection(context, authViewModel, isCompact: true),
-          const SizedBox(height: 36),
-          _buildInfoSection(isCompact: true),
-        ],
-      ),
+    return Stack(
+      children: [
+        // Centered Glow
+        const Positioned.fill(child: Center(child: _AnimatedBackgroundGlow())),
+        Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(maxWidth: 450),
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(
+                  0.05,
+                ), // Increased Glass opacity
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.white.withOpacity(0.08)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 40,
+                    offset: const Offset(0, 20),
+                  ),
+                ],
+              ),
+              child: RepaintBoundary(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 12,
+                      sigmaY: 12,
+                    ), // Smoother blur
+                    child: _buildFormSection(
+                      context,
+                      authViewModel,
+                      isCompact: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -782,526 +970,507 @@ class _LoginViewState extends State<LoginView> {
     AuthViewModel authViewModel, {
     required bool isCompact,
   }) {
-    final labelStyle = TextStyle(
-      fontSize: isCompact ? 12 : 13,
-      fontWeight: FontWeight.w600,
-      color: const Color(0xFF0F172A),
-    );
+    const red = Color(0xFFFF3B30);
+    const white = Color(0xFFFFFFFF);
+    const lightGray = Color(0xFFAAAAAA);
 
-    InputDecoration decoration(String hint) {
-      return InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 13.5),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Header
+        _FadeSlide(
+          delay: 0,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => context.go('/'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/logo2.png',
+                    width: 75,
+                    height: 74,
+                    fit: BoxFit.contain,
+                  ),
+                  // const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/appbartextdr&me.png',
+                        height: 26,
+                        color: white,
+                        fit: BoxFit.contain,
+                      ),
+                      Text(
+                        'Professional Suite',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: white.withOpacity(0.5),
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 48),
+        _FadeSlide(
+          delay: 0.1,
+          child: Text(
+            'Portal Access',
+            style: GoogleFonts.outfit(
+              fontSize: isCompact ? 32 : 42,
+              fontWeight: FontWeight.bold,
+              color: white,
+              height: 1.1,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _FadeSlide(
+          delay: 0.2,
+          child: Text(
+            'Secure login for healthcare providers.',
+            style: GoogleFonts.inter(fontSize: 16, color: lightGray),
+          ),
+        ),
+        const SizedBox(height: 48),
+
+        // Form
+        Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _FadeSlide(
+                delay: 0.3,
+                child: _buildModernInput(
+                  controller: loginCtrl,
+                  hint: 'Email or Phone',
+                  icon: Icons.alternate_email_rounded,
+                  validator: _validateEmailOrPhone,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _FadeSlide(
+                delay: 0.4,
+                child: _buildModernInput(
+                  controller: passCtrl,
+                  hint: 'Password',
+                  icon: Icons.lock_outline_rounded,
+                  isPassword: true,
+                  validator: _validatePassword,
+                ),
+              ),
+              const SizedBox(height: 24),
+              _FadeSlide(
+                delay: 0.5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: Checkbox(
+                            value: _keepMeSignedIn,
+                            onChanged: (v) =>
+                                setState(() => _keepMeSignedIn = v ?? false),
+                            activeColor: red,
+                            side: BorderSide(
+                              color: white.withOpacity(0.3),
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Remember me',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: lightGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(4),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          'Forgot Password?',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Terms and Conditions Notice (Implicit Agreement)
+              _FadeSlide(
+                delay: 0.55,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.03),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Icon(
+                          Icons.verified_user_outlined,
+                          color: white.withOpacity(0.7),
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Wrap(
+                          children: [
+                            Text(
+                              'By signing in, I confirm that I agree to the ',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: lightGray,
+                                height: 1.5,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: _showPrivacyPolicyDialog,
+                              child: Text(
+                                'Privacy Policy',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: white,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ', ',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: lightGray,
+                                height: 1.5,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: _showTermsConditionsDialog,
+                              child: Text(
+                                'Terms & Conditions',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: white,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ', ',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: lightGray,
+                                height: 1.5,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: _showDisclaimerDialog,
+                              child: Text(
+                                'Disclaimer',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: white,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ', and ',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: lightGray,
+                                height: 1.5,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: _showHealthcareResponsibilitiesDialog,
+                              child: Text(
+                                'Healthcare Partner Responsibilities',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: white,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '.',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: lightGray,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              // Login Button
+              _FadeSlide(
+                delay: 0.6,
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF3B30), Color(0xFFFF6B6B)],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: red.withOpacity(0.4),
+                        blurRadius: 24,
+                        offset: const Offset(0, 12),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: authViewModel.isLoading ? null : _handleLogin,
+                      child: Center(
+                        child: authViewModel.isLoading
+                            ? const AppLoader(
+                                size: 24,
+                                strokeWidth: 2.5,
+                                color: white,
+                              )
+                            : Text(
+                                'Sign In',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: white,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 48),
+
+              // Footer
+              _FadeSlide(
+                delay: 0.7,
+                child: Center(
+                  child: Text(
+                    '© 2025 Dr&Me Inc.   •   Privacy   •   Terms',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.3),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModernInput({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    bool isPassword = false,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword && _obscurePassword,
+      validator: validator,
+      style: GoogleFonts.inter(color: Colors.white, fontSize: 16),
+      cursorColor: const Color(0xFFFF3B30),
+      decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: Colors.white.withOpacity(0.07), // Premium Lighter Glass
+        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.5)),
+        hintText: hint,
+        hintStyle: GoogleFonts.inter(color: Colors.white.withOpacity(0.3)),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
+          vertical: 18,
+          horizontal: 20,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFFF3B30), width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626)),
+          borderSide: const BorderSide(color: Color(0xFFFF3B30)),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFDC2626), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFFF3B30), width: 1.5),
         ),
-        errorStyle: const TextStyle(fontSize: 12),
-      );
-    }
-
-    final formContent = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final canWrap = constraints.maxWidth < 420;
-            final title = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Doctor&Me Unified Access',
-                  style: TextStyle(
-                    fontSize: isCompact ? 17 : 19,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF0F172A),
-                  ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: Colors.white.withOpacity(0.4),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'One login for super admins, doctors, care teams & patients',
-                  style: TextStyle(
-                    fontSize: isCompact ? 11 : 12,
-                    color: const Color(0xFF6B7280),
-                  ),
-                ),
-              ],
-            );
-
-            if (canWrap) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      height: isCompact ? 34 : 38,
-                      width: isCompact ? 34 : 38,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.local_hospital_outlined,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  title,
-                ],
-              );
-            }
-
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  flex: 0,
-                  child: Container(
-                    height: isCompact ? 34 : 38,
-                    width: isCompact ? 34 : 38,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.local_hospital_outlined,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 320),
-                    child: title,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: 22),
-        Text('Email', style: labelStyle),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: loginCtrl,
-          validator: _validateEmailOrPhone,
-          keyboardType: TextInputType.emailAddress,
-          style: const TextStyle(fontSize: 14, color: Color(0xFF0F172A)),
-          decoration: decoration('Enter your work email address'),
-        ),
-        const SizedBox(height: 16),
-        Text('Password', style: labelStyle),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: passCtrl,
-          obscureText: _obscurePassword,
-          validator: _validatePassword,
-          style: const TextStyle(fontSize: 14, color: Color(0xFF0F172A)),
-          decoration: decoration('Enter your password').copyWith(
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscurePassword
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                size: 20,
-                color: const Color(0xFF6B7280),
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            SizedBox(
-              height: 20,
-              width: 20,
-              child: Checkbox(
-                value: _keepMeSignedIn,
-                onChanged: (value) {
-                  setState(() {
-                    _keepMeSignedIn = value ?? false;
-                  });
-                },
-                activeColor: const Color(0xFF2563EB),
-                side: const BorderSide(color: Color(0xFFD1D5DB), width: 1.5),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Keep me signed in on this device',
-                style: TextStyle(
-                  fontSize: isCompact ? 11.5 : 12.5,
-                  color: const Color(0xFF4B5563),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        authViewModel.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: const Color(0xFF2563EB),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Access Your Workspace',
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-        const SizedBox(height: 18),
-        _buildDividerLabel(isCompact: isCompact),
-        const SizedBox(height: 18),
-        _buildGoogleButton(),
-      ],
-    );
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final verticalPadding =
-            constraints.maxHeight.isFinite && constraints.maxHeight < 620
-            ? 12.0
-            : 24.0;
-
-        return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: verticalPadding),
-          child: Form(key: _formKey, child: formContent),
-        );
-      },
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
+              )
+            : null,
+      ),
     );
   }
 
-  Widget _buildInfoSection({required bool isCompact}) {
+  Widget _buildStat(String value, String label) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: isCompact ? 34 : 40,
-              width: isCompact ? 34 : 40,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF2563EB),
-              ),
-              child: const Icon(Icons.bolt, color: Colors.white, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Doctor&Me Platform',
-                  style: TextStyle(
-                    fontSize: isCompact ? 19 : 22,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF111827),
-                  ),
-                ),
-                Text(
-                  'Tailored workspace for patients, doctors & administrators',
-                  style: TextStyle(
-                    fontSize: isCompact ? 11.5 : 12.5,
-                    color: const Color(0xFF6B7280),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
         Text(
-          'Welcome to your smarter hospital workspace',
-          style: TextStyle(
-            fontSize: isCompact ? 17 : 20,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF111827),
+          value,
+          style: GoogleFonts.outfit(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         Text(
-          'Coordinate in-patient rounds, outpatient clinics, diagnostics, and laboratory workflows from a single console designed for multidisciplinary hospital teams.',
-          style: TextStyle(
-            fontSize: isCompact ? 12.5 : 13.5,
-            color: const Color(0xFF4B5563),
-            height: 1.6,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Bridge every department with real-time availability, instant updates, and guided workflows so each patient journey stays coordinated and on schedule.',
-          style: TextStyle(
-            fontSize: isCompact ? 12.5 : 13.5,
-            color: const Color(0xFF4B5563),
-            height: 1.6,
-          ),
-        ),
-        const SizedBox(height: 18),
-        _buildFeatureRow(
-          icon: Icons.screenshot_monitor_outlined,
-          text:
-              'Centralise rosters, theatre slots, ward rounds, and patient self-booking in one hub.',
-          isCompact: isCompact,
-        ),
-        const SizedBox(height: 12),
-        _buildFeatureRow(
-          icon: Icons.people_alt_outlined,
-          text:
-              'Automate intake, triage, and follow-ups with role-aware approvals for super admins, doctors, nurses, and patients.',
-          isCompact: isCompact,
-        ),
-        const SizedBox(height: 12),
-        _buildFeatureRow(
-          icon: Icons.monitor_heart_outlined,
-          text:
-              'Track vitals, lab reports, treatment plans, and feedback with alerts broadcast across every role.',
-          isCompact: isCompact,
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'We’re ready whenever your care teams are.',
-          style: TextStyle(
-            fontSize: isCompact ? 13 : 14.5,
-            color: const Color(0xFF111827),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: isCompact ? 28 : 40),
-        Text(
-          'By inserting your email you confirm you agree to Doctor&Me contacting you about hospital-grade solutions and services. You can opt out at any time by clicking unsubscribe.',
-          style: TextStyle(
-            fontSize: isCompact ? 10.5 : 11.5,
-            color: const Color(0xFF9CA3AF),
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 8),
-        GestureDetector(
-          onTap: () {
-            // Navigate to privacy policy
-          },
-          child: Text(
-            'Find out how we use data in our privacy policy.',
-            style: TextStyle(
-              fontSize: isCompact ? 10.5 : 11.5,
-              color: const Color(0xFF2563EB),
-              decoration: TextDecoration.underline,
-            ),
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            color: Colors.white.withOpacity(0.6),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFeatureRow({
-    required IconData icon,
-    required String text,
-    required bool isCompact,
-  }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 26,
-          width: 26,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFFE0E7FF),
-          ),
-          child: Icon(icon, size: 16, color: const Color(0xFF2563EB)),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: isCompact ? 12 : 12.5,
-              color: const Color(0xFF4B5563),
-              height: 1.5,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDividerLabel({required bool isCompact}) {
-    return Row(
-      children: [
-        Expanded(child: Container(height: 1, color: const Color(0xFFE5E7EB))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            'or continue with',
-            style: TextStyle(
-              fontSize: isCompact ? 11 : 12,
-              letterSpacing: 0.4,
-              color: const Color(0xFF9CA3AF),
-            ),
-          ),
-        ),
-        Expanded(child: Container(height: 1, color: const Color(0xFFE5E7EB))),
-      ],
-    );
-  }
-
-  Widget _buildGoogleButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () {
-          // Handle Google login
-        },
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          side: const BorderSide(color: Color(0xFFE5E7EB)),
-          backgroundColor: Colors.white,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.network(
-              'https://www.google.com/favicon.ico',
-              height: 20,
-              width: 20,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.g_mobiledata,
-                size: 24,
-                color: Color(0xFF4285F4),
-              ),
-            ),
-            const SizedBox(width: 12),
-            const Text(
-              'Continue with Google Workspace',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF111827),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
 
-enum SocialButtonVariant { google, apple }
+class _FadeSlide extends StatelessWidget {
+  final Widget child;
+  final double delay;
 
-class _LineChartPainter extends CustomPainter {
+  const _FadeSlide({required this.child, this.delay = 0});
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final gridPaint = Paint()
-      ..color = const Color(0xFFDDE3FF)
-      ..strokeWidth = 1;
-
-    const horizontalLines = 4;
-    for (var i = 1; i < horizontalLines; i++) {
-      final dy = size.height * (i / horizontalLines);
-      canvas.drawLine(Offset(0, dy), Offset(size.width, dy), gridPaint);
-    }
-
-    final linePaint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.75);
-    path.cubicTo(
-      size.width * 0.2,
-      size.height * 0.4,
-      size.width * 0.4,
-      size.height * 0.9,
-      size.width * 0.6,
-      size.height * 0.35,
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOutQuart,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * (1 - value)),
+          child: Opacity(opacity: value, child: child),
+        );
+      },
+      child: child,
     );
-    path.cubicTo(
-      size.width * 0.75,
-      size.height * 0.15,
-      size.width * 0.85,
-      size.height * 0.65,
-      size.width,
-      size.height * 0.25,
-    );
+  }
+}
 
-    canvas.drawPath(path, linePaint);
+class _AnimatedBackgroundGlow extends StatefulWidget {
+  const _AnimatedBackgroundGlow();
 
-    final fillPaint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0x806366F1), Color(0x008B5CF6)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
+  @override
+  State<_AnimatedBackgroundGlow> createState() =>
+      _AnimatedBackgroundGlowState();
+}
 
-    final fillPath = Path.from(path)
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..close();
+class _AnimatedBackgroundGlowState extends State<_AnimatedBackgroundGlow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-    canvas.drawPath(fillPath, fillPaint);
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Container(
+            width: 600,
+            height: 600,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFFFF3B30).withOpacity(0.15 * _controller.value),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.6],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

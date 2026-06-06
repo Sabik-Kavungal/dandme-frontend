@@ -1,5 +1,5 @@
-import 'package:a/modules/organization/models/organization_model.dart';
-import 'package:a/modules/organization/viewmodels/organization_viewmodel.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/organization/viewmodels/organization_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,10 +21,6 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
       TextEditingController();
 
   // Admin fields
-  final TextEditingController _adminFirstNameController =
-      TextEditingController();
-  final TextEditingController _adminLastNameController =
-      TextEditingController();
   final TextEditingController _adminEmailController = TextEditingController();
   final TextEditingController _adminUsernameController =
       TextEditingController();
@@ -33,6 +29,8 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
       TextEditingController();
 
   bool _isLoading = false;
+  bool _obscureAdminPassword = true;
+
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
@@ -61,8 +59,6 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
     _phoneController.dispose();
     _addressController.dispose();
     _licenseNumberController.dispose();
-    _adminFirstNameController.dispose();
-    _adminLastNameController.dispose();
     _adminEmailController.dispose();
     _adminUsernameController.dispose();
     _adminPhoneController.dispose();
@@ -137,25 +133,6 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
   }
 
   // Admin field validators
-  String? _validateAdminFirstName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Admin first name is required';
-    }
-    if (value.trim().length < 2) {
-      return 'First name must be at least 2 characters';
-    }
-    return null;
-  }
-
-  String? _validateAdminLastName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Admin last name is required';
-    }
-    if (value.trim().length < 2) {
-      return 'Last name must be at least 2 characters';
-    }
-    return null;
-  }
 
   String? _validateAdminEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -215,7 +192,6 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
     try {
       final orgVM = Provider.of<OrganizationViewModel>(context, listen: false);
 
-      // Create OrganizationModel with all required fields
       final organization = OrganizationModel(
         name: _nameController.text.trim(),
         email: _emailController.text.trim().isEmpty
@@ -230,8 +206,8 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
         licenseNumber: _licenseNumberController.text.trim().isEmpty
             ? null
             : _licenseNumberController.text.trim(),
-        adminFirstName: _adminFirstNameController.text.trim(),
-        adminLastName: _adminLastNameController.text.trim(),
+        adminFirstName: '',
+        adminLastName: '',
         adminEmail: _adminEmailController.text.trim(),
         adminUsername: _adminUsernameController.text.trim(),
         adminPhone: _adminPhoneController.text.trim().isEmpty
@@ -493,30 +469,6 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
                                   ),
                                   const SizedBox(height: 16),
 
-                                  // Admin First Name (Required)
-                                  _buildTextField(
-                                    label: 'Admin First Name',
-                                    hint: 'Enter admin first name',
-                                    controller: _adminFirstNameController,
-                                    validator: _validateAdminFirstName,
-                                    required: true,
-                                    icon: Icons.person_outlined,
-                                    isMobile: isMobile,
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Admin Last Name (Required)
-                                  _buildTextField(
-                                    label: 'Admin Last Name',
-                                    hint: 'Enter admin last name',
-                                    controller: _adminLastNameController,
-                                    validator: _validateAdminLastName,
-                                    required: true,
-                                    icon: Icons.person_outlined,
-                                    isMobile: isMobile,
-                                  ),
-                                  const SizedBox(height: 20),
-
                                   // Admin Email (Required)
                                   _buildTextField(
                                     label: 'Admin Email',
@@ -564,6 +516,13 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
                                     required: true,
                                     icon: Icons.lock_outlined,
                                     isPassword: true,
+                                    obscureText: _obscureAdminPassword,
+                                    onToggleVisibility: () {
+                                      setState(() {
+                                        _obscureAdminPassword =
+                                            !_obscureAdminPassword;
+                                      });
+                                    },
                                     isMobile: isMobile,
                                   ),
                                   const SizedBox(height: 32),
@@ -668,6 +627,8 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
     TextInputType? keyboardType,
     int maxLines = 1,
     bool isPassword = false,
+    bool? obscureText,
+    VoidCallback? onToggleVisibility,
     required bool isMobile,
   }) {
     return Column(
@@ -702,7 +663,7 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
           validator: validator,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          obscureText: isPassword,
+          obscureText: obscureText ?? isPassword,
           style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
@@ -711,6 +672,18 @@ class _AddOrganizationScreenState extends State<AddOrganizationScreen>
               fontSize: isMobile ? 13 : 14,
             ),
             prefixIcon: Icon(icon, size: 20, color: const Color(0xFF666666)),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      obscureText == true
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      size: 20,
+                      color: const Color(0xFF666666),
+                    ),
+                    onPressed: onToggleVisibility,
+                  )
+                : null,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: maxLines > 1 ? 16 : 14,

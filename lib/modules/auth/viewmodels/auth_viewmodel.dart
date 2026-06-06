@@ -1,8 +1,9 @@
-import 'package:a/core/config/localDB.dart';
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/auth/models/user_model.dart';
+import 'package:drandme/core/config/localDB.dart';
+import 'package:drandme/core/utils/loading_manager.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/auth/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
 
 /// Optimized Auth ViewModel with clean architecture and reusable methods
 class AuthViewModel extends ChangeNotifier {
@@ -55,6 +56,11 @@ class AuthViewModel extends ChangeNotifier {
   void _setLoading(bool value) {
     if (_disposed) return;
     _loading = value;
+    if (value) {
+      LoadingManager.show();
+    } else {
+      LoadingManager.hide();
+    }
     _safeNotifyListeners();
   }
 
@@ -136,6 +142,7 @@ class AuthViewModel extends ChangeNotifier {
         await _db.toDb(box, "userOrganizationId", _user!.organizationId);
         await _db.toDb(box, "userClinicId", _user!.clinicId);
         await _db.toDb(box, "userServiceId", _user!.serviceId);
+        await _db.toDb(box, "userLogo", _user!.logo);
 
         print('👤 USER DATA SAVED:');
         print('   ├─ userRole: ${_user!.role}');
@@ -194,6 +201,7 @@ class AuthViewModel extends ChangeNotifier {
           organizationId: _db.fromDb(box, "userOrganizationId") as String?,
           clinicId: _db.fromDb(box, "userClinicId") as String?,
           serviceId: _db.fromDb(box, "userServiceId") as String?,
+          logo: _db.fromDb(box, "userLogo") as String?,
         );
 
         _safeNotifyListeners();
@@ -457,6 +465,10 @@ class AuthViewModel extends ChangeNotifier {
       'doctor',
       'patient',
       'pharmacist',
+      'nurse',
+      'receptionist',
+      'lab_technician',
+      'billing_staff',
     ];
 
     if (!validRoles.contains(roleName)) {
@@ -505,29 +517,30 @@ class AuthViewModel extends ChangeNotifier {
 
   /// Logout user
   Future<void> logout(BuildContext context) async {
-    _setLoading(true);
     try {
-      // Attempt server logout if refresh token is available
-      if (_tokens?.hasRefreshToken == true) {
+      // ✅ 1. Clear local state immediately for instant UI feedback
+      final refreshToken = _tokens?.refreshToken;
+      final hasRefreshToken = _tokens?.hasRefreshToken == true;
+      
+      _clearAuthData();
+      await _clearStoredTokens();
+
+      // ─── 2. Attempt server logout ──────────────────────────────────
+      if (hasRefreshToken) {
         try {
           await _service.requist(
             "auth/logout",
             method: "POST",
-            body: {"refresh_token": _tokens!.refreshToken},
+            body: {"refresh_token": refreshToken},
           );
         } catch (e) {
-          // Continue with local logout even if server logout fails
+          // Continue if server logout fails
         }
       }
 
-      // Clear local data
-      await _clearStoredTokens();
-      _clearAuthData();
       _handleSuccess(context, "Logged out successfully");
     } catch (e) {
       _handleError(context, "Logout", e);
-    } finally {
-      _setLoading(false);
     }
   }
 
@@ -720,6 +733,11 @@ class AuthViewModel extends ChangeNotifier {
         return '/doctor';
       case 'pharmacist':
         return '/pharmacist';
+      case 'nurse':
+      case 'receptionist':
+      case 'lab_technician':
+      case 'billing_staff':
+        return '/clinic'; // Clinic staff use clinic module
       default:
         return '/clinic'; // Default to clinic module (includes appointments)
     }
@@ -835,6 +853,14 @@ class AuthViewModel extends ChangeNotifier {
         return 'Patient';
       case 'pharmacist':
         return 'Pharmacist';
+      case 'nurse':
+        return 'Nurse';
+      case 'receptionist':
+        return 'Receptionist';
+      case 'lab_technician':
+        return 'Lab Technician';
+      case 'billing_staff':
+        return 'Billing Staff';
       default:
         return 'User';
     }
@@ -868,6 +894,11 @@ class AuthViewModel extends ChangeNotifier {
       case 'doctor':
         return 2;
       case 'pharmacist':
+        return 2;
+      case 'nurse':
+      case 'receptionist':
+      case 'lab_technician':
+      case 'billing_staff':
         return 2;
       case 'patient':
         return 1;

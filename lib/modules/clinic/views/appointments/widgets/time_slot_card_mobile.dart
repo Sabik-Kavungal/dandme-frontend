@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
 import 'dart:math' as dart_math;
 
+import 'package:flutter/material.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
+
 /// A reusable time slot card widget (Mobile version with more details)
+/// reusable time slot card widget (Mobile version with more details)
 class TimeSlotCardMobile extends StatelessWidget {
   final DoctorTimeSlotResponse slot;
   final bool isSelected;
+  final bool isCurrentSlot; // ✅ New flag
   final VoidCallback? onTap;
   final double scaleFactor;
 
@@ -13,6 +16,7 @@ class TimeSlotCardMobile extends StatelessWidget {
     super.key,
     required this.slot,
     required this.isSelected,
+    this.isCurrentSlot = false,
     this.onTap,
     this.scaleFactor = 1.0,
   });
@@ -21,72 +25,85 @@ class TimeSlotCardMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     final startTime = _formatTime(slot.startTime);
 
-    // Check if slot is in the past for today
-    final isPastSlotForToday = _isPastSlotForToday(slot);
-    final isPastSlot =
-        slot.status == 'expired' ||
-        !slot.isBookable ||
-        isPastSlotForToday; // Check for past slots including today's past times
-    final isBooked =
-        slot.bookedPatients >= slot.maxPatients || !slot.isAvailable;
-    final isClickable = !isBooked && !isPastSlot;
+    // Use backend flags directly
+    final isBookable = slot.isBookable;
+    final status = slot.status;
+
+    // Determine disabled state based on backend flags
+    final isDisabled = !isBookable;
 
     // Sidebar-style color scheme
     Color backgroundColor;
     Color borderColor;
     Color textColor;
 
-    if (isPastSlot) {
-      backgroundColor = const Color(0xFFF5F5F5); // Gray for past slots
-      borderColor = const Color(0xFFE5E7EB);
-      textColor = const Color(0xFF9CA3AF);
-    } else if (isBooked) {
-      backgroundColor = const Color(0xFFFFF5F5); // Lighter red
-      borderColor = const Color(0xFFFECDD3);
-      textColor = const Color(0xFFEF4444);
+    if (isCurrentSlot) {
+      // ✅ Current Booking (Indigo)
+      backgroundColor = const Color(0xFFEEF2FF);
+      borderColor = const Color(0xFFC7D2FE);
+      textColor = const Color(0xFF4F46E5);
+    } else if (!isBookable) {
+      if (status == 'blocked') {
+        if (slot.displayMessage.toLowerCase().contains('leave')) {
+          // 🏖️ Doctor on Leave (Amber/Orange)
+          backgroundColor = const Color(0xFFFFF7ED); // Amber 50
+          borderColor = const Color(0xFFFED7AA); // Orange 200
+          textColor = const Color(0xFFC2410C); // Orange 700
+        } else {
+          // 🕰️ Past Time / Blocked (Slate/Gray)
+          backgroundColor = const Color(0xFFF8FAFC); // Slate 50
+          borderColor = const Color(0xFFE2E8F0); // Slate 200
+          textColor = const Color(0xFF94A3B8); // Slate 400
+        }
+      } else {
+        // 🚫 Fully Booked (Red)
+        backgroundColor = const Color(0xFFFEF2F2); // Red 50
+        borderColor = const Color(0xFFFECACA); // Red 200
+        textColor = const Color(0xFFDC2626); // Red 600
+      }
     } else if (isSelected) {
-      backgroundColor = const Color(
-        0xFF1E293B,
-      ); // Changed from green back to black
-      borderColor = const Color(0xFF1E293B); // Changed from green back to black
+      // ✅ Selected (Slate Dark)
+      backgroundColor = const Color(0xFF1E293B);
+      borderColor = const Color(0xFF1E293B);
       textColor = Colors.white;
     } else {
-      backgroundColor = const Color(
-        0xFFF0FDF4,
-      ); // Keep light green for available
-      borderColor = const Color(
-        0xFFBBF7D0,
-      ); // Keep light green border for available
-      textColor = const Color(0xFF059669); // Keep green text for available
+      // ✨ Available (Emerald Green)
+      backgroundColor = const Color(0xFFECFDF5); // Emerald 50
+      borderColor = const Color(0xFFA7F3D0); // Emerald 200
+      textColor = const Color(0xFF065F46); // Emerald 800
     }
 
-    return Container(
-      margin: EdgeInsets.only(right: 6 * scaleFactor),
-      child: InkWell(
-        onTap: isClickable ? onTap : null,
-        child: Opacity(
-          opacity: (isBooked || isPastSlot)
-              ? 0.6
-              : 1.0, // Apply opacity to past slots too
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: 90 * scaleFactor,
-              constraints: BoxConstraints(minHeight: 70 * scaleFactor),
-              padding: EdgeInsets.symmetric(
-                horizontal: 8 * scaleFactor,
-                vertical: 8 * scaleFactor,
-              ),
+    return InkWell(
+      onTap: (isDisabled && !isCurrentSlot) || isCurrentSlot ? null : onTap,
+      child: Opacity(
+        opacity: (isDisabled && !isCurrentSlot)
+            ? 0.6
+            : 1.0, // Apply opacity only to disabled slots, not current
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: Container(
+            // Removed fixed minHeight to prevent RenderFlex overflow
+            padding: EdgeInsets.symmetric(
+              horizontal: 6 * scaleFactor,
+              vertical: 6 * scaleFactor,
+            ),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: borderColor, width: isBooked ? 2 : 1),
-                boxShadow: isSelected
+                borderRadius: BorderRadius.circular(2),
+                border: Border.all(
+                  color: borderColor,
+                  width: (isCurrentSlot || (!isBookable && status != 'blocked'))
+                      ? 2
+                      : 1,
+                ),
+                boxShadow: (isSelected && !isDisabled) || isCurrentSlot
                     ? [
                         BoxShadow(
-                          color: const Color(0xFF1E293B).withOpacity(
-                            0.3,
-                          ), // Changed from green back to black
+                          color: isCurrentSlot
+                              ? const Color(0xFF4F46E5).withOpacity(0.2)
+                              : const Color(0xFF1E293B).withOpacity(
+                                  0.3,
+                                ), // Changed from green back to black
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -99,152 +116,114 @@ class TimeSlotCardMobile extends StatelessWidget {
                   Positioned.fill(
                     child: CustomPaint(
                       painter: _TimeSlotWavePainterMobile(
-                        isSelected: isSelected,
-                        isBooked:
-                            isBooked ||
-                            isPastSlot, // Include past slots in booked state
+                        isSelected: isSelected && !isDisabled,
+                        isBooked: isDisabled,
+                        isCurrent: isCurrentSlot, // ✅ Correctly named parameter
                       ),
                     ),
                   ),
                   // Content - Mobile: Only start time for compact display
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        startTime, // Only show start time on mobile
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 13 * scaleFactor,
-                          fontWeight: FontWeight.bold,
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          startTime, // Only show start time on mobile
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 12 * scaleFactor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 4 * scaleFactor),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5 * scaleFactor,
-                          vertical: 2 * scaleFactor,
-                        ),
-                        decoration: BoxDecoration(
-                          color: borderColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (isPastSlot || isBooked) ...[
-                              Icon(
-                                isPastSlot ? Icons.access_time : Icons.block,
-                                size: 10 * scaleFactor,
-                                color: textColor,
+                        SizedBox(height: 4 * scaleFactor),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5 * scaleFactor,
+                            vertical: 2 * scaleFactor,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isCurrentSlot
+                                ? const Color(0xFF4F46E5) // Indigo 600
+                                : borderColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (isDisabled && !isCurrentSlot) ...[
+                                Icon(
+                                  (status == 'blocked')
+                                      ? Icons.access_time
+                                      : Icons.block,
+                                  size: 10 * scaleFactor,
+                                  color: textColor,
+                                ),
+                                SizedBox(width: 3 * scaleFactor),
+                              ],
+                              Text(
+                                isCurrentSlot
+                                    ? 'Current'
+                                    : (isDisabled
+                                          ? (slot.displayMessage.isNotEmpty
+                                                ? (slot.displayMessage.toLowerCase() == 'fully booked' ? 'Booked' : slot.displayMessage)
+                                                : (status == 'blocked'
+                                                      ? 'Time Passed'
+                                                      : 'Booked'))
+                                          : (slot.displayMessage.isNotEmpty
+                                                ? slot.displayMessage
+                                                : 'Available')),
+                                style: TextStyle(
+                                  color: isCurrentSlot ? Colors.white : textColor,
+                                  fontSize: 7.5 * scaleFactor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(width: 3 * scaleFactor),
                             ],
-                            Text(
-                              isPastSlot
-                                  ? (isPastSlotForToday
-                                        ? 'Past'
-                                        : slot.displayMessage)
-                                  : (isBooked ? 'Booked' : 'Available'),
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: 8 * scaleFactor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  /// Check if slot time is in the past for today's date
-  bool _isPastSlotForToday(DoctorTimeSlotResponse slot) {
-    try {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-
-      // Parse slot date (YYYY-MM-DD format)
-      if (slot.date.isEmpty) return false;
-      final slotDateParts = slot.date.split('-');
-      if (slotDateParts.length != 3) return false;
-
-      final slotDate = DateTime(
-        int.parse(slotDateParts[0]),
-        int.parse(slotDateParts[1]),
-        int.parse(slotDateParts[2]),
       );
-
-      // If slot is not for today, don't mark as past
-      if (slotDate.year != today.year ||
-          slotDate.month != today.month ||
-          slotDate.day != today.day) {
-        return false;
-      }
-
-      // Parse slot start time
-      DateTime? slotDateTime;
-      if (slot.startTime.contains('T')) {
-        // ISO format
-        slotDateTime = DateTime.parse(slot.startTime).toLocal();
-      } else {
-        // HH:MM:SS or HH:MM format
-        final timeParts = slot.startTime.split(':');
-        if (timeParts.length >= 2) {
-          final hour = int.parse(timeParts[0]);
-          final minute = int.parse(timeParts[1]);
-          slotDateTime = DateTime(
-            slotDate.year,
-            slotDate.month,
-            slotDate.day,
-            hour,
-            minute,
-          );
-        }
-      }
-
-      if (slotDateTime == null) return false;
-
-      // Check if slot time has passed
-      return slotDateTime.isBefore(now);
-    } catch (e) {
-      // If parsing fails, don't mark as past
-      return false;
-    }
   }
 
-  /// Helper method to format time (convert 24h to 12h format)
-  String _formatTime(String time24) {
+  /// Helper method to format time (convert to 12h format with AM/PM)
+  String _formatTime(String rawTime) {
     try {
-      if (time24.contains('T')) {
-        final dateTime = DateTime.parse(time24).toLocal();
-        final hour = dateTime.hour;
-        final minute = dateTime.minute;
-        final period = hour >= 12 ? 'PM' : 'AM';
-        final hour12 = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-        return '$hour12:${minute.toString().padLeft(2, '0')} $period';
+      int hour;
+      int minute;
+
+      if (rawTime.contains('T')) {
+        // Handle ISO8601 string - convert to local for display
+        final dateTime = DateTime.parse(rawTime).toLocal();
+        hour = dateTime.hour;
+        minute = dateTime.minute;
+      } else {
+        // Handle HH:MM:SS
+        final segments = rawTime.split(':');
+        if (segments.length < 2) return rawTime;
+        hour = int.parse(segments[0]);
+        minute = int.parse(segments[1].split('.')[0].split('Z')[0].trim());
       }
 
-      final parts = time24.split(':');
-      int hour = int.parse(parts[0]);
-      final minute = parts[1].split('.')[0].split('Z')[0].trim();
       final period = hour >= 12 ? 'PM' : 'AM';
-      hour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-      return '$hour:$minute $period';
+      // 12-hour clock logic
+      final hour12 = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+      final hourStr = hour12.toString().padLeft(2, '0');
+      final minuteStr = minute.toString().padLeft(2, '0');
+      return '$hourStr:$minuteStr $period';
     } catch (e) {
-      return time24;
+      return rawTime;
     }
   }
 }
@@ -253,10 +232,12 @@ class TimeSlotCardMobile extends StatelessWidget {
 class _TimeSlotWavePainterMobile extends CustomPainter {
   final bool isSelected;
   final bool isBooked;
+  final bool isCurrent; // ✅ new flag
 
   _TimeSlotWavePainterMobile({
     required this.isSelected,
     required this.isBooked,
+    this.isCurrent = false,
   });
 
   @override
@@ -270,7 +251,7 @@ class _TimeSlotWavePainterMobile extends CustomPainter {
         ..style = PaintingStyle.fill
         ..color = isSelected
             ? Colors.white.withOpacity(0.06)
-            : const Color(0xFF64748B).withOpacity(0.03);
+            : const Color(0xFF166534).withOpacity(0.04);
 
       final path = Path();
       path.moveTo(0, size.height * 0.15);

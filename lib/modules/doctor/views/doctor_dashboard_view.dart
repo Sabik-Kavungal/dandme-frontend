@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:a/core/utils/app_helpers.dart';
-import 'package:a/core/constants/app_constants.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
+import 'package:drandme/core/constants/app_constants.dart';
 
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});

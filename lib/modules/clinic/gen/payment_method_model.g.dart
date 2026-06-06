@@ -6,19 +6,17 @@ part of '../models/payment_method_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppointmentPaymentImpl _$$AppointmentPaymentImplFromJson(
-  Map<String, dynamic> json,
-) => _$AppointmentPaymentImpl(
-  method: $enumDecode(_$PaymentMethodEnumMap, json['method']),
-  type: $enumDecodeNullable(_$PaymentTypeEnumMap, json['type']),
-);
+_AppointmentPayment _$AppointmentPaymentFromJson(Map<String, dynamic> json) =>
+    _AppointmentPayment(
+      method: $enumDecode(_$PaymentMethodEnumMap, json['method']),
+      type: $enumDecodeNullable(_$PaymentTypeEnumMap, json['type']),
+    );
 
-Map<String, dynamic> _$$AppointmentPaymentImplToJson(
-  _$AppointmentPaymentImpl instance,
-) => <String, dynamic>{
-  'method': _$PaymentMethodEnumMap[instance.method]!,
-  if (_$PaymentTypeEnumMap[instance.type] case final value?) 'type': value,
-};
+Map<String, dynamic> _$AppointmentPaymentToJson(_AppointmentPayment instance) =>
+    <String, dynamic>{
+      'method': _$PaymentMethodEnumMap[instance.method]!,
+      'type': ?_$PaymentTypeEnumMap[instance.type],
+    };
 
 const _$PaymentMethodEnumMap = {
   PaymentMethod.payNow: 'pay_now',

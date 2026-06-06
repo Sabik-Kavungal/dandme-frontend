@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/superadmin/views/clinics/clinics_list_view.dart';
-import 'package:a/modules/superadmin/views/doctors/doctors_list_view.dart';
-import 'package:a/modules/superadmin/views/organizations/organizations_list_view.dart';
-import 'package:a/modules/superadmin/views/super_admin_module_view.dart';
-import 'package:a/core/utils/app_helpers.dart';
-import 'package:a/core/constants/app_constants.dart';
-import 'package:a/core/widgets/session_management_widget.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
+import 'package:drandme/core/widgets/session_management_widget.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
+
+// --- VISUAL CONSTANTS FOR CLASSY SLATE MATCH ---
+const kBgColor = Color(0xFFF1F5F9); // Elegant Slate 100 Background
+const kCardColor = Colors.white;
+const kPrimaryText = Color(0xFF1E293B); // Deep Slate 800 Text
+const kSecondaryText = Color(0xFF64748B); // Subtle Slate 500 Text
+const kBlueColor = Color(0xFF0284C7); // Professional Sky/Health Blue
+const kOrangeColor = Color(0xFFD97706); // Soft Amber
+const kPurpleColor = Color(0xFF4F46E5); // Trustworthy Indigo
+const kGreenColor = Color(0xFF059669); // Clean Emerald
+const kRedColor = Color(0xFFDC2626); // Alert Crimson
+const kBorderColor = Color(0xFFE2E8F0); // Subtle Slate 200 Border
 
 class SuperAdminDashboard extends StatelessWidget {
   const SuperAdminDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConstants.scaffoldBackground,
-      appBar: AppBar(
-        title: const Text('Super Admin Dashboard'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        actions: const [CompactSessionStatus(), SizedBox(width: 16)],
-      ),
-      body: LayoutBuilder(
+    return Container(
+      color: kBgColor,
+      child: LayoutBuilder(
         builder: (context, constraints) {
           final isTablet = AppHelpers.isTablet(context);
           final isMobile = AppHelpers.isMobile(context);
 
           return SingleChildScrollView(
-            padding: EdgeInsets.all(
-              isMobile ? AppConstants.spacingL : AppConstants.spacingXL,
-            ),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,19 +37,19 @@ class SuperAdminDashboard extends StatelessWidget {
 
                 // Greeting Section
                 _buildGreetingSection(isMobile, isTablet),
-                SizedBox(height: isTablet ? 16 : 20),
+                const SizedBox(height: 8),
 
                 // Statistics Cards
                 _buildStatisticsCards(isMobile, isTablet),
-                SizedBox(height: isTablet ? 20 : 24),
+                const SizedBox(height: 8),
 
                 // Management Options
                 _buildManagementSection(context, isMobile, isTablet),
-                SizedBox(height: isTablet ? 20 : 24),
+                const SizedBox(height: 8),
 
                 // Quick Actions
                 _buildQuickActionsSection(context, isMobile, isTablet),
-                SizedBox(height: isTablet ? 20 : 24),
+                const SizedBox(height: 8),
 
                 // Footer
                 _buildFooter(),
@@ -66,27 +64,36 @@ class SuperAdminDashboard extends StatelessWidget {
   Widget _buildGreetingSection(bool isMobile, bool isTablet) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 16 : (isTablet ? 12 : 16),
-        vertical: isMobile ? 12 : (isTablet ? 10 : 12),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: kBorderColor, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Admin Icon
           Container(
-            width: isMobile ? 40 : 48,
-            height: isMobile ? 40 : 48,
+            width: isMobile ? 48 : 56,
+            height: isMobile ? 48 : 56,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                colors: [Color(0xFF0284C7), Color(0xFF0369A1)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF3B82F6).withOpacity(0.3),
+                  color: const Color(0xFF0284C7).withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -95,10 +102,10 @@ class SuperAdminDashboard extends StatelessWidget {
             child: Icon(
               Icons.admin_panel_settings,
               color: Colors.white,
-              size: isMobile ? 20 : 24,
+              size: isMobile ? 24 : 28,
             ),
           ),
-          SizedBox(width: isMobile ? 12 : 16),
+          SizedBox(width: isMobile ? 16 : 20),
           // Greeting Text
           Expanded(
             child: Column(
@@ -107,18 +114,19 @@ class SuperAdminDashboard extends StatelessWidget {
                 Text(
                   'Hi Super Admin,',
                   style: TextStyle(
-                    fontSize: isMobile ? 12 : (isTablet ? 14 : 16),
-                    fontWeight: FontWeight.normal,
-                    color: const Color(0xFF333333),
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: FontWeight.w500,
+                    color: kSecondaryText,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   'Welcome Back!',
                   style: TextStyle(
-                    fontSize: isMobile ? 18 : (isTablet ? 20 : 22),
+                    fontSize: isMobile ? 20 : 24,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF333333),
+                    color: kPrimaryText,
+                    letterSpacing: -0.5,
                   ),
                 ),
               ],
@@ -126,21 +134,26 @@ class SuperAdminDashboard extends StatelessWidget {
           ),
           // Date Display
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF3B82F6),
-              borderRadius: BorderRadius.circular(6),
+              color: kBlueColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: kBlueColor.withOpacity(0.2)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.calendar_today, color: Colors.white, size: 14),
-                const SizedBox(width: 4),
+                const Icon(
+                  Icons.calendar_today_rounded,
+                  color: kBlueColor,
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
                 Text(
                   AppHelpers.formatDate(DateTime.now()),
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
+                    color: kBlueColor,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -165,42 +178,50 @@ class SuperAdminDashboard extends StatelessWidget {
                     child: StatCard(
                       value: '45',
                       label: 'Organizations',
-                      color: AppConstants.primaryColor,
+                      color: kBlueColor,
                       icon: Icons.business,
+                      badge: '+12%',
+                      waveStyle: 0,
                       isMobile: isMobile,
                     ),
                   ),
-                  const SizedBox(width: AppConstants.spacingM),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: StatCard(
                       value: '328',
                       label: 'Total Users',
-                      color: AppConstants.successColor,
+                      color: kGreenColor,
                       icon: Icons.people,
+                      badge: '+5%',
+                      waveStyle: 1,
                       isMobile: isMobile,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: AppConstants.spacingM),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: StatCard(
                       value: '156',
                       label: 'Active Clinics',
-                      color: AppConstants.infoColor,
+                      color: kPurpleColor,
                       icon: Icons.local_hospital,
+                      badge: '+8%',
+                      waveStyle: 1,
                       isMobile: isMobile,
                     ),
                   ),
-                  const SizedBox(width: AppConstants.spacingM),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: StatCard(
                       value: '892',
-                      label: 'Total Appointments',
-                      color: AppConstants.warningColor,
+                      label: 'Appointments',
+                      color: kOrangeColor,
                       icon: Icons.calendar_month,
+                      badge: '+24%',
+                      waveStyle: 0,
                       isMobile: isMobile,
                     ),
                   ),
@@ -216,38 +237,46 @@ class SuperAdminDashboard extends StatelessWidget {
                 child: StatCard(
                   value: '45',
                   label: 'Organizations',
-                  color: AppConstants.primaryColor,
+                  color: kBlueColor,
                   icon: Icons.business,
+                  badge: '+12%',
+                  waveStyle: 0,
                   isMobile: isMobile,
                 ),
               ),
-              const SizedBox(width: AppConstants.spacingM),
+              const SizedBox(width: 8),
               Expanded(
                 child: StatCard(
                   value: '328',
                   label: 'Total Users',
-                  color: AppConstants.successColor,
+                  color: kGreenColor,
                   icon: Icons.people,
+                  badge: '+5%',
+                  waveStyle: 1,
                   isMobile: isMobile,
                 ),
               ),
-              const SizedBox(width: AppConstants.spacingM),
+              const SizedBox(width: 8),
               Expanded(
                 child: StatCard(
                   value: '156',
                   label: 'Active Clinics',
-                  color: AppConstants.infoColor,
+                  color: kPurpleColor,
                   icon: Icons.local_hospital,
+                  badge: '+8%',
+                  waveStyle: 1,
                   isMobile: isMobile,
                 ),
               ),
-              const SizedBox(width: AppConstants.spacingM),
+              const SizedBox(width: 16),
               Expanded(
                 child: StatCard(
                   value: '892',
-                  label: 'Total Appointments',
-                  color: AppConstants.warningColor,
+                  label: 'Appointments',
+                  color: kOrangeColor,
                   icon: Icons.calendar_month,
+                  badge: '+24%',
+                  waveStyle: 0,
                   isMobile: isMobile,
                 ),
               ),
@@ -271,10 +300,10 @@ class SuperAdminDashboard extends StatelessWidget {
           style: TextStyle(
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF333333),
+            color: kPrimaryText,
           ),
         ),
-        SizedBox(height: isMobile ? 12 : 16),
+        SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) {
             int crossAxisCount;
@@ -290,19 +319,15 @@ class SuperAdminDashboard extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: crossAxisCount,
-              crossAxisSpacing: isMobile
-                  ? AppConstants.spacingM
-                  : AppConstants.spacingL,
-              mainAxisSpacing: isMobile
-                  ? AppConstants.spacingM
-                  : AppConstants.spacingL,
-              childAspectRatio: isMobile ? 1.0 : 1.1,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: isMobile ? 1.0 : 1.2,
               children: [
                 ManagementCard(
                   title: 'Organizations',
                   subtitle: 'Manage organizations',
                   icon: Icons.business,
-                  color: AppConstants.successColor,
+                  color: kBlueColor,
                   onTap: () => _navigateToOrganizations(context),
                   isMobile: isMobile,
                 ),
@@ -310,7 +335,7 @@ class SuperAdminDashboard extends StatelessWidget {
                   title: 'Clinics',
                   subtitle: 'Manage all clinics',
                   icon: Icons.local_hospital,
-                  color: AppConstants.warningColor,
+                  color: kPurpleColor,
                   onTap: () => _navigateToClinics(context),
                   isMobile: isMobile,
                 ),
@@ -318,7 +343,7 @@ class SuperAdminDashboard extends StatelessWidget {
                   title: 'Doctors',
                   subtitle: 'Manage doctors',
                   icon: Icons.medical_services,
-                  color: AppConstants.infoColor,
+                  color: kGreenColor,
                   onTap: () => _navigateToDoctors(context),
                   isMobile: isMobile,
                 ),
@@ -326,7 +351,7 @@ class SuperAdminDashboard extends StatelessWidget {
                   title: 'User Management',
                   subtitle: 'Manage users and links',
                   icon: Icons.people,
-                  color: AppConstants.secondaryColor,
+                  color: kOrangeColor,
                   onTap: () => _navigateToUserManagement(context),
                   isMobile: isMobile,
                 ),
@@ -334,7 +359,7 @@ class SuperAdminDashboard extends StatelessWidget {
                   title: 'Analytics',
                   subtitle: 'View system statistics',
                   icon: Icons.analytics,
-                  color: AppConstants.secondaryColor,
+                  color: const Color(0xFF64748B),
                   onTap: () => _navigateToAnalytics(context),
                   isMobile: isMobile,
                 ),
@@ -359,20 +384,21 @@ class SuperAdminDashboard extends StatelessWidget {
           style: TextStyle(
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF333333),
+            color: kPrimaryText,
           ),
         ),
-        SizedBox(height: isMobile ? 12 : 16),
+        SizedBox(height: 8),
         Container(
-          padding: EdgeInsets.all(isMobile ? 14 : AppConstants.spacingL),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppConstants.cardBackground,
-            borderRadius: BorderRadius.circular(AppConstants.radiusL),
+            color: kCardColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: kBorderColor, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -380,10 +406,10 @@ class SuperAdminDashboard extends StatelessWidget {
             children: [
               _buildQuickActionRow(
                 context: context,
-                icon: Icons.email,
+                icon: Icons.notifications_active_outlined,
                 title: 'Send Notifications',
                 subtitle: 'Send system-wide notifications',
-                color: AppConstants.primaryColor,
+                color: kBlueColor,
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Send Notifications feature')),
@@ -391,16 +417,16 @@ class SuperAdminDashboard extends StatelessWidget {
                 },
                 isMobile: isMobile,
               ),
-              Divider(
-                color: AppConstants.dividerColor,
-                height: AppConstants.spacingXXL,
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Divider(color: kBorderColor),
               ),
               _buildQuickActionRow(
                 context: context,
-                icon: Icons.settings,
+                icon: Icons.settings_outlined,
                 title: 'System Settings',
                 subtitle: 'Configure system parameters',
-                color: AppConstants.secondaryColor,
+                color: kSecondaryText,
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('System Settings feature')),
@@ -408,16 +434,16 @@ class SuperAdminDashboard extends StatelessWidget {
                 },
                 isMobile: isMobile,
               ),
-              Divider(
-                color: AppConstants.dividerColor,
-                height: AppConstants.spacingXXL,
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Divider(color: kBorderColor),
               ),
               _buildQuickActionRow(
                 context: context,
-                icon: Icons.backup,
+                icon: Icons.backup_outlined,
                 title: 'Backup & Restore',
                 subtitle: 'Manage system backups',
-                color: AppConstants.successColor,
+                color: kGreenColor,
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Backup & Restore feature')),
@@ -445,20 +471,18 @@ class SuperAdminDashboard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(isMobile ? 8 : 10),
+              padding: EdgeInsets.all(isMobile ? 10 : 12),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: color, size: isMobile ? 16 : 18),
+              child: Icon(icon, color: color, size: isMobile ? 20 : 22),
             ),
-            SizedBox(
-              width: isMobile ? AppConstants.spacingS : AppConstants.spacingM,
-            ),
+            SizedBox(width: isMobile ? 16 : 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,26 +490,26 @@ class SuperAdminDashboard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: isMobile ? 12 : 13,
+                      fontSize: isMobile ? 14 : 15,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF333333),
+                      color: kPrimaryText,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: isMobile ? 10 : 11,
-                      color: const Color(0xFF666666),
+                      fontSize: isMobile ? 12 : 13,
+                      color: kSecondaryText,
                     ),
                   ),
                 ],
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios,
-              size: isMobile ? 12 : 14,
-              color: const Color(0xFF999999),
+              Icons.arrow_forward_ios_rounded,
+              size: isMobile ? 14 : 16,
+              color: kSecondaryText.withOpacity(0.5),
             ),
           ],
         ),
@@ -497,7 +521,7 @@ class SuperAdminDashboard extends StatelessWidget {
     return const Center(
       child: Text(
         'Copyright © 2025 Dr&Me. All rights reserved',
-        style: TextStyle(color: Color(0xFF999999), fontSize: 12),
+        style: TextStyle(color: kSecondaryText, fontSize: 12),
       ),
     );
   }
@@ -523,7 +547,7 @@ class SuperAdminDashboard extends StatelessWidget {
       const SnackBar(
         content: Text('Analytics Dashboard - Coming soon'),
         duration: Duration(seconds: 2),
-        backgroundColor: Color(0xFF9C27B0),
+        backgroundColor: Colors.purple,
       ),
     );
   }
@@ -534,6 +558,8 @@ class StatCard extends StatelessWidget {
   final String label;
   final Color color;
   final IconData icon;
+  final String badge;
+  final int waveStyle;
   final bool isMobile;
 
   const StatCard({
@@ -542,23 +568,25 @@ class StatCard extends StatelessWidget {
     required this.label,
     required this.color,
     required this.icon,
+    this.badge = '',
+    this.waveStyle = 0,
     required this.isMobile,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(
-        isMobile ? AppConstants.spacingM : AppConstants.spacingL,
-      ),
+      height: 110, // Uniform height
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppConstants.cardBackground,
-        borderRadius: BorderRadius.circular(AppConstants.radiusL),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: kBorderColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -566,33 +594,72 @@ class StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: EdgeInsets.all(isMobile ? 6 : 8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: isMobile ? 16 : 20),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: color, size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label.toUpperCase(),
+                        style: const TextStyle(
+                          color: kSecondaryText,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        value,
+                        style: const TextStyle(
+                          color: kPrimaryText,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const Spacer(),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: isMobile ? 20 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppConstants.darkColor,
+              if (badge.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: kGreenColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    badge,
+                    style: const TextStyle(
+                      color: kGreenColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
             ],
           ),
-          const SizedBox(height: AppConstants.spacingS),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: isMobile ? 12 : 14,
-              color: AppConstants.secondaryColor,
-              fontWeight: FontWeight.w500,
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 36,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _WaveChartPainter(color: color, style: waveStyle),
             ),
           ),
         ],
@@ -623,19 +690,18 @@ class ManagementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppConstants.radiusL),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: EdgeInsets.all(
-          isMobile ? AppConstants.spacingM : AppConstants.spacingL,
-        ),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppConstants.cardBackground,
-          borderRadius: BorderRadius.circular(AppConstants.radiusL),
+          color: kCardColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: kBorderColor, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -643,33 +709,95 @@ class ManagementCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.all(isMobile ? 8 : 10),
+              padding: EdgeInsets.all(isMobile ? 10 : 12),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: color, size: isMobile ? 20 : 24),
+              child: Icon(icon, color: color, size: isMobile ? 24 : 28),
             ),
-            const SizedBox(height: AppConstants.spacingM),
+            const Spacer(),
             Text(
               title,
               style: TextStyle(
-                fontSize: isMobile ? 14 : 16,
+                fontSize: isMobile ? 15 : 17,
                 fontWeight: FontWeight.w600,
-                color: AppConstants.darkColor,
+                color: kPrimaryText,
               ),
             ),
-            const SizedBox(height: AppConstants.spacingXS),
+            const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: isMobile ? 11 : 12,
-                color: AppConstants.secondaryColor,
-              ),
+              style: const TextStyle(fontSize: 12, color: kSecondaryText),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class _WaveChartPainter extends CustomPainter {
+  final Color color;
+  final int style;
+  _WaveChartPainter({required this.color, this.style = 0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withOpacity(0.08)
+      ..style = PaintingStyle.fill;
+
+    final strokePaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    final path = Path();
+
+    // Improved curves for smoother visualization
+    if (style == 0) {
+      path.moveTo(0, size.height * 0.7);
+      path.cubicTo(
+        size.width * 0.2,
+        size.height * 0.7,
+        size.width * 0.3,
+        size.height * 0.4,
+        size.width * 0.5,
+        size.height * 0.5,
+      );
+      path.cubicTo(
+        size.width * 0.7,
+        size.height * 0.6,
+        size.width * 0.8,
+        size.height * 0.3,
+        size.width,
+        size.height * 0.4,
+      );
+    } else {
+      path.moveTo(0, size.height * 0.6);
+      path.cubicTo(
+        size.width * 0.25,
+        size.height * 0.5,
+        size.width * 0.5,
+        size.height * 0.7,
+        size.width * 0.75,
+        size.height * 0.4,
+      );
+      path.lineTo(size.width, size.height * 0.5);
+    }
+
+    final fillPath = Path.from(path);
+    fillPath.lineTo(size.width, size.height);
+    fillPath.lineTo(0, size.height);
+    fillPath.close();
+
+    canvas.drawPath(fillPath, paint);
+    canvas.drawPath(path, strokePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

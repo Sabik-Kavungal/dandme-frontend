@@ -281,7 +281,7 @@ Soft delete patient
 ## 🔄 Migration Notes
 
 1. **Backward Compatible**: All new fields are optional, existing code continues to work
-2. **Freezed Generated**: Run `flutter pub run build_runner build --delete-conflicting-outputs` after model changes
+2. **Freezed Generated**: Run `dart run build_runner build` after model changes
 3. **Existing Patients**: Will return null for new fields until updated
 4. **Form Integration**: Forms can now capture and submit all patient details in one request
 

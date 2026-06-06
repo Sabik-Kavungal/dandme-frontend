@@ -5,7 +5,7 @@ part '../gen/clinic_patient_model.g.dart';
 
 // ✅ NEW: Follow-up eligibility API response models
 @freezed
-class FollowUpEligibilityResponse with _$FollowUpEligibilityResponse {
+abstract class FollowUpEligibilityResponse with _$FollowUpEligibilityResponse {
   const factory FollowUpEligibilityResponse({
     @JsonKey(name: 'is_free') required bool isFree,
     @JsonKey(name: 'is_eligible') required bool isEligible,
@@ -18,7 +18,7 @@ class FollowUpEligibilityResponse with _$FollowUpEligibilityResponse {
 }
 
 @freezed
-class FollowUpDetails with _$FollowUpDetails {
+abstract class FollowUpDetails with _$FollowUpDetails {
   const factory FollowUpDetails({
     @JsonKey(name: 'followup_id') String? followupId,
     @JsonKey(name: 'valid_until') String? validUntil,
@@ -32,7 +32,7 @@ class FollowUpDetails with _$FollowUpDetails {
 }
 
 @freezed
-class ActiveFollowUpsResponse with _$ActiveFollowUpsResponse {
+abstract class ActiveFollowUpsResponse with _$ActiveFollowUpsResponse {
   const factory ActiveFollowUpsResponse({
     @JsonKey(name: 'active_followups')
     required List<ActiveFollowUp> activeFollowups,
@@ -44,7 +44,7 @@ class ActiveFollowUpsResponse with _$ActiveFollowUpsResponse {
 }
 
 @freezed
-class ActiveFollowUp with _$ActiveFollowUp {
+abstract class ActiveFollowUp with _$ActiveFollowUp {
   const factory ActiveFollowUp({
     @JsonKey(name: 'followup_id') required String followupId,
     @JsonKey(name: 'doctor_id') required String doctorId,
@@ -63,7 +63,7 @@ class ActiveFollowUp with _$ActiveFollowUp {
 }
 
 @freezed
-class ClinicPatient with _$ClinicPatient {
+abstract class ClinicPatient with _$ClinicPatient {
   const factory ClinicPatient({
     required String id,
     @JsonKey(name: 'clinic_id') required String clinicId,
@@ -74,6 +74,7 @@ class ClinicPatient with _$ClinicPatient {
     @JsonKey(name: 'date_of_birth') String? dateOfBirth,
     int? age,
     String? gender,
+    String? address,
     String? address1,
     String? address2,
     String? district,
@@ -593,7 +594,7 @@ extension ClinicPatientExtension on ClinicPatient {
 
 /// Last appointment information for follow-up eligibility
 @freezed
-class LastAppointmentInfo with _$LastAppointmentInfo {
+abstract class LastAppointmentInfo with _$LastAppointmentInfo {
   const factory LastAppointmentInfo({
     required String id,
     @JsonKey(name: 'doctor_id') required String doctorId,
@@ -611,7 +612,7 @@ class LastAppointmentInfo with _$LastAppointmentInfo {
 
 /// Follow-up eligibility information
 @freezed
-class FollowUpEligibility with _$FollowUpEligibility {
+abstract class FollowUpEligibility with _$FollowUpEligibility {
   const factory FollowUpEligibility({
     required bool eligible,
     @JsonKey(name: 'is_free')
@@ -628,7 +629,7 @@ class FollowUpEligibility with _$FollowUpEligibility {
 
 /// ✅ NEW: Appointment history item (for full patient history)
 @freezed
-class AppointmentHistoryItem with _$AppointmentHistoryItem {
+abstract class AppointmentHistoryItem with _$AppointmentHistoryItem {
   const factory AppointmentHistoryItem({
     @JsonKey(name: 'appointment_id') required String appointmentId,
     @JsonKey(name: 'doctor_id') required String doctorId,
@@ -659,7 +660,7 @@ class AppointmentHistoryItem with _$AppointmentHistoryItem {
 /// ✅ NEW: Eligible follow-up item (quick list of FREE follow-ups)
 /// Compatible with table-based follow_ups system
 @freezed
-class EligibleFollowUp with _$EligibleFollowUp {
+abstract class EligibleFollowUp with _$EligibleFollowUp {
   const factory EligibleFollowUp({
     // ✅ NEW TABLE-BASED: Follow-up record ID from follow_ups table
     @JsonKey(name: 'followup_id') String? followupId,
@@ -717,7 +718,7 @@ extension EligibleFollowUpExtension on EligibleFollowUp {
 /// ✅ NEW: Expired follow-up item (follow-ups that need renewal)
 /// Compatible with table-based follow_ups system
 @freezed
-class ExpiredFollowUp with _$ExpiredFollowUp {
+abstract class ExpiredFollowUp with _$ExpiredFollowUp {
   const factory ExpiredFollowUp({
     // ✅ NEW TABLE-BASED: Follow-up record ID from follow_ups table
     @JsonKey(name: 'followup_id') String? followupId,
@@ -759,7 +760,7 @@ extension ExpiredFollowUpExtension on ExpiredFollowUp {
 }
 
 @freezed
-class CreateClinicPatientInput with _$CreateClinicPatientInput {
+abstract class CreateClinicPatientInput with _$CreateClinicPatientInput {
   const factory CreateClinicPatientInput({
     @JsonKey(name: 'clinic_id') required String clinicId,
     @JsonKey(name: 'first_name') required String firstName,
@@ -769,6 +770,7 @@ class CreateClinicPatientInput with _$CreateClinicPatientInput {
     @JsonKey(name: 'date_of_birth') String? dateOfBirth,
     int? age,
     String? gender,
+    String? address,
     String? address1,
     String? address2,
     String? district,
@@ -788,7 +790,7 @@ class CreateClinicPatientInput with _$CreateClinicPatientInput {
 }
 
 @freezed
-class CreateClinicPatientResponse with _$CreateClinicPatientResponse {
+abstract class CreateClinicPatientResponse with _$CreateClinicPatientResponse {
   const factory CreateClinicPatientResponse({
     required String message,
     required ClinicPatient patient,
@@ -799,7 +801,7 @@ class CreateClinicPatientResponse with _$CreateClinicPatientResponse {
 }
 
 @freezed
-class ListClinicPatientsResponse with _$ListClinicPatientsResponse {
+abstract class ListClinicPatientsResponse with _$ListClinicPatientsResponse {
   const factory ListClinicPatientsResponse({
     @JsonKey(name: 'clinic_id') required String clinicId,
     required int total,
@@ -812,11 +814,11 @@ class ListClinicPatientsResponse with _$ListClinicPatientsResponse {
 
 /// ✅ NEW: Full appointment detail with all fields from backend
 @freezed
-class AppointmentDetail with _$AppointmentDetail {
+abstract class AppointmentDetail with _$AppointmentDetail {
   const factory AppointmentDetail({
     @JsonKey(name: 'appointment_id') required String appointmentId,
     @JsonKey(name: 'doctor_id') required String doctorId,
-    @JsonKey(name: 'department_id') required String departmentId,
+    @JsonKey(name: 'department_id') String? departmentId, // ✅ Changed to nullable
     @JsonKey(name: 'appointment_time') required String appointmentTime,
     @JsonKey(name: 'slot_type') required String slotType,
     @JsonKey(name: 'consultation_type') required String consultationType,
@@ -834,12 +836,12 @@ class AppointmentDetail with _$AppointmentDetail {
 
 /// ✅ NEW: Full follow-up detail with all fields from backend
 @freezed
-class FollowUpDetail with _$FollowUpDetail {
+abstract class FollowUpDetail with _$FollowUpDetail {
   const factory FollowUpDetail({
     @JsonKey(name: 'follow_up_id') required String followUpId,
     @JsonKey(name: 'source_appointment_id') required String sourceAppointmentId,
     @JsonKey(name: 'doctor_id') required String doctorId,
-    @JsonKey(name: 'department_id') required String departmentId,
+    @JsonKey(name: 'department_id') String? departmentId, // ✅ Changed to nullable
     required String status,
     @JsonKey(name: 'is_free') @Default(true) bool isFree,
     @JsonKey(name: 'valid_from') required String validFrom,

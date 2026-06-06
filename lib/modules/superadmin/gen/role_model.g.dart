@@ -6,106 +6,99 @@ part of '../models/role_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$RoleModelImpl _$$RoleModelImplFromJson(Map<String, dynamic> json) =>
-    _$RoleModelImpl(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      permissions: json['permissions'] as Map<String, dynamic>,
-      isSystemRole: json['is_system_role'] as bool,
-      isActive: json['is_active'] as bool,
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String?,
-      usersCount: (json['users_count'] as num?)?.toInt(),
-    );
+_RoleModel _$RoleModelFromJson(Map<String, dynamic> json) => _RoleModel(
+  id: json['id'] as String,
+  name: json['name'] as String,
+  description: json['description'] as String?,
+  permissions: json['permissions'] as Map<String, dynamic>,
+  isSystemRole: json['is_system_role'] as bool,
+  isActive: json['is_active'] as bool,
+  createdAt: json['created_at'] as String,
+  updatedAt: json['updated_at'] as String?,
+  usersCount: (json['users_count'] as num?)?.toInt(),
+);
 
-Map<String, dynamic> _$$RoleModelImplToJson(_$RoleModelImpl instance) =>
+Map<String, dynamic> _$RoleModelToJson(_RoleModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      if (instance.description case final value?) 'description': value,
+      'description': ?instance.description,
       'permissions': instance.permissions,
       'is_system_role': instance.isSystemRole,
       'is_active': instance.isActive,
       'created_at': instance.createdAt,
-      if (instance.updatedAt case final value?) 'updated_at': value,
-      if (instance.usersCount case final value?) 'users_count': value,
+      'updated_at': ?instance.updatedAt,
+      'users_count': ?instance.usersCount,
     };
 
-_$CreateRoleModelImpl _$$CreateRoleModelImplFromJson(
+_CreateRoleModel _$CreateRoleModelFromJson(Map<String, dynamic> json) =>
+    _CreateRoleModel(
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      permissions: json['permissions'] as Map<String, dynamic>,
+    );
+
+Map<String, dynamic> _$CreateRoleModelToJson(_CreateRoleModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': ?instance.description,
+      'permissions': instance.permissions,
+    };
+
+_UpdateRoleModel _$UpdateRoleModelFromJson(Map<String, dynamic> json) =>
+    _UpdateRoleModel(
+      name: json['name'] as String?,
+      description: json['description'] as String?,
+      permissions: json['permissions'] as Map<String, dynamic>?,
+    );
+
+Map<String, dynamic> _$UpdateRoleModelToJson(_UpdateRoleModel instance) =>
+    <String, dynamic>{
+      'name': ?instance.name,
+      'description': ?instance.description,
+      'permissions': ?instance.permissions,
+    };
+
+_UpdateRolePermissionsModel _$UpdateRolePermissionsModelFromJson(
   Map<String, dynamic> json,
-) => _$CreateRoleModelImpl(
-  name: json['name'] as String,
-  description: json['description'] as String?,
+) => _UpdateRolePermissionsModel(
   permissions: json['permissions'] as Map<String, dynamic>,
 );
 
-Map<String, dynamic> _$$CreateRoleModelImplToJson(
-  _$CreateRoleModelImpl instance,
-) => <String, dynamic>{
-  'name': instance.name,
-  if (instance.description case final value?) 'description': value,
-  'permissions': instance.permissions,
-};
-
-_$UpdateRoleModelImpl _$$UpdateRoleModelImplFromJson(
-  Map<String, dynamic> json,
-) => _$UpdateRoleModelImpl(
-  name: json['name'] as String?,
-  description: json['description'] as String?,
-  permissions: json['permissions'] as Map<String, dynamic>?,
-);
-
-Map<String, dynamic> _$$UpdateRoleModelImplToJson(
-  _$UpdateRoleModelImpl instance,
-) => <String, dynamic>{
-  if (instance.name case final value?) 'name': value,
-  if (instance.description case final value?) 'description': value,
-  if (instance.permissions case final value?) 'permissions': value,
-};
-
-_$UpdateRolePermissionsModelImpl _$$UpdateRolePermissionsModelImplFromJson(
-  Map<String, dynamic> json,
-) => _$UpdateRolePermissionsModelImpl(
-  permissions: json['permissions'] as Map<String, dynamic>,
-);
-
-Map<String, dynamic> _$$UpdateRolePermissionsModelImplToJson(
-  _$UpdateRolePermissionsModelImpl instance,
+Map<String, dynamic> _$UpdateRolePermissionsModelToJson(
+  _UpdateRolePermissionsModel instance,
 ) => <String, dynamic>{'permissions': instance.permissions};
 
-_$PermissionTemplateImpl _$$PermissionTemplateImplFromJson(
-  Map<String, dynamic> json,
-) => _$PermissionTemplateImpl(
-  name: json['name'] as String,
-  description: json['description'] as String,
-  permissions: json['permissions'] as Map<String, dynamic>,
-);
+_PermissionTemplate _$PermissionTemplateFromJson(Map<String, dynamic> json) =>
+    _PermissionTemplate(
+      name: json['name'] as String,
+      description: json['description'] as String,
+      permissions: json['permissions'] as Map<String, dynamic>,
+    );
 
-Map<String, dynamic> _$$PermissionTemplateImplToJson(
-  _$PermissionTemplateImpl instance,
-) => <String, dynamic>{
-  'name': instance.name,
-  'description': instance.description,
-  'permissions': instance.permissions,
-};
+Map<String, dynamic> _$PermissionTemplateToJson(_PermissionTemplate instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'permissions': instance.permissions,
+    };
 
-_$PermissionTemplatesResponseImpl _$$PermissionTemplatesResponseImplFromJson(
+_PermissionTemplatesResponse _$PermissionTemplatesResponseFromJson(
   Map<String, dynamic> json,
-) => _$PermissionTemplatesResponseImpl(
+) => _PermissionTemplatesResponse(
   templates: (json['templates'] as List<dynamic>)
       .map((e) => PermissionTemplate.fromJson(e as Map<String, dynamic>))
       .toList(),
 );
 
-Map<String, dynamic> _$$PermissionTemplatesResponseImplToJson(
-  _$PermissionTemplatesResponseImpl instance,
+Map<String, dynamic> _$PermissionTemplatesResponseToJson(
+  _PermissionTemplatesResponse instance,
 ) => <String, dynamic>{
   'templates': instance.templates.map((e) => e.toJson()).toList(),
 };
 
-_$RoleUserModelImpl _$$RoleUserModelImplFromJson(Map<String, dynamic> json) =>
-    _$RoleUserModelImpl(
+_RoleUserModel _$RoleUserModelFromJson(Map<String, dynamic> json) =>
+    _RoleUserModel(
       id: json['id'] as String,
       email: json['email'] as String?,
       username: json['username'] as String,
@@ -122,73 +115,68 @@ _$RoleUserModelImpl _$$RoleUserModelImplFromJson(Map<String, dynamic> json) =>
       serviceId: json['service_id'] as String?,
     );
 
-Map<String, dynamic> _$$RoleUserModelImplToJson(_$RoleUserModelImpl instance) =>
+Map<String, dynamic> _$RoleUserModelToJson(_RoleUserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      if (instance.email case final value?) 'email': value,
+      'email': ?instance.email,
       'username': instance.username,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
-      if (instance.phone case final value?) 'phone': value,
+      'phone': ?instance.phone,
       'is_active': instance.isActive,
       'is_blocked': instance.isBlocked,
-      if (instance.lastLogin case final value?) 'last_login': value,
-      if (instance.createdAt case final value?) 'created_at': value,
-      if (instance.assignedAt case final value?) 'assigned_at': value,
-      if (instance.organizationId case final value?) 'organization_id': value,
-      if (instance.clinicId case final value?) 'clinic_id': value,
-      if (instance.serviceId case final value?) 'service_id': value,
+      'last_login': ?instance.lastLogin,
+      'created_at': ?instance.createdAt,
+      'assigned_at': ?instance.assignedAt,
+      'organization_id': ?instance.organizationId,
+      'clinic_id': ?instance.clinicId,
+      'service_id': ?instance.serviceId,
     };
 
-_$RolePaginationImpl _$$RolePaginationImplFromJson(Map<String, dynamic> json) =>
-    _$RolePaginationImpl(
+_RolePagination _$RolePaginationFromJson(Map<String, dynamic> json) =>
+    _RolePagination(
       page: (json['page'] as num).toInt(),
       pageSize: (json['page_size'] as num).toInt(),
       totalCount: (json['total_count'] as num).toInt(),
       totalPages: (json['total_pages'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$RolePaginationImplToJson(
-  _$RolePaginationImpl instance,
-) => <String, dynamic>{
-  'page': instance.page,
-  'page_size': instance.pageSize,
-  'total_count': instance.totalCount,
-  'total_pages': instance.totalPages,
-};
+Map<String, dynamic> _$RolePaginationToJson(_RolePagination instance) =>
+    <String, dynamic>{
+      'page': instance.page,
+      'page_size': instance.pageSize,
+      'total_count': instance.totalCount,
+      'total_pages': instance.totalPages,
+    };
 
-_$RolesListResponseImpl _$$RolesListResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$RolesListResponseImpl(
-  roles: (json['roles'] as List<dynamic>)
-      .map((e) => RoleModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  pagination: RolePagination.fromJson(
-    json['pagination'] as Map<String, dynamic>,
-  ),
-);
+_RolesListResponse _$RolesListResponseFromJson(Map<String, dynamic> json) =>
+    _RolesListResponse(
+      roles: (json['roles'] as List<dynamic>)
+          .map((e) => RoleModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pagination: RolePagination.fromJson(
+        json['pagination'] as Map<String, dynamic>,
+      ),
+    );
 
-Map<String, dynamic> _$$RolesListResponseImplToJson(
-  _$RolesListResponseImpl instance,
-) => <String, dynamic>{
-  'roles': instance.roles.map((e) => e.toJson()).toList(),
-  'pagination': instance.pagination.toJson(),
-};
+Map<String, dynamic> _$RolesListResponseToJson(_RolesListResponse instance) =>
+    <String, dynamic>{
+      'roles': instance.roles.map((e) => e.toJson()).toList(),
+      'pagination': instance.pagination.toJson(),
+    };
 
-_$RoleUsersResponseImpl _$$RoleUsersResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$RoleUsersResponseImpl(
-  users: (json['users'] as List<dynamic>)
-      .map((e) => RoleUserModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  pagination: RolePagination.fromJson(
-    json['pagination'] as Map<String, dynamic>,
-  ),
-);
+_RoleUsersResponse _$RoleUsersResponseFromJson(Map<String, dynamic> json) =>
+    _RoleUsersResponse(
+      users: (json['users'] as List<dynamic>)
+          .map((e) => RoleUserModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pagination: RolePagination.fromJson(
+        json['pagination'] as Map<String, dynamic>,
+      ),
+    );
 
-Map<String, dynamic> _$$RoleUsersResponseImplToJson(
-  _$RoleUsersResponseImpl instance,
-) => <String, dynamic>{
-  'users': instance.users.map((e) => e.toJson()).toList(),
-  'pagination': instance.pagination.toJson(),
-};
+Map<String, dynamic> _$RoleUsersResponseToJson(_RoleUsersResponse instance) =>
+    <String, dynamic>{
+      'users': instance.users.map((e) => e.toJson()).toList(),
+      'pagination': instance.pagination.toJson(),
+    };

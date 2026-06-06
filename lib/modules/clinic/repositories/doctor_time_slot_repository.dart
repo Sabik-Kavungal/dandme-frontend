@@ -1,5 +1,5 @@
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
 
 class DoctorTimeSlotRepository {
   final ServiceRepo _serviceRepo;
@@ -22,7 +22,7 @@ class DoctorTimeSlotRepository {
       print(
         '╚════════════════════════════════════════════════════════════════╝',
       );
-      print('📍 Endpoint: organizations/doctor-time-slots');
+      print('📍 Endpoint: doctor-time-slots');
       print('🔑 Token: ${token.substring(0, 20)}...');
       print('📅 Date: ${input.date}');
       print('📊 Number of slots: ${input.slots.length}');
@@ -47,7 +47,7 @@ class DoctorTimeSlotRepository {
       };
 
       final response = await _serviceRepo.requist(
-        'organizations/doctor-time-slots',
+        'doctor-time-slots',
         method: 'POST',
         body: body,
         token: token,
@@ -126,7 +126,7 @@ class DoctorTimeSlotRepository {
                 '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
           )
           .join('&');
-      final endpoint = 'organizations/doctor-time-slots?$queryString';
+      final endpoint = 'doctor-time-slots?$queryString';
 
       print('📍 Endpoint: $endpoint');
       print('🔑 Token: ${token.substring(0, 20)}...');
@@ -183,7 +183,7 @@ class DoctorTimeSlotRepository {
   }) async {
     try {
       final endpoint =
-          'organizations/doctor-time-slots?doctor_id=$doctorId&clinic_id=$clinicId&slot_type=$slotType';
+          'doctor-time-slots?doctor_id=$doctorId&clinic_id=$clinicId&slot_type=$slotType';
       final response = await _serviceRepo.requist(
         endpoint,
         method: 'GET',

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/superadmin/viewmodels/user_management_viewmodel.dart';
-import 'package:a/modules/superadmin/views/users/add_edit_user_view.dart';
-import 'package:a/modules/superadmin/views/users/assign_role_dialog.dart';
+import 'package:drandme/modules/superadmin/viewmodels/user_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/views/users/add_edit_user_view.dart';
+import 'package:drandme/modules/superadmin/views/users/assign_role_dialog.dart';
 
 class UserDetailsView extends StatefulWidget {
   final String userId;

@@ -44,7 +44,7 @@ class CustomTextField extends StatelessWidget {
               colors: [Colors.white, const Color(0xFFFAFAFA)],
             ),
             border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(2),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF6366F1).withOpacity(0.04),

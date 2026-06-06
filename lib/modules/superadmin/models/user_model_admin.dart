@@ -4,7 +4,7 @@ part '../gen/user_model_admin.g.dart';
 
 // User role information for admin
 @freezed
-class UserRoleAdmin with _$UserRoleAdmin {
+abstract class UserRoleAdmin with _$UserRoleAdmin {
   const factory UserRoleAdmin({
     required String id,
     required String name,
@@ -22,13 +22,13 @@ class UserRoleAdmin with _$UserRoleAdmin {
 
 // User response model for admin (for listing and viewing users)
 @freezed
-class UserModelAdmin with _$UserModelAdmin {
+abstract class UserModelAdmin with _$UserModelAdmin {
   const factory UserModelAdmin({
     required String id,
     String? email,
     required String username,
-    @JsonKey(name: 'first_name') required String firstName,
-    @JsonKey(name: 'last_name') required String lastName,
+    @JsonKey(name: 'first_name') String? firstName,
+    @JsonKey(name: 'last_name') String? lastName,
     String? phone,
     @JsonKey(name: 'date_of_birth') String? dateOfBirth,
     String? gender,
@@ -48,10 +48,10 @@ class UserModelAdmin with _$UserModelAdmin {
 
 // Model for creating a new user (admin)
 @freezed
-class CreateUserModelAdmin with _$CreateUserModelAdmin {
+abstract class CreateUserModelAdmin with _$CreateUserModelAdmin {
   const factory CreateUserModelAdmin({
-    @JsonKey(name: 'first_name') required String firstName,
-    @JsonKey(name: 'last_name') required String lastName,
+    @JsonKey(name: 'first_name') String? firstName,
+    @JsonKey(name: 'last_name') String? lastName,
     String? email,
     required String username,
     String? phone,
@@ -68,7 +68,7 @@ class CreateUserModelAdmin with _$CreateUserModelAdmin {
 
 // Model for updating a user (admin)
 @freezed
-class UpdateUserModelAdmin with _$UpdateUserModelAdmin {
+abstract class UpdateUserModelAdmin with _$UpdateUserModelAdmin {
   const factory UpdateUserModelAdmin({
     @JsonKey(name: 'first_name') String? firstName,
     @JsonKey(name: 'last_name') String? lastName,
@@ -84,7 +84,7 @@ class UpdateUserModelAdmin with _$UpdateUserModelAdmin {
 
 // Model for blocking a user (admin)
 @freezed
-class BlockUserModelAdmin with _$BlockUserModelAdmin {
+abstract class BlockUserModelAdmin with _$BlockUserModelAdmin {
   const factory BlockUserModelAdmin({required String reason}) =
       _BlockUserModelAdmin;
 
@@ -94,7 +94,7 @@ class BlockUserModelAdmin with _$BlockUserModelAdmin {
 
 // Model for changing user password (admin)
 @freezed
-class AdminChangePasswordModelAdmin with _$AdminChangePasswordModelAdmin {
+abstract class AdminChangePasswordModelAdmin with _$AdminChangePasswordModelAdmin {
   const factory AdminChangePasswordModelAdmin({
     @JsonKey(name: 'new_password') required String newPassword,
   }) = _AdminChangePasswordModelAdmin;
@@ -105,7 +105,7 @@ class AdminChangePasswordModelAdmin with _$AdminChangePasswordModelAdmin {
 
 // Model for assigning a role (admin)
 @freezed
-class AssignRoleModelAdmin with _$AssignRoleModelAdmin {
+abstract class AssignRoleModelAdmin with _$AssignRoleModelAdmin {
   const factory AssignRoleModelAdmin({
     @JsonKey(name: 'role_id') required String roleId,
     @JsonKey(name: 'organization_id') String? organizationId,
@@ -119,7 +119,7 @@ class AssignRoleModelAdmin with _$AssignRoleModelAdmin {
 
 // User activity log model (admin)
 @freezed
-class UserActivityLogAdmin with _$UserActivityLogAdmin {
+abstract class UserActivityLogAdmin with _$UserActivityLogAdmin {
   const factory UserActivityLogAdmin({
     required String id,
     @JsonKey(name: 'performed_by') String? performedBy,
@@ -138,7 +138,7 @@ class UserActivityLogAdmin with _$UserActivityLogAdmin {
 
 // Pagination model for users (admin)
 @freezed
-class UserPaginationAdmin with _$UserPaginationAdmin {
+abstract class UserPaginationAdmin with _$UserPaginationAdmin {
   const factory UserPaginationAdmin({
     required int page,
     @JsonKey(name: 'page_size') required int pageSize,
@@ -152,7 +152,7 @@ class UserPaginationAdmin with _$UserPaginationAdmin {
 
 // Users list response (admin)
 @freezed
-class UsersListResponseAdmin with _$UsersListResponseAdmin {
+abstract class UsersListResponseAdmin with _$UsersListResponseAdmin {
   const factory UsersListResponseAdmin({
     required List<UserModelAdmin> users,
     required UserPaginationAdmin pagination,
@@ -164,7 +164,7 @@ class UsersListResponseAdmin with _$UsersListResponseAdmin {
 
 // Activity logs response (admin)
 @freezed
-class ActivityLogsResponseAdmin with _$ActivityLogsResponseAdmin {
+abstract class ActivityLogsResponseAdmin with _$ActivityLogsResponseAdmin {
   const factory ActivityLogsResponseAdmin({
     required List<UserActivityLogAdmin> logs,
     required UserPaginationAdmin pagination,

@@ -16,23 +16,22 @@ class BeautifulTableContainer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-            spreadRadius: -2,
+            color: const Color(0xFF1E293B).withOpacity(0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
+            color: const Color(0xFF1E293B).withOpacity(0.04),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(width: 1, color: const Color(0xFFE5E7EB)),
+        border: Border.all(width: 1, color: const Color(0xFFE2E8F0).withOpacity(0.6)),
       ),
-      child: child,
+      child: ClipRRect(borderRadius: BorderRadius.circular(6), child: child),
     );
   }
 }

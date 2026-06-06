@@ -5,7 +5,7 @@ part '../gen/clinic_doctor_link_model.g.dart';
 
 // Models for creating clinic-doctor links
 @freezed
-class ClinicInfo with _$ClinicInfo {
+abstract class ClinicInfo with _$ClinicInfo {
   const factory ClinicInfo({
     @JsonKey(name: "clinic_code") required String clinicCode,
     required String name,
@@ -16,7 +16,7 @@ class ClinicInfo with _$ClinicInfo {
 }
 
 @freezed
-class DoctorInfo with _$DoctorInfo {
+abstract class DoctorInfo with _$DoctorInfo {
   const factory DoctorInfo({
     @JsonKey(name: "doctor_code") required String doctorCode,
     required String email,
@@ -24,6 +24,7 @@ class DoctorInfo with _$DoctorInfo {
     @JsonKey(name: "last_name") required String lastName,
     required String specialization,
     required String username,
+    @JsonKey(name: "profile_image") String? profileImage,
   }) = _DoctorInfo;
 
   factory DoctorInfo.fromJson(Map<String, dynamic> json) =>
@@ -31,7 +32,7 @@ class DoctorInfo with _$DoctorInfo {
 }
 
 @freezed
-class ClinicDoctorLinkModel with _$ClinicDoctorLinkModel {
+abstract class ClinicDoctorLinkModel with _$ClinicDoctorLinkModel {
   const factory ClinicDoctorLinkModel({
     required ClinicInfo clinic,
     required DoctorInfo doctor,
@@ -42,7 +43,7 @@ class ClinicDoctorLinkModel with _$ClinicDoctorLinkModel {
 }
 
 @freezed
-class CreateClinicDoctorLinkModel with _$CreateClinicDoctorLinkModel {
+abstract class CreateClinicDoctorLinkModel with _$CreateClinicDoctorLinkModel {
   const factory CreateClinicDoctorLinkModel({
     required List<ClinicDoctorLinkModel> links,
   }) = _CreateClinicDoctorLinkModel;
@@ -53,7 +54,7 @@ class CreateClinicDoctorLinkModel with _$CreateClinicDoctorLinkModel {
 
 // Models for listing clinic-doctor links
 @freezed
-class ClinicDoctorLinkResponse with _$ClinicDoctorLinkResponse {
+abstract class ClinicDoctorLinkResponse with _$ClinicDoctorLinkResponse {
   const factory ClinicDoctorLinkResponse({
     @JsonKey(name: "link_id") String? linkId,
     required ClinicInfo clinic,
@@ -73,7 +74,7 @@ class ClinicDoctorLinkResponse with _$ClinicDoctorLinkResponse {
 }
 
 @freezed
-class DoctorFullInfo with _$DoctorFullInfo {
+abstract class DoctorFullInfo with _$DoctorFullInfo {
   const factory DoctorFullInfo({
     @JsonKey(name: "doctor_id") String? doctorId,
     @JsonKey(name: "doctor_code") required String doctorCode,
@@ -86,6 +87,7 @@ class DoctorFullInfo with _$DoctorFullInfo {
     @JsonKey(name: "consultation_fee") double? consultationFee,
     @JsonKey(name: "follow_up_fee") double? followUpFee,
     @JsonKey(name: "follow_up_days") int? followUpDays,
+    @JsonKey(name: "profile_image") String? profileImage,
   }) = _DoctorFullInfo;
 
   factory DoctorFullInfo.fromJson(Map<String, dynamic> json) =>
@@ -94,12 +96,14 @@ class DoctorFullInfo with _$DoctorFullInfo {
 
 // Model for creating clinic-doctor link with fees
 @freezed
-class CreateClinicDoctorLinkWithFees with _$CreateClinicDoctorLinkWithFees {
+abstract class CreateClinicDoctorLinkWithFees with _$CreateClinicDoctorLinkWithFees {
   const factory CreateClinicDoctorLinkWithFees({
     @JsonKey(name: "clinic_id") required String clinicId,
     @JsonKey(name: "doctor_id") required String doctorId,
-    @JsonKey(name: "consultation_fee_offline") required double consultationFeeOffline,
-    @JsonKey(name: "consultation_fee_online") required double consultationFeeOnline,
+    @JsonKey(name: "consultation_fee_offline")
+    required double consultationFeeOffline,
+    @JsonKey(name: "consultation_fee_online")
+    required double consultationFeeOnline,
     @JsonKey(name: "follow_up_fee") required double followUpFee,
     @JsonKey(name: "follow_up_days") required int followUpDays,
     String? notes,
@@ -111,7 +115,7 @@ class CreateClinicDoctorLinkWithFees with _$CreateClinicDoctorLinkWithFees {
 
 // Model for updating clinic-doctor link fees
 @freezed
-class UpdateClinicDoctorLinkFees with _$UpdateClinicDoctorLinkFees {
+abstract class UpdateClinicDoctorLinkFees with _$UpdateClinicDoctorLinkFees {
   const factory UpdateClinicDoctorLinkFees({
     @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
     @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,

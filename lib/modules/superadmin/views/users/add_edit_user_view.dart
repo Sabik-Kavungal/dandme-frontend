@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/superadmin/viewmodels/user_management_viewmodel.dart';
-import 'package:a/modules/superadmin/models/user_model_admin.dart';
+import 'package:drandme/modules/superadmin/viewmodels/user_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/models/user_model_admin.dart';
 
 class AddEditUserView extends StatefulWidget {
   final UserModelAdmin? user;
@@ -28,8 +28,8 @@ class _AddEditUserViewState extends State<AddEditUserView> {
   void initState() {
     super.initState();
     if (widget.user != null) {
-      _firstNameController.text = widget.user!.firstName;
-      _lastNameController.text = widget.user!.lastName;
+      _firstNameController.text = widget.user!.firstName ?? '';
+      _lastNameController.text = widget.user!.lastName ?? '';
       _emailController.text = widget.user!.email ?? '';
       _usernameController.text = widget.user!.username;
       _phoneController.text = widget.user!.phone ?? '';
@@ -71,47 +71,7 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                     'Personal Information',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _firstNameController,
-                    decoration: InputDecoration(
-                      labelText: 'First Name *',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.person),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter first name';
-                      }
-                      if (value.length < 2) {
-                        return 'First name must be at least 2 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: InputDecoration(
-                      labelText: 'Last Name *',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.person_outline),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter last name';
-                      }
-                      if (value.length < 2) {
-                        return 'Last name must be at least 2 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
+
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -308,8 +268,12 @@ class _AddEditUserViewState extends State<AddEditUserView> {
     if (widget.user != null) {
       // Update user
       final updateModel = UpdateUserModelAdmin(
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
+        firstName: _firstNameController.text.isNotEmpty
+            ? _firstNameController.text
+            : null,
+        lastName: _lastNameController.text.isNotEmpty
+            ? _lastNameController.text
+            : null,
         email: _emailController.text.isNotEmpty ? _emailController.text : null,
         phone: _phoneController.text.isNotEmpty ? _phoneController.text : null,
         dateOfBirth: _dateOfBirthController.text.isNotEmpty
@@ -326,8 +290,12 @@ class _AddEditUserViewState extends State<AddEditUserView> {
     } else {
       // Create user
       final createModel = CreateUserModelAdmin(
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
+        firstName: _firstNameController.text.isNotEmpty
+            ? _firstNameController.text
+            : null,
+        lastName: _lastNameController.text.isNotEmpty
+            ? _lastNameController.text
+            : null,
         email: _emailController.text.isNotEmpty ? _emailController.text : null,
         username: _usernameController.text,
         phone: _phoneController.text.isNotEmpty ? _phoneController.text : null,

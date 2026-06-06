@@ -6,8 +6,8 @@ part of '../models/user_model_admin.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserRoleAdminImpl _$$UserRoleAdminImplFromJson(Map<String, dynamic> json) =>
-    _$UserRoleAdminImpl(
+_UserRoleAdmin _$UserRoleAdminFromJson(Map<String, dynamic> json) =>
+    _UserRoleAdmin(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
@@ -18,25 +18,25 @@ _$UserRoleAdminImpl _$$UserRoleAdminImplFromJson(Map<String, dynamic> json) =>
       serviceId: json['service_id'] as String?,
     );
 
-Map<String, dynamic> _$$UserRoleAdminImplToJson(_$UserRoleAdminImpl instance) =>
+Map<String, dynamic> _$UserRoleAdminToJson(_UserRoleAdmin instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      if (instance.description case final value?) 'description': value,
-      if (instance.permissions case final value?) 'permissions': value,
-      if (instance.isActive case final value?) 'is_active': value,
-      if (instance.organizationId case final value?) 'organization_id': value,
-      if (instance.clinicId case final value?) 'clinic_id': value,
-      if (instance.serviceId case final value?) 'service_id': value,
+      'description': ?instance.description,
+      'permissions': ?instance.permissions,
+      'is_active': ?instance.isActive,
+      'organization_id': ?instance.organizationId,
+      'clinic_id': ?instance.clinicId,
+      'service_id': ?instance.serviceId,
     };
 
-_$UserModelAdminImpl _$$UserModelAdminImplFromJson(Map<String, dynamic> json) =>
-    _$UserModelAdminImpl(
+_UserModelAdmin _$UserModelAdminFromJson(Map<String, dynamic> json) =>
+    _UserModelAdmin(
       id: json['id'] as String,
       email: json['email'] as String?,
       username: json['username'] as String,
-      firstName: json['first_name'] as String,
-      lastName: json['last_name'] as String,
+      firstName: json['first_name'] as String?,
+      lastName: json['last_name'] as String?,
       phone: json['phone'] as String?,
       dateOfBirth: json['date_of_birth'] as String?,
       gender: json['gender'] as String?,
@@ -52,33 +52,31 @@ _$UserModelAdminImpl _$$UserModelAdminImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$UserModelAdminImplToJson(
-  _$UserModelAdminImpl instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  if (instance.email case final value?) 'email': value,
-  'username': instance.username,
-  'first_name': instance.firstName,
-  'last_name': instance.lastName,
-  if (instance.phone case final value?) 'phone': value,
-  if (instance.dateOfBirth case final value?) 'date_of_birth': value,
-  if (instance.gender case final value?) 'gender': value,
-  'is_active': instance.isActive,
-  'is_blocked': instance.isBlocked,
-  if (instance.blockedAt case final value?) 'blocked_at': value,
-  if (instance.blockedReason case final value?) 'blocked_reason': value,
-  if (instance.lastLogin case final value?) 'last_login': value,
-  'created_at': instance.createdAt,
-  if (instance.updatedAt case final value?) 'updated_at': value,
-  if (instance.roles?.map((e) => e.toJson()).toList() case final value?)
-    'roles': value,
-};
+Map<String, dynamic> _$UserModelAdminToJson(_UserModelAdmin instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'email': ?instance.email,
+      'username': instance.username,
+      'first_name': ?instance.firstName,
+      'last_name': ?instance.lastName,
+      'phone': ?instance.phone,
+      'date_of_birth': ?instance.dateOfBirth,
+      'gender': ?instance.gender,
+      'is_active': instance.isActive,
+      'is_blocked': instance.isBlocked,
+      'blocked_at': ?instance.blockedAt,
+      'blocked_reason': ?instance.blockedReason,
+      'last_login': ?instance.lastLogin,
+      'created_at': instance.createdAt,
+      'updated_at': ?instance.updatedAt,
+      'roles': ?instance.roles?.map((e) => e.toJson()).toList(),
+    };
 
-_$CreateUserModelAdminImpl _$$CreateUserModelAdminImplFromJson(
+_CreateUserModelAdmin _$CreateUserModelAdminFromJson(
   Map<String, dynamic> json,
-) => _$CreateUserModelAdminImpl(
-  firstName: json['first_name'] as String,
-  lastName: json['last_name'] as String,
+) => _CreateUserModelAdmin(
+  firstName: json['first_name'] as String?,
+  lastName: json['last_name'] as String?,
   email: json['email'] as String?,
   username: json['username'] as String,
   phone: json['phone'] as String?,
@@ -91,24 +89,24 @@ _$CreateUserModelAdminImpl _$$CreateUserModelAdminImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$CreateUserModelAdminImplToJson(
-  _$CreateUserModelAdminImpl instance,
+Map<String, dynamic> _$CreateUserModelAdminToJson(
+  _CreateUserModelAdmin instance,
 ) => <String, dynamic>{
-  'first_name': instance.firstName,
-  'last_name': instance.lastName,
-  if (instance.email case final value?) 'email': value,
+  'first_name': ?instance.firstName,
+  'last_name': ?instance.lastName,
+  'email': ?instance.email,
   'username': instance.username,
-  if (instance.phone case final value?) 'phone': value,
+  'phone': ?instance.phone,
   'password': instance.password,
-  if (instance.dateOfBirth case final value?) 'date_of_birth': value,
-  if (instance.gender case final value?) 'gender': value,
-  if (instance.isActive case final value?) 'is_active': value,
-  if (instance.roleIds case final value?) 'role_ids': value,
+  'date_of_birth': ?instance.dateOfBirth,
+  'gender': ?instance.gender,
+  'is_active': ?instance.isActive,
+  'role_ids': ?instance.roleIds,
 };
 
-_$UpdateUserModelAdminImpl _$$UpdateUserModelAdminImplFromJson(
+_UpdateUserModelAdmin _$UpdateUserModelAdminFromJson(
   Map<String, dynamic> json,
-) => _$UpdateUserModelAdminImpl(
+) => _UpdateUserModelAdmin(
   firstName: json['first_name'] as String?,
   lastName: json['last_name'] as String?,
   email: json['email'] as String?,
@@ -117,56 +115,54 @@ _$UpdateUserModelAdminImpl _$$UpdateUserModelAdminImplFromJson(
   gender: json['gender'] as String?,
 );
 
-Map<String, dynamic> _$$UpdateUserModelAdminImplToJson(
-  _$UpdateUserModelAdminImpl instance,
+Map<String, dynamic> _$UpdateUserModelAdminToJson(
+  _UpdateUserModelAdmin instance,
 ) => <String, dynamic>{
-  if (instance.firstName case final value?) 'first_name': value,
-  if (instance.lastName case final value?) 'last_name': value,
-  if (instance.email case final value?) 'email': value,
-  if (instance.phone case final value?) 'phone': value,
-  if (instance.dateOfBirth case final value?) 'date_of_birth': value,
-  if (instance.gender case final value?) 'gender': value,
+  'first_name': ?instance.firstName,
+  'last_name': ?instance.lastName,
+  'email': ?instance.email,
+  'phone': ?instance.phone,
+  'date_of_birth': ?instance.dateOfBirth,
+  'gender': ?instance.gender,
 };
 
-_$BlockUserModelAdminImpl _$$BlockUserModelAdminImplFromJson(
-  Map<String, dynamic> json,
-) => _$BlockUserModelAdminImpl(reason: json['reason'] as String);
+_BlockUserModelAdmin _$BlockUserModelAdminFromJson(Map<String, dynamic> json) =>
+    _BlockUserModelAdmin(reason: json['reason'] as String);
 
-Map<String, dynamic> _$$BlockUserModelAdminImplToJson(
-  _$BlockUserModelAdminImpl instance,
+Map<String, dynamic> _$BlockUserModelAdminToJson(
+  _BlockUserModelAdmin instance,
 ) => <String, dynamic>{'reason': instance.reason};
 
-_$AdminChangePasswordModelAdminImpl
-_$$AdminChangePasswordModelAdminImplFromJson(Map<String, dynamic> json) =>
-    _$AdminChangePasswordModelAdminImpl(
-      newPassword: json['new_password'] as String,
-    );
+_AdminChangePasswordModelAdmin _$AdminChangePasswordModelAdminFromJson(
+  Map<String, dynamic> json,
+) =>
+    _AdminChangePasswordModelAdmin(newPassword: json['new_password'] as String);
 
-Map<String, dynamic> _$$AdminChangePasswordModelAdminImplToJson(
-  _$AdminChangePasswordModelAdminImpl instance,
+Map<String, dynamic> _$AdminChangePasswordModelAdminToJson(
+  _AdminChangePasswordModelAdmin instance,
 ) => <String, dynamic>{'new_password': instance.newPassword};
 
-_$AssignRoleModelAdminImpl _$$AssignRoleModelAdminImplFromJson(
+_AssignRoleModelAdmin _$AssignRoleModelAdminFromJson(
   Map<String, dynamic> json,
-) => _$AssignRoleModelAdminImpl(
+) => _AssignRoleModelAdmin(
   roleId: json['role_id'] as String,
   organizationId: json['organization_id'] as String?,
   clinicId: json['clinic_id'] as String?,
   serviceId: json['service_id'] as String?,
 );
 
-Map<String, dynamic> _$$AssignRoleModelAdminImplToJson(
-  _$AssignRoleModelAdminImpl instance,
+Map<String, dynamic> _$AssignRoleModelAdminToJson(
+  _AssignRoleModelAdmin instance,
 ) => <String, dynamic>{
   'role_id': instance.roleId,
-  if (instance.organizationId case final value?) 'organization_id': value,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.serviceId case final value?) 'service_id': value,
+  'organization_id': ?instance.organizationId,
+  'clinic_id': ?instance.clinicId,
+  'service_id': ?instance.serviceId,
 };
 
-_$UserActivityLogAdminImpl _$$UserActivityLogAdminImplFromJson(
+_UserActivityLogAdmin _$UserActivityLogAdminFromJson(
   Map<String, dynamic> json,
-) => _$UserActivityLogAdminImpl(
+) => _UserActivityLogAdmin(
   id: json['id'] as String,
   performedBy: json['performed_by'] as String?,
   performedByName: json['performed_by_name'] as String?,
@@ -178,31 +174,30 @@ _$UserActivityLogAdminImpl _$$UserActivityLogAdminImplFromJson(
   createdAt: json['created_at'] as String,
 );
 
-Map<String, dynamic> _$$UserActivityLogAdminImplToJson(
-  _$UserActivityLogAdminImpl instance,
+Map<String, dynamic> _$UserActivityLogAdminToJson(
+  _UserActivityLogAdmin instance,
 ) => <String, dynamic>{
   'id': instance.id,
-  if (instance.performedBy case final value?) 'performed_by': value,
-  if (instance.performedByName case final value?) 'performed_by_name': value,
+  'performed_by': ?instance.performedBy,
+  'performed_by_name': ?instance.performedByName,
   'action_type': instance.actionType,
   'action_description': instance.actionDescription,
-  if (instance.ipAddress case final value?) 'ip_address': value,
-  if (instance.userAgent case final value?) 'user_agent': value,
-  if (instance.metadata case final value?) 'metadata': value,
+  'ip_address': ?instance.ipAddress,
+  'user_agent': ?instance.userAgent,
+  'metadata': ?instance.metadata,
   'created_at': instance.createdAt,
 };
 
-_$UserPaginationAdminImpl _$$UserPaginationAdminImplFromJson(
-  Map<String, dynamic> json,
-) => _$UserPaginationAdminImpl(
-  page: (json['page'] as num).toInt(),
-  pageSize: (json['page_size'] as num).toInt(),
-  totalCount: (json['total_count'] as num).toInt(),
-  totalPages: (json['total_pages'] as num).toInt(),
-);
+_UserPaginationAdmin _$UserPaginationAdminFromJson(Map<String, dynamic> json) =>
+    _UserPaginationAdmin(
+      page: (json['page'] as num).toInt(),
+      pageSize: (json['page_size'] as num).toInt(),
+      totalCount: (json['total_count'] as num).toInt(),
+      totalPages: (json['total_pages'] as num).toInt(),
+    );
 
-Map<String, dynamic> _$$UserPaginationAdminImplToJson(
-  _$UserPaginationAdminImpl instance,
+Map<String, dynamic> _$UserPaginationAdminToJson(
+  _UserPaginationAdmin instance,
 ) => <String, dynamic>{
   'page': instance.page,
   'page_size': instance.pageSize,
@@ -210,9 +205,9 @@ Map<String, dynamic> _$$UserPaginationAdminImplToJson(
   'total_pages': instance.totalPages,
 };
 
-_$UsersListResponseAdminImpl _$$UsersListResponseAdminImplFromJson(
+_UsersListResponseAdmin _$UsersListResponseAdminFromJson(
   Map<String, dynamic> json,
-) => _$UsersListResponseAdminImpl(
+) => _UsersListResponseAdmin(
   users: (json['users'] as List<dynamic>)
       .map((e) => UserModelAdmin.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -221,16 +216,16 @@ _$UsersListResponseAdminImpl _$$UsersListResponseAdminImplFromJson(
   ),
 );
 
-Map<String, dynamic> _$$UsersListResponseAdminImplToJson(
-  _$UsersListResponseAdminImpl instance,
+Map<String, dynamic> _$UsersListResponseAdminToJson(
+  _UsersListResponseAdmin instance,
 ) => <String, dynamic>{
   'users': instance.users.map((e) => e.toJson()).toList(),
   'pagination': instance.pagination.toJson(),
 };
 
-_$ActivityLogsResponseAdminImpl _$$ActivityLogsResponseAdminImplFromJson(
+_ActivityLogsResponseAdmin _$ActivityLogsResponseAdminFromJson(
   Map<String, dynamic> json,
-) => _$ActivityLogsResponseAdminImpl(
+) => _ActivityLogsResponseAdmin(
   logs: (json['logs'] as List<dynamic>)
       .map((e) => UserActivityLogAdmin.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -239,8 +234,8 @@ _$ActivityLogsResponseAdminImpl _$$ActivityLogsResponseAdminImplFromJson(
   ),
 );
 
-Map<String, dynamic> _$$ActivityLogsResponseAdminImplToJson(
-  _$ActivityLogsResponseAdminImpl instance,
+Map<String, dynamic> _$ActivityLogsResponseAdminToJson(
+  _ActivityLogsResponseAdmin instance,
 ) => <String, dynamic>{
   'logs': instance.logs.map((e) => e.toJson()).toList(),
   'pagination': instance.pagination.toJson(),

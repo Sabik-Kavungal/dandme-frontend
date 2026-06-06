@@ -1,12 +1,19 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/superadmin/models/department_model.dart';
-import 'package:a/modules/superadmin/repositories/department_repository.dart';
-import 'package:a/core/utils/app_helpers.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/superadmin/models/department_model.dart';
+import 'package:drandme/modules/superadmin/repositories/department_repository.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+/// DepartmentViewModel - never uses BuildContext for auth.
+/// AuthViewModel is injected at construction time so token lookups
+/// are always safe, even after dialogs/pages have been disposed.
 class DepartmentViewModel extends ChangeNotifier {
   final DepartmentRepository _repository = DepartmentRepository();
+
+  // ✅ AuthViewModel injected — no BuildContext needed for token lookups
+  final AuthViewModel _authViewModel;
+
+  DepartmentViewModel(this._authViewModel);
 
   // Private state
   bool _isLoading = false;
@@ -66,27 +73,22 @@ class DepartmentViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get access token with proactive refresh
-  Future<String?> _getAccessToken(BuildContext context) async {
+  /// ✅ Safe token retrieval — uses injected AuthViewModel, no BuildContext
+  Future<String?> _getAccessToken() async {
     try {
-      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-
-      // Check if token is expired and refresh proactively
-      if (authViewModel.tokens?.isAccessTokenExpired == true) {
+      // Proactively refresh if expired
+      if (_authViewModel.tokens?.isAccessTokenExpired == true) {
         print('Token is expired, refreshing proactively...');
-        final refreshed = await authViewModel.refreshAccessToken();
+        final refreshed = await _authViewModel.refreshAccessToken();
         if (!refreshed) {
           _setError('Token refresh failed. Please login again.');
           return null;
         }
       }
 
-      // Return current token
-      if (authViewModel.accessToken != null) {
-        return authViewModel.accessToken;
-      }
+      final token = _authViewModel.accessToken;
+      if (token != null) return token;
 
-      // If no token available, user needs to login
       _setError('No authentication token found. Please login again.');
       return null;
     } catch (e) {
@@ -97,16 +99,17 @@ class DepartmentViewModel extends ChangeNotifier {
   }
 
   /// Fetch all departments
-  Future<void> fetchDepartments(
-    BuildContext context, {
+  Future<void> fetchDepartments({
     String? clinicId,
     bool onlyActive = true,
+    // context kept for backward compat but IGNORED — token comes from AuthViewModel
+    BuildContext? context,
   }) async {
     _setLoading(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return;
@@ -133,14 +136,14 @@ class DepartmentViewModel extends ChangeNotifier {
 
   /// Get single department by ID
   Future<void> fetchDepartment(
-    BuildContext context,
-    String departmentId,
-  ) async {
+    String departmentId, {
+    BuildContext? context,
+  }) async {
     _setLoading(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return;
@@ -166,14 +169,14 @@ class DepartmentViewModel extends ChangeNotifier {
 
   /// Create a new department
   Future<bool> createDepartment(
-    BuildContext context,
-    CreateDepartmentInput input,
-  ) async {
+    CreateDepartmentInput input, {
+    BuildContext? context,
+  }) async {
     _setCreating(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return false;
@@ -186,8 +189,7 @@ class DepartmentViewModel extends ChangeNotifier {
 
       if (response != null) {
         print('Department created successfully: $response');
-        // Refresh the departments list
-        await fetchDepartments(context);
+        await fetchDepartments();
         return true;
       } else {
         _setError('Failed to create department');
@@ -203,15 +205,15 @@ class DepartmentViewModel extends ChangeNotifier {
 
   /// Update an existing department
   Future<bool> updateDepartment(
-    BuildContext context,
     String departmentId,
-    UpdateDepartmentInput input,
-  ) async {
+    UpdateDepartmentInput input, {
+    BuildContext? context,
+  }) async {
     _setUpdating(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return false;
@@ -225,8 +227,7 @@ class DepartmentViewModel extends ChangeNotifier {
 
       if (success) {
         print('Department updated successfully');
-        // Refresh the departments list
-        await fetchDepartments(context);
+        await fetchDepartments();
         return true;
       } else {
         _setError('Failed to update department');
@@ -242,14 +243,14 @@ class DepartmentViewModel extends ChangeNotifier {
 
   /// Delete a department
   Future<bool> deleteDepartment(
-    BuildContext context,
-    String departmentId,
-  ) async {
+    String departmentId, {
+    BuildContext? context,
+  }) async {
     _setDeleting(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return false;
@@ -262,8 +263,7 @@ class DepartmentViewModel extends ChangeNotifier {
 
       if (success) {
         print('Department deleted successfully');
-        // Refresh the departments list
-        await fetchDepartments(context);
+        await fetchDepartments();
         return true;
       } else {
         _setError('Failed to delete department');
@@ -279,15 +279,15 @@ class DepartmentViewModel extends ChangeNotifier {
 
   /// Get doctors by department
   Future<void> fetchDoctorsByDepartment(
-    BuildContext context,
     String departmentId, {
     bool onlyActive = true,
+    BuildContext? context,
   }) async {
     _setLoadingDoctors(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
+      final token = await _getAccessToken();
       if (token == null) {
         _setError('Authentication required. Please login again.');
         return;
@@ -330,7 +330,7 @@ class DepartmentViewModel extends ChangeNotifier {
   }
 
   /// Refresh departments list
-  Future<void> refresh(BuildContext context) async {
-    await fetchDepartments(context);
+  Future<void> refresh() async {
+    await fetchDepartments();
   }
 }

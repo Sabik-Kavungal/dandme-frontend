@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart'; // For extension methods
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
 import 'section_container.dart';
 import 'section_header.dart';
 import 'patient_search_card.dart';
@@ -9,12 +9,13 @@ import 'country_code_dropdown.dart';
 import 'unified_button.dart';
 
 /// Patient search section with search input and results
-class PatientSearchSection extends StatelessWidget {
+class PatientSearchSection extends StatefulWidget {
   final NewAppointmentViewModel viewModel;
   final TextEditingController searchController;
   final double scaleFactor;
   final bool isMobile;
   final VoidCallback onAddNewPatient;
+  final FocusNode searchFocusNode;
 
   const PatientSearchSection({
     super.key,
@@ -23,44 +24,65 @@ class PatientSearchSection extends StatelessWidget {
     this.scaleFactor = 1.0,
     this.isMobile = false,
     required this.onAddNewPatient,
+    required this.searchFocusNode,
   });
 
   @override
+  State<PatientSearchSection> createState() => _PatientSearchSectionState();
+}
+
+class _PatientSearchSectionState extends State<PatientSearchSection> {
+  @override
   Widget build(BuildContext context) {
     return SectionContainer(
-      scaleFactor: scaleFactor,
+      scaleFactor: widget.scaleFactor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header
-          SectionHeader(
-            icon: Icons.person_search,
-            title: 'Search Patient',
-            scaleFactor: scaleFactor,
-            iconColor: const Color(0xFF6C757D),
+          // Section header with modern label
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SectionHeader(
+                icon: Icons.person_search_rounded,
+                title: 'Search Patient',
+                scaleFactor: widget.scaleFactor,
+                iconColor: const Color(0xFF334155),
+              ),
+              if (!widget.isMobile) _buildAddNewPatientButton(),
+            ],
           ),
-          SizedBox(height: 8 * scaleFactor),
+          SizedBox(height: 16 * widget.scaleFactor),
 
-          // Search type radio buttons and input
-          if (isMobile)
-            _buildMobileSearchInput(context)
+          // Search configuration area
+          if (widget.isMobile)
+            _buildMobileSearchLayout()
           else
-            _buildWebSearchInput(context),
+            _buildWebSearchLayout(),
 
-          // Search results
-          if (viewModel.clinicPatientSearchResults.isNotEmpty) ...[
-            SizedBox(height: 4 * scaleFactor),
+          // Search results with smooth transition
+          if (widget.viewModel.clinicPatientSearchResults.isNotEmpty &&
+              widget.viewModel.selectedClinicPatient == null) ...[
+            SizedBox(height: 12 * widget.scaleFactor),
             _buildSearchResults(context),
           ],
 
-          // Selected patient card
-          if (viewModel.selectedClinicPatient != null) ...[
-            SizedBox(height: 8 * scaleFactor),
+          // Selected patient section
+          if (widget.viewModel.selectedClinicPatient != null) ...[
+            SizedBox(height: 16 * widget.scaleFactor),
             SelectedPatientCard(
-              patient: viewModel.selectedClinicPatient!,
-              viewModel: viewModel,
-              scaleFactor: scaleFactor,
-              onDeselect: () => viewModel.deselectClinicPatient(),
+              patient: widget.viewModel.selectedClinicPatient!,
+              viewModel: widget.viewModel,
+              scaleFactor: widget.scaleFactor,
+              onDeselect: () => widget.viewModel.deselectClinicPatient(),
+            ),
+          ],
+
+          if (widget.isMobile) ...[
+            SizedBox(height: 16 * widget.scaleFactor),
+            SizedBox(
+              width: double.infinity,
+              child: _buildAddNewPatientButton(),
             ),
           ],
         ],
@@ -68,78 +90,56 @@ class PatientSearchSection extends StatelessWidget {
     );
   }
 
-  /// Build web search input (horizontal layout)
-  Widget _buildWebSearchInput(BuildContext context) {
+  Widget _buildWebSearchLayout() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _buildSearchTypeRadioButtons(),
-        SizedBox(width: 8 * scaleFactor),
+        _buildSearchTypeSelector(),
+        SizedBox(width: 16 * widget.scaleFactor),
         Expanded(child: _buildSearchTextField()),
-        SizedBox(width: 8 * scaleFactor),
-        _buildAddNewPatientButton(),
       ],
     );
   }
 
-  /// Build mobile search input (vertical layout)
-  Widget _buildMobileSearchInput(BuildContext context) {
+  Widget _buildMobileSearchLayout() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [_buildSearchTypeRadioButtons(), const Spacer()]),
-        SizedBox(height: 12 * scaleFactor),
-        Row(
-          children: [
-            Expanded(child: _buildSearchTextField()),
-            SizedBox(width: 8 * scaleFactor),
-            _buildAddNewPatientButton(),
-          ],
+        _buildSearchTypeSelector(),
+        SizedBox(height: 12 * widget.scaleFactor),
+        _buildSearchTextField(),
+      ],
+    );
+  }
+
+  Widget _buildSearchTypeSelector() {
+    return Wrap(
+      spacing: 12 * widget.scaleFactor,
+      runSpacing: 10 * widget.scaleFactor,
+      children: [
+        _buildModernSelectionChip(
+          'Mobile',
+          Icons.phone_iphone_rounded,
+          widget.viewModel.searchType == SearchType.mobile,
+          () => widget.viewModel.setSearchTypeEnum(SearchType.mobile),
+        ),
+        _buildModernSelectionChip(
+          'Mo ID',
+          Icons.badge_outlined,
+          widget.viewModel.searchType == SearchType.moId,
+          () => widget.viewModel.setSearchTypeEnum(SearchType.moId),
+        ),
+        _buildModernSelectionChip(
+          'Name',
+          Icons.person_search_rounded,
+          widget.viewModel.searchType == SearchType.name,
+          () => widget.viewModel.setSearchTypeEnum(SearchType.name),
         ),
       ],
     );
   }
 
-  /// Build clean search type selection
-  Widget _buildSearchTypeRadioButtons() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8 * scaleFactor,
-        vertical: 6 * scaleFactor,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[200]!, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildSimpleOption(
-            'Mobile',
-            Icons.phone_android,
-            viewModel.searchType == SearchType.mobile,
-            () => viewModel.setSearchTypeEnum(SearchType.mobile),
-          ),
-          SizedBox(width: 12 * scaleFactor),
-          _buildSimpleOption(
-            'Mo ID',
-            Icons.badge,
-            viewModel.searchType == SearchType.moId,
-            () => viewModel.setSearchTypeEnum(SearchType.moId),
-          ),
-          SizedBox(width: 12 * scaleFactor),
-          _buildSimpleOption(
-            'Name',
-            Icons.person,
-            viewModel.searchType == SearchType.name,
-            () => viewModel.setSearchTypeEnum(SearchType.name),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Build simple option widget
-  Widget _buildSimpleOption(
+  Widget _buildModernSelectionChip(
     String label,
     IconData icon,
     bool isSelected,
@@ -148,30 +148,61 @@ class PatientSearchSection extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(
-          horizontal: 8 * scaleFactor,
-          vertical: 4 * scaleFactor,
+          horizontal: 14 * widget.scaleFactor,
+          vertical: 6 * widget.scaleFactor, // Reduced for compactness
         ),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF1E293B) : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
+          color: isSelected ? const Color(0xFF0F172A) : Colors.white,
+          borderRadius: BorderRadius.circular(8), // Classy 8px radius
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFF0F172A)
+                : const Color(0xFFCBD5E1),
+            width: 1.5,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF0F172A).withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 14 * scaleFactor,
-              color: isSelected ? Colors.white : Colors.grey[600],
+            // Checkbox-style box
+            Container(
+              width: 16 * widget.scaleFactor,
+              height: 16 * widget.scaleFactor,
+              margin: EdgeInsets.only(right: 8 * widget.scaleFactor),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.white : Colors.transparent,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: isSelected ? Colors.white : const Color(0xFFCBD5E1),
+                  width: 1.5,
+                ),
+              ),
+              child: isSelected
+                  ? const Icon(
+                      Icons.check_rounded,
+                      size: 12,
+                      color: Color(0xFF0F172A),
+                    )
+                  : null,
             ),
-            SizedBox(width: 4 * scaleFactor),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12 * scaleFactor,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Colors.white : Colors.grey[700],
+                fontSize: 12 * widget.scaleFactor,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? Colors.white : const Color(0xFF475569),
+                fontFamily: 'Inter',
               ),
             ),
           ],
@@ -180,251 +211,166 @@ class PatientSearchSection extends StatelessWidget {
     );
   }
 
-  /// Build search text field based on search type
   Widget _buildSearchTextField() {
-    // Handle searchType with proper fallback
-    final searchType = viewModel.searchType;
-    switch (searchType) {
-      case SearchType.mobile:
-        return _buildMobileSearchField();
-      case SearchType.moId:
-        return _buildWebSearchField();
-      case SearchType.name:
-        return _buildNameSearchField();
-    }
-  }
-
-  /// Build mobile search field with country code dropdown
-  Widget _buildMobileSearchField() {
+    final searchType = widget.viewModel.searchType;
     return Container(
-      height: 36 * scaleFactor,
+      height: 42 * widget.scaleFactor, // Reduced from 52px
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: BorderRadius.circular(10), // Reduced rounding
+        border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // Country code dropdown
-          CountryCodeDropdown(
-            selectedCountry: viewModel.selectedCountryCode,
-            onCountrySelected: (country) => viewModel.setCountryCode(country),
-            scaleFactor: scaleFactor,
-          ),
-          // Divider
-          Container(
-            height: 20 * scaleFactor,
-            width: 1,
-            color: Colors.grey[300],
-            margin: EdgeInsets.symmetric(horizontal: 6 * scaleFactor),
-          ),
-          // Phone number input
-          Expanded(
-            child: TextField(
-              controller: searchController,
-              onChanged: (value) => viewModel.setSearchQuery(value),
-              decoration: InputDecoration(
-                hintText: 'Enter mobile number',
-                hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 13 * scaleFactor,
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 6 * scaleFactor,
-                  vertical: 8 * scaleFactor,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Row(
+          children: [
+            if (searchType == SearchType.mobile) ...[
+              CountryCodeDropdown(
+                selectedCountry: widget.viewModel.selectedCountryCode,
+                onCountrySelected: (country) =>
+                    widget.viewModel.setCountryCode(country),
+                scaleFactor: widget.scaleFactor,
+              ),
+              Container(
+                width: 1.2,
+                height: 20 * widget.scaleFactor,
+                color: const Color(0xFFCBD5E1),
+              ),
+            ] else
+              Padding(
+                padding: EdgeInsets.only(left: 12 * widget.scaleFactor),
+                child: Icon(
+                  searchType == SearchType.moId
+                      ? Icons.badge_outlined
+                      : Icons.person_search_rounded,
+                  size: 18 * widget.scaleFactor,
+                  color: const Color(0xFF64748B),
                 ),
               ),
-              style: TextStyle(fontSize: 13 * scaleFactor),
+            Expanded(
+              child: TextField(
+                controller: widget.searchController,
+                focusNode: widget.searchFocusNode,
+                onChanged: (value) => widget.viewModel.setSearchQuery(value),
+                style: TextStyle(
+                  fontSize: 13 * widget.scaleFactor,
+                  color: const Color(0xFF0F172A),
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                ),
+                decoration: InputDecoration(
+                  hintText: searchType == SearchType.mobile
+                      ? 'Search mobile...'
+                      : (searchType == SearchType.moId
+                            ? 'Search MO ID...'
+                            : 'Search name...'),
+                  hintStyle: TextStyle(
+                    color: const Color(0xFF94A3B8),
+                    fontSize: 13 * widget.scaleFactor,
+                    fontFamily: 'Inter',
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12 * widget.scaleFactor,
+                  ),
+                  isDense: true,
+                ),
+              ),
             ),
-          ),
-          // Search icon
-          Container(
-            margin: EdgeInsets.all(4 * scaleFactor),
-            padding: EdgeInsets.all(6 * scaleFactor),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(4),
+            GestureDetector(
+              onTap: () => widget.viewModel.searchClinicPatients(
+                widget.searchController.text,
+              ),
+              child: Container(
+                width: 34 * widget.scaleFactor,
+                height: 34 * widget.scaleFactor,
+                margin: EdgeInsets.only(right: 4 * widget.scaleFactor),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A),
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.search_rounded,
+                  color: Colors.white,
+                  size: 18 * widget.scaleFactor,
+                ),
+              ),
             ),
-            child: Icon(
-              Icons.search,
-              color: Colors.white,
-              size: 14 * scaleFactor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Build web search field (Mo ID)
-  Widget _buildWebSearchField() {
-    return Container(
-      height: 36 * scaleFactor,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: searchController,
-        onChanged: (value) => viewModel.setSearchQuery(value),
-        decoration: InputDecoration(
-          hintText: 'Enter Mo ID',
-          hintStyle: TextStyle(
-            color: Colors.grey[500],
-            fontSize: 13 * scaleFactor,
-          ),
-          prefixIcon: Icon(
-            Icons.badge,
-            color: const Color(0xFF1E293B),
-            size: 16 * scaleFactor,
-          ),
-          suffixIcon: Container(
-            margin: EdgeInsets.all(4 * scaleFactor),
-            padding: EdgeInsets.all(6 * scaleFactor),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Icon(
-              Icons.search,
-              color: Colors.white,
-              size: 14 * scaleFactor,
-            ),
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 8 * scaleFactor,
-            vertical: 8 * scaleFactor,
-          ),
+          ],
         ),
-        style: TextStyle(fontSize: 13 * scaleFactor),
       ),
     );
   }
 
-  /// Build name search field
-  Widget _buildNameSearchField() {
-    return Container(
-      height: 36 * scaleFactor,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: searchController,
-        onChanged: (value) => viewModel.setSearchQuery(value),
-        decoration: InputDecoration(
-          hintText: 'Enter patient name',
-          hintStyle: TextStyle(
-            color: Colors.grey[500],
-            fontSize: 13 * scaleFactor,
-          ),
-          prefixIcon: Icon(
-            Icons.person,
-            color: const Color(0xFF1E293B),
-            size: 16 * scaleFactor,
-          ),
-          suffixIcon: Container(
-            margin: EdgeInsets.all(4 * scaleFactor),
-            padding: EdgeInsets.all(6 * scaleFactor),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Icon(
-              Icons.search,
-              color: Colors.white,
-              size: 14 * scaleFactor,
-            ),
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 8 * scaleFactor,
-            vertical: 8 * scaleFactor,
-          ),
-        ),
-        style: TextStyle(fontSize: 13 * scaleFactor),
-      ),
-    );
-  }
-
-  /// Build simple add new patient button
   Widget _buildAddNewPatientButton() {
-    return SizedBox(
-      height: 32 * scaleFactor,
-      child: UnifiedButton.addPatient(
-        onPressed: onAddNewPatient,
-        scaleFactor: scaleFactor,
-      ),
+    return UnifiedButton.addPatient(
+      onPressed: widget.onAddNewPatient,
+      scaleFactor: widget.scaleFactor,
     );
   }
 
-  /// Build search results list
   Widget _buildSearchResults(BuildContext context) {
-    return SizedBox(
-      height: 200 * scaleFactor,
+    return Container(
+      constraints: BoxConstraints(maxHeight: 280 * widget.scaleFactor),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFF1F5F9)),
+      ),
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: viewModel.clinicPatientSearchResults.length,
+        padding: EdgeInsets.symmetric(vertical: 8 * widget.scaleFactor),
+        itemCount: widget.viewModel.clinicPatientSearchResults.length,
         itemBuilder: (context, index) {
-          final patient = viewModel.clinicPatientSearchResults[index];
-          final isFollowUpType = viewModel.selectedConsultationType.startsWith(
-            'follow-up',
-          );
+          final patient = widget.viewModel.clinicPatientSearchResults[index];
+          final isFollowUpType = widget.viewModel.selectedConsultationType
+              .startsWith('follow-up');
 
-          // Check if patient can be selected
           bool isEnabled = true;
-          if (isFollowUpType && viewModel.selectedDoctorObject != null) {
+          if (isFollowUpType && widget.viewModel.selectedDoctorObject != null) {
             final status = patient.getFollowUpStatus(
-              doctorId: viewModel.selectedDoctorObject!.doctorId!,
-              departmentId: viewModel.selectedDepartmentId,
+              doctorId: widget.viewModel.selectedDoctorObject!.doctorId!,
+              departmentId: widget.viewModel.selectedDepartmentId,
             );
             isEnabled = status != 'no_appointment';
           }
 
           return PatientSearchCard(
             patient: patient,
-            viewModel: viewModel,
-            scaleFactor: scaleFactor,
+            viewModel: widget.viewModel,
+            scaleFactor: widget.scaleFactor,
             isEnabled: isEnabled,
             onTap: () {
               if (!isEnabled) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      '❌ Cannot book follow-up: Patient has no previous appointment with the selected doctor and department.\n\nPlease book a regular appointment first.',
+                  SnackBar(
+                    content: const Text(
+                      '❌ Invalid for follow-up: No previous appointment found.',
                     ),
-                    backgroundColor: Colors.red,
-                    duration: Duration(seconds: 4),
+                    backgroundColor: const Color(0xFFEF4444),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 );
                 return;
               }
-              viewModel.selectClinicPatient(patient);
+              widget.viewModel.selectClinicPatient(patient);
             },
           );
         },

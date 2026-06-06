@@ -1,10 +1,10 @@
-import 'package:a/modules/clinic/models/clinic_doctor_link_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_doctor_link_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/clinic/models/clinic_model.dart';
-import 'package:a/modules/doctor/models/doctor_model.dart';
-import 'package:a/modules/doctor/viewmodels/doctor_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_model.dart';
+import 'package:drandme/modules/doctor/models/doctor_model.dart';
+import 'package:drandme/modules/doctor/viewmodels/doctor_viewmodel.dart';
 
 class AddClinicDoctorLinkScreen extends StatefulWidget {
   const AddClinicDoctorLinkScreen({super.key});
@@ -23,8 +23,10 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
   String _searchQuery = '';
 
   // Fee controllers
-  final TextEditingController consultationFeeOfflineController = TextEditingController();
-  final TextEditingController consultationFeeOnlineController = TextEditingController();
+  final TextEditingController consultationFeeOfflineController =
+      TextEditingController();
+  final TextEditingController consultationFeeOnlineController =
+      TextEditingController();
   final TextEditingController followUpFeeController = TextEditingController();
   final TextEditingController followUpDaysController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
@@ -55,7 +57,7 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
       final clinicVM = Provider.of<ClinicViewModel>(context, listen: false);
       final doctorVM = Provider.of<DoctorViewModel>(context, listen: false);
       clinicVM.fetchClinics(context);
-      doctorVM.fetchDoctors(context);
+      doctorVM.fetchDoctors();
     });
   }
 
@@ -310,9 +312,7 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                               ElevatedButton(
                                                 onPressed: () {
                                                   doctorVM.clearError();
-                                                  doctorVM.fetchDoctors(
-                                                    context,
-                                                  );
+                                                  doctorVM.fetchDoctors();
                                                 },
                                                 child: const Text('Retry'),
                                               ),
@@ -640,11 +640,11 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                                   setState(() {
                                                     if (value == true) {
                                                       _selectedClinics.add(
-                                                        clinic.clinicCode,
+                                                        clinic.clinicCode!,
                                                       );
                                                     } else {
                                                       _selectedClinics.remove(
-                                                        clinic.clinicCode,
+                                                        clinic.clinicCode!,
                                                       );
                                                     }
                                                   });
@@ -699,8 +699,12 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                   _buildTextField(
                                     label: 'Offline Consultation Fee',
                                     hint: 'Enter offline consultation fee (₹)',
-                                    controller: consultationFeeOfflineController,
-                                    validator: (value) => _validateRequired(value, 'Offline consultation fee'),
+                                    controller:
+                                        consultationFeeOfflineController,
+                                    validator: (value) => _validateRequired(
+                                      value,
+                                      'Offline consultation fee',
+                                    ),
                                     required: true,
                                     icon: Icons.business,
                                     keyboardType: TextInputType.number,
@@ -713,7 +717,10 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                     label: 'Online Consultation Fee',
                                     hint: 'Enter online consultation fee (₹)',
                                     controller: consultationFeeOnlineController,
-                                    validator: (value) => _validateRequired(value, 'Online consultation fee'),
+                                    validator: (value) => _validateRequired(
+                                      value,
+                                      'Online consultation fee',
+                                    ),
                                     required: true,
                                     icon: Icons.videocam,
                                     keyboardType: TextInputType.number,
@@ -724,9 +731,13 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                   // Follow-up Fee
                                   _buildTextField(
                                     label: 'Follow-up Fee',
-                                    hint: 'Enter follow-up consultation fee (₹)',
+                                    hint:
+                                        'Enter follow-up consultation fee (₹)',
                                     controller: followUpFeeController,
-                                    validator: (value) => _validateRequired(value, 'Follow-up fee'),
+                                    validator: (value) => _validateRequired(
+                                      value,
+                                      'Follow-up fee',
+                                    ),
                                     required: true,
                                     icon: Icons.refresh,
                                     keyboardType: TextInputType.number,
@@ -739,7 +750,10 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
                                     label: 'Follow-up Validity (Days)',
                                     hint: 'Enter follow-up validity in days',
                                     controller: followUpDaysController,
-                                    validator: (value) => _validateRequired(value, 'Follow-up days'),
+                                    validator: (value) => _validateRequired(
+                                      value,
+                                      'Follow-up days',
+                                    ),
                                     required: true,
                                     icon: Icons.calendar_today,
                                     keyboardType: TextInputType.number,
@@ -1014,16 +1028,24 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
     }
 
     // Parse fee values
-    final consultationFeeOffline = double.tryParse(consultationFeeOfflineController.text.trim());
-    final consultationFeeOnline = double.tryParse(consultationFeeOnlineController.text.trim());
+    final consultationFeeOffline = double.tryParse(
+      consultationFeeOfflineController.text.trim(),
+    );
+    final consultationFeeOnline = double.tryParse(
+      consultationFeeOnlineController.text.trim(),
+    );
     final followUpFee = double.tryParse(followUpFeeController.text.trim());
     final followUpDays = int.tryParse(followUpDaysController.text.trim());
 
-    if (consultationFeeOffline == null || consultationFeeOnline == null || 
-        followUpFee == null || followUpDays == null) {
+    if (consultationFeeOffline == null ||
+        consultationFeeOnline == null ||
+        followUpFee == null ||
+        followUpDays == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error: Please enter valid fee amounts and follow-up days'),
+          content: Text(
+            'Error: Please enter valid fee amounts and follow-up days',
+          ),
           backgroundColor: Color(0xFFDC2626),
         ),
       );
@@ -1058,7 +1080,9 @@ class _AddClinicDoctorLinkScreenState extends State<AddClinicDoctorLinkScreen>
         consultationFeeOnline: consultationFeeOnline,
         followUpFee: followUpFee,
         followUpDays: followUpDays,
-        notes: notesController.text.trim().isEmpty ? null : notesController.text.trim(),
+        notes: notesController.text.trim().isEmpty
+            ? null
+            : notesController.text.trim(),
       );
 
       final success = await clinicVM.addClinicDoctorLinkWithFees(

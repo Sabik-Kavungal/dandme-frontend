@@ -1,9 +1,9 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/superadmin/models/user_model_admin.dart';
-import 'package:a/core/utils/app_helpers.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/superadmin/models/user_model_admin.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/service.dart';
+import 'package:drandme/core/config/service.dart';
 
 class UserManagementViewModel extends ChangeNotifier {
   final ServiceRepo _service = ServiceRepo();

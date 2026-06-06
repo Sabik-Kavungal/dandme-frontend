@@ -1,8 +1,8 @@
-import 'package:a/modules/clinic/models/appointment_model.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/appointment_model.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:a/modules/clinic/repositories/clinic_appointment_repository.dart';
+import 'package:drandme/modules/clinic/repositories/clinic_appointment_repository.dart';
 
 class PaymentConfirmationViewModel extends ChangeNotifier {
   final ClinicAppointmentRepository _repository;

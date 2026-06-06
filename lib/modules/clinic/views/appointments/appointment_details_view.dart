@@ -1,10 +1,23 @@
-import 'package:a/modules/clinic/viewmodels/appointments/appointment_details_viewmodel.dart';
-import 'package:a/modules/clinic/views/appointments/reschedule_modal_view.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/clinic/models/appointment_history_model.dart';
+import 'package:drandme/core/widgets/app_loader.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/appointment_details_viewmodel.dart';
+import 'package:drandme/modules/clinic/views/appointments/reschedule_modal_view.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/appointment_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/booking_mode_badge.dart';
+import 'package:drandme/modules/clinic/models/receipt_model.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/receipt_action_buttons.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart' hide AppointmentHistoryItem;
+
+// --- VISUAL CONSTANTS (Classy Slate) ---
+const kBgColor = Color(0xFFF1F5F9); // Slate-100
+const kCardColor = Colors.white;
+const kPrimaryText = Color(0xFF1E293B); // Slate-900
+const kSecondaryText = Color(0xFF64748B); // Slate-500
+const kAccentColor = Color(0xFF000000); // Black (primary action color)
+const kBlueColor = Color(0xFF3B82F6);
+const kBorderColor = Color(0xFFE2E8F0); // Slate-200
 
 class AppointmentDetailsScreen extends StatefulWidget {
   final String? appointmentId;
@@ -23,62 +36,81 @@ class AppointmentDetailsScreen extends StatefulWidget {
 
 class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   late AppointmentDetailsViewModel _viewModel;
-  bool _isEditingPatientDetails = false;
-  bool _isEditingBookingDetails = false;
-  bool _isEditingVitalSigns = false;
-  bool _isEditingStatus = false;
-  bool _isVitalSignsExpanded = false; // Privacy: collapsed by default
-  bool _isSavingPatient = false;
-  bool _isSavingVitals = false;
+  final List<String> _genderOptions = [
+    'Male',
+    'Female',
+    'Other',
+    'Prefer not to say',
+  ];
+  bool get _isEditingPatientDetails => _viewModel.isEditingPatientDetails;
+  bool get _isEditingBookingDetails => _viewModel.isEditingBookingDetails;
+  bool get _isEditingVitalSigns => _viewModel.isEditingVitalSigns;
+  bool get _isEditingStatus => _viewModel.isEditingStatus;
+  bool get _isVitalSignsExpanded => _viewModel.isVitalSignsExpanded;
+  bool get _isSavingPatient => _viewModel.isSavingPatient;
+  bool get _isSavingVitals => _viewModel.isSavingVitals;
+  bool get _isUpdatingStatus => _viewModel.isUpdatingStatus;
+  String? get _selectedStatusForUpdate => _viewModel.selectedStatusForUpdate;
 
-  // Controllers for booking details - initialized immediately
-  final TextEditingController _bookingAppointmentIdController =
-      TextEditingController();
-  final TextEditingController _bookingBookedOnController =
-      TextEditingController();
-  final TextEditingController _bookingDateController = TextEditingController();
-  final TextEditingController _bookingTimeController = TextEditingController();
-  final TextEditingController _bookingDoctorController =
-      TextEditingController();
-  final TextEditingController _bookingDepartmentController =
-      TextEditingController();
-  final TextEditingController _bookingReasonController =
-      TextEditingController();
-  final TextEditingController _bookingTypeController = TextEditingController();
+  TextEditingController get _bookingAppointmentIdController =>
+      _viewModel.bookingAppointmentIdController;
+  TextEditingController get _bookingBookedOnController =>
+      _viewModel.bookingBookedOnController;
+  TextEditingController get _bookingDateController =>
+      _viewModel.bookingDateController;
+  TextEditingController get _bookingTimeController =>
+      _viewModel.bookingTimeController;
+  TextEditingController get _bookingDoctorController =>
+      _viewModel.bookingDoctorController;
+  TextEditingController get _bookingDepartmentController =>
+      _viewModel.bookingDepartmentController;
+  TextEditingController get _bookingReasonController =>
+      _viewModel.bookingReasonController;
+  TextEditingController get _bookingTypeController =>
+      _viewModel.bookingTypeController;
 
-  // Controllers for patient details - initialized immediately
-  final TextEditingController _patientFirstNameController =
-      TextEditingController();
-  final TextEditingController _patientLastNameController =
-      TextEditingController();
-  final TextEditingController _patientAgeController = TextEditingController();
-  final TextEditingController _patientGenderController =
-      TextEditingController();
-  final TextEditingController _patientEmailController = TextEditingController();
-  final TextEditingController _patientPhoneController = TextEditingController();
-  final TextEditingController _patientAddressController =
-      TextEditingController();
-  final TextEditingController _patientBloodGroupController =
-      TextEditingController();
-  final TextEditingController _patientSmokingController =
-      TextEditingController();
-  final TextEditingController _patientAlcoholController =
-      TextEditingController();
-  final TextEditingController _patientHeightController =
-      TextEditingController();
+  TextEditingController get _patientFirstNameController =>
+      _viewModel.patientFirstNameController;
+  TextEditingController get _patientAgeController =>
+      _viewModel.patientAgeController;
+  TextEditingController get _patientGenderController =>
+      _viewModel.patientGenderController;
+  TextEditingController get _patientEmailController =>
+      _viewModel.patientEmailController;
+  TextEditingController get _patientPhoneController =>
+      _viewModel.patientPhoneController;
+  TextEditingController get _patientAddressController =>
+      _viewModel.patientAddressController;
+  TextEditingController get _patientBloodGroupController =>
+      _viewModel.patientBloodGroupController;
+  TextEditingController get _patientHeightController =>
+      _viewModel.patientHeightController;
 
-  // Controllers for vital signs
-  final TextEditingController _vitalTemperatureController =
-      TextEditingController();
-  final TextEditingController _vitalPulseController = TextEditingController();
-  final TextEditingController _vitalRespiratoryRateController =
-      TextEditingController();
-  final TextEditingController _vitalBloodPressureController =
-      TextEditingController();
-  final TextEditingController _vitalSpO2Controller = TextEditingController();
-  final TextEditingController _vitalBloodSugarController =
-      TextEditingController();
-  final TextEditingController _vitalWeightController = TextEditingController();
+  TextEditingController get _vitalTemperatureController =>
+      _viewModel.vitalTemperatureController;
+  TextEditingController get _vitalPulseController =>
+      _viewModel.vitalPulseController;
+  TextEditingController get _vitalRespiratoryRateController =>
+      _viewModel.vitalRespiratoryRateController;
+  TextEditingController get _vitalBloodPressureController =>
+      _viewModel.vitalBloodPressureController;
+  TextEditingController get _vitalSpO2Controller =>
+      _viewModel.vitalSpO2Controller;
+  TextEditingController get _vitalBloodSugarController =>
+      _viewModel.vitalBloodSugarController;
+  TextEditingController get _vitalWeightController =>
+      _viewModel.vitalWeightController;
+  TextEditingController get _vitalSmokingController =>
+      _viewModel.vitalSmokingController;
+  TextEditingController get _vitalAlcoholController =>
+      _viewModel.vitalAlcoholController;
+  TextEditingController get _vitalBMIController =>
+      _viewModel.vitalBMIController;
+  bool get _isRescheduleEnabled {
+    final status = _viewModel.appointmentDetails?.status?.toLowerCase();
+    return status == 'confirmed' || status == 'pending';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,422 +119,54 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       Provider.of<AuthViewModel>(context, listen: false),
     );
 
-    // Fetch data after the first frame is rendered — avoids context issues
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        // Fetch appointment details first (if available)
-        if (widget.appointmentId != null && widget.appointmentId!.isNotEmpty) {
-          await _viewModel.fetchAppointmentDetails(widget.appointmentId!);
-        }
-
-        // If patient ID is provided directly (e.g. from another screen), fetch it
-        if (widget.clinicPatientId != null &&
-            widget.clinicPatientId!.isNotEmpty) {
-          await _viewModel.fetchClinicPatient(widget.clinicPatientId!);
-        }
-
-        // Update text fields with any initial data
-        if (mounted) {
-          setState(() => _updateControllerValues());
-        }
-      } catch (e) {
-        // Handle any errors during initialization
-        if (mounted) {
-          setState(() {});
-        }
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _viewModel.initialize(
+        appointmentId: widget.appointmentId,
+        clinicPatientId: widget.clinicPatientId,
+      );
     });
-
-    // Listen for updates from the ViewModel
-    _viewModel.addListener(() async {
-      if (!mounted) return;
-
-      // Update the text fields whenever data changes
-      setState(() => _updateControllerValues());
-
-      final appointment = _viewModel.appointmentDetails;
-      final clinicPatient = _viewModel.clinicPatient;
-
-      // If appointment is loaded but patient not yet fetched
-      if (appointment != null && clinicPatient == null) {
-        final patientId = appointment.clinicPatientId ?? widget.clinicPatientId;
-        if (patientId != null && patientId.isNotEmpty) {
-          await _viewModel.fetchClinicPatient(
-            patientId,
-            clinicId: appointment.clinic?.id,
-            doctorId: appointment.doctor?.id,
-            // departmentId: appointment.departmentId,
-          );
-        }
-      }
-
-      // Fetch vitals for this appointment if not already loaded
-      if (appointment != null && _viewModel.vitalsRecord == null) {
-        final patientId = appointment.clinicPatientId ?? widget.clinicPatientId;
-        if (patientId != null && patientId.isNotEmpty) {
-          await _viewModel.fetchVitalsForAppointment(
-            appointmentId: appointment.id,
-            clinicPatientId: patientId,
-            clinicId: appointment.clinic?.id,
-          );
-        }
-      }
-
-      // Fetch appointment history if not already loaded
-      if (appointment != null && _viewModel.appointmentHistory == null) {
-        final patientId = appointment.clinicPatientId ?? widget.clinicPatientId;
-        if (patientId != null && patientId.isNotEmpty) {
-          await _viewModel.fetchAppointmentHistory(
-            clinicPatientId: patientId,
-            clinicId: appointment.clinic?.id,
-            limit: 50,
-          );
-        }
-      }
-    });
-  }
-
-  // Helper function to format consultation type (remove underscores)
-  String _formatConsultationType(String? consultationType) {
-    if (consultationType == null ||
-        consultationType.isEmpty ||
-        consultationType == 'N/A') {
-      return 'N/A';
-    }
-    return consultationType.replaceAll('_', ' ');
-  }
-
-  // Helper function to format doctor name (add Dr. prefix if not present)
-  String _formatDoctorName(String? doctorName) {
-    if (doctorName == null || doctorName.isEmpty || doctorName == 'N/A') {
-      return 'N/A';
-    }
-    // Check if already has Dr. prefix (case insensitive)
-    final trimmedName = doctorName.trim();
-    if (trimmedName.toLowerCase().startsWith('dr.')) {
-      return doctorName; // Already has Dr. prefix
-    }
-    return 'Dr. $trimmedName';
-  }
-
-  void _updateControllerValues() {
-    final appointment = _viewModel.appointmentDetails;
-    if (appointment == null) return;
-
-    // Format dates
-    String formatDate(String? dateTime) {
-      if (dateTime == null) return 'N/A';
-      try {
-        final cleanDateTime = dateTime.split(' ')[0];
-        final date = DateTime.parse(cleanDateTime);
-        return '${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}';
-      } catch (e) {
-        return dateTime;
-      }
-    }
-
-    String formatTime(String? dateTime) {
-      if (dateTime == null) return 'N/A';
-      try {
-        final parts = dateTime.split(' ');
-        if (parts.length > 1) {
-          final timeParts = parts[1].split(':');
-          if (timeParts.length >= 2) {
-            int hour = int.parse(timeParts[0]);
-            int minute = int.parse(timeParts[1]);
-            final period = hour >= 12 ? 'PM' : 'AM';
-            hour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-            return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $period';
-          }
-        }
-        final date = DateTime.parse(dateTime);
-        final hour = date.hour > 12
-            ? date.hour - 12
-            : (date.hour == 0 ? 12 : date.hour);
-        final period = date.hour >= 12 ? 'PM' : 'AM';
-        return '${hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')} $period';
-      } catch (e) {
-        return dateTime;
-      }
-    }
-
-    // Update booking controllers
-    _bookingAppointmentIdController.text =
-        appointment.tokenNumber?.toString() ?? 'N/A';
-    _bookingBookedOnController.text = formatDate(appointment.createdAt);
-    _bookingDateController.text = formatDate(appointment.appointmentDateTime);
-    _bookingTimeController.text = formatTime(appointment.appointmentDateTime);
-    _bookingDoctorController.text = _formatDoctorName(
-      appointment.doctorName ?? appointment.doctor?.name ?? 'N/A',
-    );
-    _bookingDepartmentController.text = appointment.department ?? 'N/A';
-    _bookingReasonController.text = appointment.notes ?? 'N/A';
-    _bookingTypeController.text = _formatConsultationType(
-      appointment.consultationType ?? 'N/A',
-    );
-
-    // Update patient controllers: prefer full clinic patient data if loaded
-    final clinicPatient = _viewModel.clinicPatient;
-    if (clinicPatient != null) {
-      _patientFirstNameController.text = clinicPatient.firstName;
-      _patientLastNameController.text = clinicPatient.lastName;
-      _patientAgeController.text = clinicPatient.age?.toString() ?? 'N/A';
-      _patientGenderController.text = clinicPatient.gender ?? 'N/A';
-      _patientEmailController.text = clinicPatient.email ?? 'N/A';
-      _patientPhoneController.text = clinicPatient.phone;
-      final addressParts = <String>[
-        if ((clinicPatient.address1 ?? '').isNotEmpty) clinicPatient.address1!,
-        if ((clinicPatient.address2 ?? '').isNotEmpty) clinicPatient.address2!,
-        if ((clinicPatient.district ?? '').isNotEmpty) clinicPatient.district!,
-        if ((clinicPatient.state ?? '').isNotEmpty) clinicPatient.state!,
-      ];
-      _patientAddressController.text = addressParts.isEmpty
-          ? 'N/A'
-          : addressParts.join(', ');
-      _patientBloodGroupController.text = clinicPatient.bloodGroup ?? 'N/A';
-      _patientSmokingController.text = clinicPatient.smokingStatus ?? 'N/A';
-      _patientAlcoholController.text = clinicPatient.alcoholUse ?? 'N/A';
-      _patientHeightController.text =
-          clinicPatient.heightCm?.toString() ?? 'N/A';
-    } else {
-      // Fallback to limited data from appointment
-      final patient = appointment.patient;
-      final patientName = appointment.patientName ?? patient?.name ?? '';
-      final nameParts = patientName.split(' ');
-      _patientFirstNameController.text = nameParts.isNotEmpty
-          ? nameParts.first
-          : 'N/A';
-      _patientLastNameController.text = nameParts.length > 1
-          ? nameParts.sublist(1).join(' ')
-          : 'N/A';
-      _patientAgeController.text = patient?.age?.toString() ?? 'N/A';
-      _patientGenderController.text = patient?.gender ?? 'N/A';
-      _patientEmailController.text = patient?.email ?? 'N/A';
-      _patientPhoneController.text = patient?.phone ?? 'N/A';
-      _patientAddressController.text = 'N/A';
-      _patientBloodGroupController.text = 'N/A';
-      _patientSmokingController.text = 'N/A';
-      _patientAlcoholController.text = 'N/A';
-      _patientHeightController.text = 'N/A';
-    }
-
-    // Update vital signs controllers from fetched vitals record
-    final vitalsRecord = _viewModel.vitalsRecord;
-    if (vitalsRecord != null) {
-      // Temperature
-      _vitalTemperatureController.text =
-          vitalsRecord.temperature?.toString() ?? '';
-
-      // Pulse Rate
-      _vitalPulseController.text = vitalsRecord.pulseRate?.toString() ?? '';
-
-      // Respiratory Rate
-      _vitalRespiratoryRateController.text =
-          vitalsRecord.respBpm?.toString() ?? '';
-
-      // Blood Pressure - prioritize blood_pressure field from API, fallback to combining systolic/diastolic
-      if (vitalsRecord.bloodPressure != null &&
-          vitalsRecord.bloodPressure!.isNotEmpty) {
-        // Use blood_pressure field directly from API
-        _vitalBloodPressureController.text = vitalsRecord.bloodPressure!;
-      } else if (vitalsRecord.systolicBp != null ||
-          vitalsRecord.diastolicBp != null) {
-        // Fallback: combine systolic/diastolic if blood_pressure not available
-        final systolic = vitalsRecord.systolicBp?.toString() ?? '';
-        final diastolic = vitalsRecord.diastolicBp?.toString() ?? '';
-        if (systolic.isNotEmpty && diastolic.isNotEmpty) {
-          _vitalBloodPressureController.text = '$systolic/$diastolic';
-        } else if (systolic.isNotEmpty) {
-          _vitalBloodPressureController.text = systolic;
-        } else if (diastolic.isNotEmpty) {
-          _vitalBloodPressureController.text = diastolic;
-        } else {
-          _vitalBloodPressureController.text = '';
-        }
-      } else {
-        _vitalBloodPressureController.text = '';
-      }
-
-      // SpO2
-      _vitalSpO2Controller.text = vitalsRecord.spo2Percent?.toString() ?? '';
-
-      // Blood Sugar
-      _vitalBloodSugarController.text =
-          vitalsRecord.sugarMgdl?.toString() ?? '';
-
-      // Weight
-      _vitalWeightController.text = vitalsRecord.weightKg?.toString() ?? '';
-    } else {
-      // No vitals record - clear all controllers
-      _vitalTemperatureController.text = '';
-      _vitalPulseController.text = '';
-      _vitalRespiratoryRateController.text = '';
-      _vitalBloodPressureController.text = '';
-      _vitalSpO2Controller.text = '';
-      _vitalBloodSugarController.text = '';
-      _vitalWeightController.text = '';
-    }
   }
 
   Future<void> _savePatientDetails() async {
-    // Get patient ID and clinic ID
-    final appointment = _viewModel.appointmentDetails;
-    final clinicPatient = _viewModel.clinicPatient;
-
-    final patientId =
-        appointment?.clinicPatientId ??
-        clinicPatient?.id ??
-        widget.clinicPatientId;
-
-    if (patientId == null || patientId.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Patient ID not found. Cannot save changes.'),
-            backgroundColor: Color(0xFFEF4444),
-          ),
-        );
-      }
+    final ageText = _patientAgeController.text.trim();
+    if (ageText.isNotEmpty &&
+        ageText != 'N/A' &&
+        int.tryParse(ageText) == null) {
+      _showPatientValidationError('Please enter a numeric age.');
       return;
     }
 
-    // Get clinic ID from appointment or clinic patient
-    final clinicId = appointment?.clinic?.id ?? clinicPatient?.clinicId;
-
-    if (clinicId == null || clinicId.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Clinic ID not found. Cannot save changes.'),
-            backgroundColor: Color(0xFFEF4444),
-          ),
-        );
-      }
+    final phoneText = _patientPhoneController.text.trim();
+    if (phoneText.isNotEmpty && !_isPhoneNumberValid(phoneText)) {
+      _showPatientValidationError('Please enter a valid phone number.');
       return;
     }
 
-    setState(() {
-      _isSavingPatient = true;
-    });
-
-    try {
-      // Build update map - only include non-empty, non-N/A values
-      final updates = <String, dynamic>{};
-
-      // Helper to check if value is valid for update
-      void addIfValid(String key, String? value) {
-        if (value != null && value.isNotEmpty && value != 'N/A') {
-          updates[key] = value;
-        }
-      }
-
-      void addIntIfValid(String key, String? value) {
-        if (value != null && value.isNotEmpty && value != 'N/A') {
-          final intValue = int.tryParse(value);
-          if (intValue != null) {
-            updates[key] = intValue;
-          }
-        }
-      }
-
-      // Add all patient fields
-      addIfValid('first_name', _patientFirstNameController.text);
-      addIfValid('last_name', _patientLastNameController.text);
-      addIntIfValid('age', _patientAgeController.text);
-      addIfValid('gender', _patientGenderController.text);
-      addIfValid('email', _patientEmailController.text);
-      addIfValid('phone', _patientPhoneController.text);
-
-      // Parse address - split back into components if it was combined
-      final address = _patientAddressController.text;
-      if (address.isNotEmpty && address != 'N/A') {
-        // If address contains commas, try to split it
-        final addressParts = address.split(',').map((e) => e.trim()).toList();
-        if (addressParts.length >= 1) {
-          updates['address1'] = addressParts[0];
-        }
-        if (addressParts.length >= 2) {
-          updates['address2'] = addressParts[1];
-        }
-        if (addressParts.length >= 3) {
-          updates['district'] = addressParts[2];
-        }
-        if (addressParts.length >= 4) {
-          updates['state'] = addressParts[3];
-        }
-      }
-
-      addIfValid('blood_group', _patientBloodGroupController.text);
-      addIfValid('smoking_status', _patientSmokingController.text);
-      addIfValid('alcohol_use', _patientAlcoholController.text);
-      addIntIfValid('height_cm', _patientHeightController.text);
-
-      if (updates.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No changes to save.'),
-              backgroundColor: Color(0xFF6B7280),
-            ),
-          );
-        }
-        setState(() {
-          _isSavingPatient = false;
-        });
-        return;
-      }
-
-      // Call API to update patient
-      final success = await _viewModel.updateClinicPatient(
-        patientId: patientId,
-        updates: updates,
-        clinicId: clinicId,
-      );
-
-      if (mounted) {
-        if (success) {
-          print('✅ UI: Patient details update completed successfully');
-          print('🔄 Refreshing UI with updated data...');
-          print('');
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Patient details updated successfully'),
-              backgroundColor: Color(0xFF10B981),
-            ),
-          );
-          setState(() {
-            _isEditingPatientDetails = false;
-          });
-          // Refresh controller values with updated data
-          _updateControllerValues();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _viewModel.errorMessage ?? 'Failed to update patient details',
-              ),
-              backgroundColor: const Color(0xFFEF4444),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: const Color(0xFFEF4444),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSavingPatient = false;
-        });
-      }
+    final heightText = _patientHeightController.text.trim();
+    if (heightText.isNotEmpty &&
+        heightText != 'N/A' &&
+        !_isNumericValue(heightText)) {
+      _showPatientValidationError('Height must be a number.');
+      return;
     }
+
+    final result = await _viewModel.savePatientDetails();
+    if (!mounted) return;
+
+    final message = result.message ?? _viewModel.errorMessage;
+    if (message == null || message.isEmpty) return;
+
+    final isNeutral =
+        !result.success && message.toLowerCase().contains('no changes');
+    final backgroundColor = result.success
+        ? const Color(0xFF10B981)
+        : isNeutral
+        ? const Color(0xFF6B7280)
+        : const Color(0xFFEF4444);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: backgroundColor),
+    );
   }
 
   Future<void> _showCancelAppointmentDialog() async {
@@ -515,14 +179,14 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: const Color(0xFFEF4444).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(3),
               ),
               child: const Icon(
                 Icons.cancel_outlined,
@@ -563,7 +227,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   labelText: 'Reason (Optional)',
                   hintText: 'e.g., Patient requested cancellation',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -579,7 +243,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   labelText: 'Notes (Optional)',
                   hintText: 'Additional details...',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -608,9 +272,10 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               backgroundColor: const Color(0xFFEF4444),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(3),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              elevation: 0,
             ),
             child: const Text(
               'Yes, Cancel',
@@ -656,10 +321,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
+                child: AppLoader(size: 20, strokeWidth: 2, color: Colors.white),
               ),
               SizedBox(width: 12),
               Text('Cancelling appointment...'),
@@ -760,258 +422,58 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   }
 
   Future<void> _saveVitalSigns() async {
-    // Get patient ID and clinic ID
-    final appointment = _viewModel.appointmentDetails;
-    final clinicPatient = _viewModel.clinicPatient;
+    final vitalInputs = {
+      'Temperature': _vitalTemperatureController.text.trim(),
+      'Pulse': _vitalPulseController.text.trim(),
+      'Respiratory rate': _vitalRespiratoryRateController.text.trim(),
+      'SpO₂': _vitalSpO2Controller.text.trim(),
+      'Blood sugar': _vitalBloodSugarController.text.trim(),
+      'Weight': _vitalWeightController.text.trim(),
+    };
 
-    final patientId =
-        appointment?.clinicPatientId ??
-        clinicPatient?.id ??
-        widget.clinicPatientId;
-
-    if (patientId == null || patientId.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Patient ID not found. Cannot save vital signs.'),
-            backgroundColor: Color(0xFFEF4444),
-          ),
-        );
-      }
-      return;
-    }
-
-    // Get clinic ID from appointment or clinic patient
-    final clinicId = appointment?.clinic?.id ?? clinicPatient?.clinicId;
-    final appointmentId = appointment?.id;
-
-    setState(() {
-      _isSavingVitals = true;
-    });
-
-    try {
-      // Collect vitals data from controllers
-      final vitalsData = <String, dynamic>{};
-
-      // Helper to get value from controller
-      String getValue(TextEditingController controller) {
-        final text = controller.text.trim();
-        return text.isEmpty ? '' : text;
-      }
-
-      // Collect all vitals values
-      final temperature = getValue(_vitalTemperatureController);
-      final pulse = getValue(_vitalPulseController);
-      final respiratoryRate = getValue(_vitalRespiratoryRateController);
-      final bloodPressure = getValue(_vitalBloodPressureController);
-      final spo2 = getValue(_vitalSpO2Controller);
-      final bloodSugar = getValue(_vitalBloodSugarController);
-      final weight = getValue(_vitalWeightController);
-
-      // Only include non-empty values
-      if (temperature.isNotEmpty) {
-        vitalsData['temperature'] = temperature;
-      }
-      if (pulse.isNotEmpty) {
-        vitalsData['pulse'] = pulse;
-      }
-      if (respiratoryRate.isNotEmpty) {
-        vitalsData['respiratory_rate'] = respiratoryRate;
-      }
-      if (bloodPressure.isNotEmpty) {
-        vitalsData['blood_pressure'] = bloodPressure;
-      }
-      if (spo2.isNotEmpty) {
-        vitalsData['spo2'] = spo2;
-      }
-      if (bloodSugar.isNotEmpty) {
-        vitalsData['blood_sugar'] = bloodSugar;
-      }
-      if (weight.isNotEmpty) {
-        vitalsData['weight'] = weight;
-      }
-
-      if (vitalsData.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No vital signs data to save.'),
-              backgroundColor: Color(0xFF6B7280),
-            ),
-          );
-        }
-        setState(() {
-          _isSavingVitals = false;
-        });
+    for (final entry in vitalInputs.entries) {
+      if (entry.value.isNotEmpty && !_isNumericValue(entry.value)) {
+        _showVitalsValidationError('${entry.key} must be numeric.');
         return;
       }
-
-      // Check if we already have a vitals record (for update vs create)
-      final existingVitalsId = _viewModel.vitalsRecord?.id;
-
-      // Call API to save vitals (update if exists, create if new)
-      final success = await _viewModel.saveVitals(
-        clinicPatientId: patientId,
-        vitalsData: vitalsData,
-        appointmentId: appointmentId,
-        clinicId: clinicId,
-        vitalsRecordId: existingVitalsId,
-      );
-
-      if (mounted) {
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Vital signs saved successfully'),
-              backgroundColor: Color(0xFF10B981),
-            ),
-          );
-          setState(() {
-            _isEditingVitalSigns = false;
-            // Refresh controllers with updated data from ViewModel
-            _updateControllerValues();
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _viewModel.errorMessage ?? 'Failed to save vital signs',
-              ),
-              backgroundColor: const Color(0xFFEF4444),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: const Color(0xFFEF4444),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSavingVitals = false;
-        });
-      }
     }
+
+    final result = await _viewModel.saveVitalSigns();
+    if (!mounted) return;
+
+    final message = result.message ?? _viewModel.errorMessage;
+    if (message == null || message.isEmpty) return;
+
+    final isNeutral =
+        !result.success && message.toLowerCase().contains('no vital signs');
+    final backgroundColor = result.success
+        ? const Color(0xFF10B981)
+        : isNeutral
+        ? const Color(0xFF6B7280)
+        : const Color(0xFFEF4444);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: backgroundColor),
+    );
   }
 
   @override
   void dispose() {
-    // Dispose booking controllers
-    _bookingAppointmentIdController.dispose();
-    _bookingBookedOnController.dispose();
-    _bookingDateController.dispose();
-    _bookingTimeController.dispose();
-    _bookingDoctorController.dispose();
-    _bookingDepartmentController.dispose();
-    _bookingReasonController.dispose();
-    _bookingTypeController.dispose();
-
-    // Dispose patient controllers
-    _patientFirstNameController.dispose();
-    _patientLastNameController.dispose();
-    _patientAgeController.dispose();
-    _patientGenderController.dispose();
-    _patientEmailController.dispose();
-    _patientPhoneController.dispose();
-    _patientAddressController.dispose();
-    _patientBloodGroupController.dispose();
-    _patientSmokingController.dispose();
-    _patientAlcoholController.dispose();
-    _patientHeightController.dispose();
-
-    // Dispose vital signs controllers
-    _vitalTemperatureController.dispose();
-    _vitalPulseController.dispose();
-    _vitalRespiratoryRateController.dispose();
-    _vitalBloodPressureController.dispose();
-    _vitalSpO2Controller.dispose();
-    _vitalBloodSugarController.dispose();
-    _vitalWeightController.dispose();
-
-    // Dispose status update controller
-    _statusNotesController.dispose();
-
     _viewModel.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        toolbarHeight: 52,
-        shadowColor: Colors.black.withOpacity(0.08),
-        shape: const Border(
-          bottom: BorderSide(color: Color(0xFFE8EBF0), width: 1),
-        ),
-        leading: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-          ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Color(0xFF333333),
-              size: 18,
-            ),
-            onPressed: () => NavigationHelper.goBack(context),
-          ),
-        ),
-        title: const Text(
-          'Appointment Details',
-          style: TextStyle(
-            color: Color(0xFF1A1D29),
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: -0.3,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FA),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-            ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.print_rounded,
-                color: Color(0xFF6366F1),
-                size: 20,
-              ),
-              onPressed: () {},
-            ),
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFFF5F7FA),
-              Colors.white,
-              const Color(0xFFFAFBFC),
-            ],
-            stops: const [0.0, 0.3, 1.0],
-          ),
-        ),
-        child: _buildBody(),
+    return ChangeNotifierProvider<AppointmentDetailsViewModel>.value(
+      value: _viewModel,
+      child: Consumer<AppointmentDetailsViewModel>(
+        builder: (context, __, child) {
+          return Scaffold(
+            backgroundColor: kBgColor,
+            body: Container(color: kBgColor, child: _buildBody()),
+          );
+        },
       ),
     );
   }
@@ -1024,7 +486,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
         widget.appointmentId != null &&
         widget.appointmentId!.isNotEmpty) {
       return const Center(
-        child: CircularProgressIndicator(color: Color(0xFF6366F1)),
+        child: AppLoader(
+          size: 60,
+          strokeWidth: 4,
+          color: kAccentColor,
+          showMessage: true,
+          message: 'Loading details...',
+        ),
       );
     }
 
@@ -1067,12 +535,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6366F1),
+                backgroundColor: kAccentColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,
                 ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                elevation: 0,
               ),
             ),
           ],
@@ -1120,6 +592,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         _buildPatientDetailsCard(),
                         const SizedBox(height: 4),
                         _buildVitalSignsCard(),
+                        const SizedBox(height: 4),
                         const SizedBox(height: 8),
                         _buildFooter(),
                       ],
@@ -1150,7 +623,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             const Color(0xFFF8F9FA),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(
           color: const Color(0xFFE8EBF0).withOpacity(0.6),
           width: 1.5,
@@ -1193,47 +666,24 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF6366F1).withOpacity(0.25),
-                            const Color(0xFF8B5CF6).withOpacity(0.2),
-                            const Color(0xFFA78BFA).withOpacity(0.15),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF6366F1).withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                            spreadRadius: 0,
-                          ),
-                          BoxShadow(
-                            color: const Color(0xFF6366F1).withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1),
-                            spreadRadius: 0,
-                          ),
-                        ],
+                        color: kAccentColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: const Icon(
                         Icons.calendar_today_rounded,
-                        size: 16,
-                        color: Color(0xFF6366F1),
+                        size: 18,
+                        color: kAccentColor,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 12),
                     const Text(
                       'Booking Details',
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1D29),
-                        letterSpacing: -0.2,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryText,
                       ),
                     ),
                     if (_isEditingBookingDetails) ...[
@@ -1247,7 +697,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           gradient: const LinearGradient(
                             colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
                           ),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(3),
                           boxShadow: [
                             BoxShadow(
                               color: const Color(0xFF6366F1).withOpacity(0.3),
@@ -1273,61 +723,6 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               const SizedBox(width: 8),
               _buildStatusPill(),
               const SizedBox(width: 6),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  gradient: _isEditingBookingDetails
-                      ? const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                        )
-                      : null,
-                  color: _isEditingBookingDetails
-                      ? null
-                      : const Color(0xFFF8F9FA),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: _isEditingBookingDetails
-                        ? Colors.transparent
-                        : const Color(0xFFE5E7EB),
-                    width: 1,
-                  ),
-                  boxShadow: _isEditingBookingDetails
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFF6366F1).withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {
-                      setState(() {
-                        _isEditingBookingDetails = !_isEditingBookingDetails;
-                        if (_isEditingBookingDetails) {
-                          _updateControllerValues();
-                        }
-                      });
-                    },
-                    child: Center(
-                      child: Icon(
-                        _isEditingBookingDetails
-                            ? Icons.close_rounded
-                            : Icons.edit_rounded,
-                        size: 17,
-                        color: _isEditingBookingDetails
-                            ? Colors.white
-                            : const Color(0xFF6366F1),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -1348,7 +743,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(3),
                     border: Border.all(
                       color: const Color(0xFFE5E7EB),
                       width: 1.5,
@@ -1369,14 +764,14 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                     icon: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: const Color(0xFF6366F1).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: const Icon(
                         Icons.add_rounded,
@@ -1399,7 +794,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(3),
                     border: Border.all(
                       color: const Color(0xFFE5E7EB),
                       width: 1.5,
@@ -1412,7 +807,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       ),
                     ],
                   ),
-                  child: OutlinedButton(
+                  child: OutlinedButton.icon(
                     onPressed:
                         _viewModel.appointmentDetails?.status == 'cancelled' ||
                             _viewModel.appointmentDetails?.status ==
@@ -1426,12 +821,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       disabledForegroundColor: const Color(0xFF9CA3AF),
                       disabledBackgroundColor: const Color(0xFFF3F4F6),
                     ),
-                    child: const Text(
+                    icon: const Icon(Icons.cancel_outlined, size: 16),
+                    label: const Text(
                       'Cancel',
                       style: TextStyle(
                         fontSize: 13,
@@ -1446,57 +842,88 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1A1D29), Color(0xFF2D3142)],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    color: _isRescheduleEnabled
+                        ? Colors.black
+                        : const Color(0xFFE2E8F0),
+                    borderRadius: BorderRadius.circular(3),
+                    boxShadow: _isRescheduleEnabled
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : null,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-                      showGeneralDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        barrierLabel: MaterialLocalizations.of(
-                          context,
-                        ).modalBarrierDismissLabel,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return RescheduleModal(
-                            appointmentId: widget.appointmentId,
-                          );
-                        },
-                      );
-                    },
+                    onPressed:
+                        (_viewModel.appointmentDetails?.status?.toLowerCase() ==
+                                'confirmed' ||
+                            _viewModel.appointmentDetails?.status
+                                    ?.toLowerCase() ==
+                                'pending')
+                        ? () async {
+                            final result = await showGeneralDialog<bool>(
+                              context: context,
+                              barrierDismissible: true,
+                              barrierLabel: MaterialLocalizations.of(
+                                context,
+                              ).modalBarrierDismissLabel,
+                              barrierColor:
+                                  Colors.transparent, // Handled by modal
+                              transitionDuration: const Duration(
+                                milliseconds: 300,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                    return RescheduleModal(
+                                      appointmentId: widget.appointmentId,
+                                    );
+                                  },
+                            );
+
+                            if (result == true &&
+                                widget.appointmentId != null) {
+                              await _viewModel.fetchAppointmentDetails(
+                                widget.appointmentId!,
+                              );
+                            }
+                          }
+                        : null,
                     style:
                         ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
-                          foregroundColor: Colors.white,
+                          foregroundColor: _isRescheduleEnabled
+                              ? Colors.white
+                              : const Color(0xFF9CA3AF),
                           padding: const EdgeInsets.symmetric(vertical: 9),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(3),
                           ),
                           elevation: 0,
                         ).copyWith(
                           overlayColor: MaterialStateProperty.all(
-                            Colors.white.withOpacity(0.1),
+                            _isRescheduleEnabled
+                                ? Colors.white.withOpacity(0.1)
+                                : Colors.transparent,
                           ),
                         ),
-                    child: const Text(
-                      'Reschedule',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.2,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.update_rounded, size: 16),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Reschedule',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -1509,11 +936,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _isEditingBookingDetails = false;
-                    });
-                  },
+                  onPressed: _viewModel.exitBookingEditing,
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -1531,13 +954,11 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                    ),
+                    color: kAccentColor,
+                    borderRadius: BorderRadius.circular(3),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF6366F1).withOpacity(0.4),
+                        color: kAccentColor.withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -1545,16 +966,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Save booking details
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Booking details updated successfully'),
                           backgroundColor: Color(0xFF10B981),
                         ),
                       );
-                      setState(() {
-                        _isEditingBookingDetails = false;
-                      });
+                      _viewModel.exitBookingEditing();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
@@ -1564,7 +982,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         vertical: 12,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       elevation: 0,
                     ),
@@ -1581,53 +999,29 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               ],
             ),
           ],
+          if (_viewModel.appointmentDetails != null) ...[
+            const SizedBox(height: 16),
+            const Divider(color: Color(0xFFE2E8F0), height: 1),
+            const SizedBox(height: 16),
+          ],
         ],
+    
       ),
     );
   }
 
   Widget _buildPatientDetailsCard() {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            const Color(0xFFFAFBFC),
-            const Color(0xFFF8F9FA),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.6),
-          width: 1.5,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF10B981).withOpacity(0.12),
-            blurRadius: 28,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: const Color(0xFF10B981).withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
             color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -1640,47 +1034,24 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFF10B981).withOpacity(0.25),
-                          const Color(0xFF34D399).withOpacity(0.2),
-                          const Color(0xFF6EE7B7).withOpacity(0.15),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF10B981).withOpacity(0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                          spreadRadius: 0,
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFF10B981).withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                          spreadRadius: 0,
-                        ),
-                      ],
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                     child: const Icon(
                       Icons.person_rounded,
-                      size: 16,
-                      color: Color(0xFF10B981),
+                      size: 18,
+                      color: Colors.green,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   const Text(
                     'Patient Details',
                     style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1A1D29),
-                      letterSpacing: -0.2,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: kPrimaryText,
                     ),
                   ),
                   if (_isEditingPatientDetails) ...[
@@ -1694,7 +1065,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFF10B981), Color(0xFF34D399)],
                         ),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(3),
                         boxShadow: [
                           BoxShadow(
                             color: const Color(0xFF10B981).withOpacity(0.3),
@@ -1728,7 +1099,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   color: _isEditingPatientDetails
                       ? null
                       : const Color(0xFFF8F9FA),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(3),
                   border: Border.all(
                     color: _isEditingPatientDetails
                         ? Colors.transparent
@@ -1748,15 +1119,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {
-                      setState(() {
-                        _isEditingPatientDetails = !_isEditingPatientDetails;
-                        if (_isEditingPatientDetails) {
-                          _updateControllerValues();
-                        }
-                      });
-                    },
+                    borderRadius: BorderRadius.circular(3),
+                    onTap: _viewModel.togglePatientEditing,
                     child: Center(
                       child: Icon(
                         _isEditingPatientDetails
@@ -1785,12 +1149,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _isEditingPatientDetails = false;
-                      _updateControllerValues(); // Reset to original values
-                    });
-                  },
+                  onPressed: _viewModel.exitPatientEditing,
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -1808,13 +1167,11 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF10B981), Color(0xFF34D399)],
-                    ),
+                    color: kAccentColor,
+                    borderRadius: BorderRadius.circular(3),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF10B981).withOpacity(0.4),
+                        color: kAccentColor.withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -1834,7 +1191,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         vertical: 12,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       elevation: 0,
                     ),
@@ -1869,46 +1226,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   Widget _buildVitalSignsCard() {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            const Color(0xFFFAFBFC),
-            const Color(0xFFF8F9FA),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.6),
-          width: 1.5,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFEF4444).withOpacity(0.12),
-            blurRadius: 28,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: const Color(0xFFEF4444).withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
             color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -1922,47 +1249,24 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFFEF4444).withOpacity(0.25),
-                            const Color(0xFFF87171).withOpacity(0.2),
-                            const Color(0xFFFCA5A5).withOpacity(0.15),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFEF4444).withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                            spreadRadius: 0,
-                          ),
-                          BoxShadow(
-                            color: const Color(0xFFEF4444).withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1),
-                            spreadRadius: 0,
-                          ),
-                        ],
+                        color: kBlueColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: const Icon(
                         Icons.monitor_heart_rounded,
-                        size: 16,
-                        color: Color(0xFFEF4444),
+                        size: 18,
+                        color: kBlueColor,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 12),
                     const Text(
                       'Vital Signs',
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1D29),
-                        letterSpacing: -0.2,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryText,
                       ),
                     ),
                     if (_isEditingVitalSigns) ...[
@@ -1974,12 +1278,12 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         ),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFEF4444), Color(0xFFF87171)],
+                            colors: [kBlueColor, Color(0xFF60A5FA)],
                           ),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(3),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFEF4444).withOpacity(0.3),
+                              color: kBlueColor.withOpacity(0.3),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -2008,13 +1312,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     decoration: BoxDecoration(
                       gradient: _isEditingVitalSigns
                           ? const LinearGradient(
-                              colors: [Color(0xFFEF4444), Color(0xFFF87171)],
+                              colors: [kBlueColor, Color(0xFF60A5FA)],
                             )
                           : null,
                       color: _isEditingVitalSigns
                           ? null
                           : const Color(0xFFF8F9FA),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(3),
                       border: Border.all(
                         color: _isEditingVitalSigns
                             ? Colors.transparent
@@ -2024,7 +1328,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       boxShadow: _isEditingVitalSigns
                           ? [
                               BoxShadow(
-                                color: const Color(0xFFEF4444).withOpacity(0.3),
+                                color: kBlueColor.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -2034,15 +1338,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          setState(() {
-                            _isEditingVitalSigns = !_isEditingVitalSigns;
-                            if (_isEditingVitalSigns) {
-                              _updateControllerValues();
-                            }
-                          });
-                        },
+                        borderRadius: BorderRadius.circular(3),
+                        onTap: _viewModel.toggleVitalSignsEditing,
                         child: Center(
                           child: Icon(
                             _isEditingVitalSigns
@@ -2051,7 +1348,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                             size: 17,
                             color: _isEditingVitalSigns
                                 ? Colors.white
-                                : const Color(0xFF6366F1),
+                                : kBlueColor,
                           ),
                         ),
                       ),
@@ -2063,12 +1360,12 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     height: 36,
                     decoration: BoxDecoration(
                       color: _isVitalSignsExpanded
-                          ? const Color(0xFFEF4444).withOpacity(0.1)
+                          ? kBlueColor.withOpacity(0.1)
                           : const Color(0xFFF8F9FA),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(3),
                       border: Border.all(
                         color: _isVitalSignsExpanded
-                            ? const Color(0xFFEF4444).withOpacity(0.3)
+                            ? kBlueColor.withOpacity(0.3)
                             : const Color(0xFFE5E7EB),
                         width: 1,
                       ),
@@ -2076,12 +1373,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          setState(() {
-                            _isVitalSignsExpanded = !_isVitalSignsExpanded;
-                          });
-                        },
+                        borderRadius: BorderRadius.circular(3),
+                        onTap: _viewModel.toggleVitalSignsExpansion,
                         child: Center(
                           child: Icon(
                             _isVitalSignsExpanded
@@ -2089,8 +1382,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                                 : Icons.keyboard_arrow_down_rounded,
                             size: 20,
                             color: _isVitalSignsExpanded
-                                ? const Color(0xFFEF4444)
-                                : const Color(0xFF6366F1),
+                                ? kBlueColor
+                                : kBlueColor,
                           ),
                         ),
                       ),
@@ -2112,12 +1405,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isEditingVitalSigns = false;
-                        _updateControllerValues(); // Reset to original values
-                      });
-                    },
+                    onPressed: _viewModel.exitVitalSignsEditing,
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -2135,13 +1423,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   const SizedBox(width: 8),
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(3),
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFEF4444), Color(0xFFF87171)],
+                        colors: [kBlueColor, Color(0xFF60A5FA)],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFEF4444).withOpacity(0.4),
+                          color: kBlueColor.withOpacity(0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -2161,7 +1449,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           vertical: 12,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(3),
                         ),
                         elevation: 0,
                       ),
@@ -2193,13 +1481,9 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [const Color(0xFFF8F9FA), const Color(0xFFF5F7FA)],
-                ),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE8EBF0), width: 1),
+                color: kBgColor,
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(color: kBorderColor, width: 1),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -2207,7 +1491,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   Icon(
                     Icons.medical_information_rounded,
                     size: 20,
-                    color: const Color(0xFF6366F1).withOpacity(0.7),
+                    color: kAccentColor.withOpacity(0.5),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -2239,151 +1523,68 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       }
     }
 
-    // Get values from controllers - show message if empty
-    return Column(
-      children: [
-        // First row - 4 fields
-        Row(
-          children: [
-            Expanded(
-              child: _buildVitalSignItem(
-                'Temperature',
-                getVitalValue(_vitalTemperatureController),
-                Icons.thermostat_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildVitalSignItem(
-                'Pulse',
-                getVitalValue(_vitalPulseController),
-                Icons.favorite_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildVitalSignItem(
-                'Respiratory Rate',
-                getVitalValue(_vitalRespiratoryRateController),
-                Icons.air_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildVitalSignItem(
-                'Blood Pressure',
-                getVitalValue(_vitalBloodPressureController),
-                Icons.monitor_heart_rounded,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // Second row - 3 fields (last row)
-        Row(
-          children: [
-            Expanded(
-              child: _buildVitalSignItem(
-                'SpO₂',
-                getVitalValue(_vitalSpO2Controller),
-                Icons.water_drop_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildVitalSignItem(
-                'Blood Sugar',
-                getVitalValue(_vitalBloodSugarController),
-                Icons.local_drink_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildVitalSignItem(
-                'Weight',
-                getVitalValue(_vitalWeightController),
-                Icons.monitor_weight_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Expanded(child: SizedBox()), // Empty spacer for alignment
-          ],
-        ),
-      ],
+    final items = [
+      _buildVitalSignItem('Temperature', getVitalValue(_vitalTemperatureController), Icons.thermostat_rounded),
+      _buildVitalSignItem('Pulse', getVitalValue(_vitalPulseController), Icons.favorite_rounded),
+      _buildVitalSignItem('Respiratory Rate', getVitalValue(_vitalRespiratoryRateController), Icons.air_rounded),
+      _buildVitalSignItem('Blood Pressure', getVitalValue(_vitalBloodPressureController), Icons.monitor_heart_rounded),
+      _buildVitalSignItem('SpO₂', getVitalValue(_vitalSpO2Controller), Icons.water_drop_rounded),
+      _buildVitalSignItem('Blood Sugar', getVitalValue(_vitalBloodSugarController), Icons.local_drink_rounded),
+      _buildVitalSignItem('Weight', getVitalValue(_vitalWeightController), Icons.monitor_weight_rounded),
+      _buildVitalSignItem('Smoking Status', getVitalValue(_vitalSmokingController), Icons.smoking_rooms_rounded),
+      _buildVitalSignItem('Alcohol Use', getVitalValue(_vitalAlcoholController), Icons.local_bar_rounded),
+      _buildVitalSignItem('BMI', getVitalValue(_vitalBMIController), Icons.speed_rounded),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth < 600 ? 2 : (constraints.maxWidth < 900 ? 3 : 4);
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 6,
+            mainAxisSpacing: 6,
+            childAspectRatio: 2.2,
+          ),
+          itemBuilder: (context, index) => items[index],
+        );
+      },
     );
   }
 
   Widget _buildEditableVitalSignsContent() {
-    return Column(
-      children: [
-        // First row - 4 fields
-        Row(
-          children: [
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Temperature',
-                _vitalTemperatureController,
-                Icons.thermostat_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Pulse',
-                _vitalPulseController,
-                Icons.favorite_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Respiratory Rate',
-                _vitalRespiratoryRateController,
-                Icons.air_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Blood Pressure',
-                _vitalBloodPressureController,
-                Icons.monitor_heart_rounded,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // Second row - 3 fields (last row)
-        Row(
-          children: [
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'SpO₂',
-                _vitalSpO2Controller,
-                Icons.water_drop_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Blood Sugar',
-                _vitalBloodSugarController,
-                Icons.local_drink_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: _buildEditableVitalSignItem(
-                'Weight',
-                _vitalWeightController,
-                Icons.monitor_weight_rounded,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Expanded(child: SizedBox()), // Empty spacer for alignment
-          ],
-        ),
-      ],
+    final items = [
+      _buildEditableVitalSignItem('Temperature', _vitalTemperatureController, Icons.thermostat_rounded),
+      _buildEditableVitalSignItem('Pulse', _vitalPulseController, Icons.favorite_rounded),
+      _buildEditableVitalSignItem('Respiratory Rate', _vitalRespiratoryRateController, Icons.air_rounded),
+      _buildEditableVitalSignItem('Blood Pressure', _vitalBloodPressureController, Icons.monitor_heart_rounded),
+      _buildEditableVitalSignItem('SpO₂', _vitalSpO2Controller, Icons.water_drop_rounded),
+      _buildEditableVitalSignItem('Blood Sugar', _vitalBloodSugarController, Icons.local_drink_rounded),
+      _buildEditableVitalSignItem('Weight', _vitalWeightController, Icons.monitor_weight_rounded),
+      _buildEditableVitalSignItem('Smoking Status', _vitalSmokingController, Icons.smoking_rooms_rounded),
+      _buildEditableVitalSignItem('Alcohol Use', _vitalAlcoholController, Icons.local_bar_rounded),
+      _buildEditableVitalSignItem('BMI', _vitalBMIController, Icons.speed_rounded),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth < 600 ? 2 : (constraints.maxWidth < 900 ? 3 : 4);
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 6,
+            mainAxisSpacing: 6,
+            childAspectRatio: 2.0, // Slightly more space for input
+          ),
+          itemBuilder: (context, index) => items[index],
+        );
+      },
     );
   }
 
@@ -2392,8 +1593,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     TextEditingController controller,
     IconData icon,
   ) {
-    // Keep red icon but use patient details theme for borders/shadows
-    const Color vitalSignColor = Color(0xFFEF4444);
+    // Premium Blue/Indigo theme
+    const Color vitalSignColor = kBlueColor;
     const Color patientThemeColor = Color(0xFF10B981);
 
     return Container(
@@ -2404,7 +1605,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           end: Alignment.bottomRight,
           colors: [Colors.white, Color(0xFFFAFBFC)],
         ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(
           color: const Color(0xFFE8EBF0).withOpacity(0.6),
           width: 1,
@@ -2439,7 +1640,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       vitalSignColor.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(3),
                 ),
                 child: Icon(icon, size: 12, color: vitalSignColor),
               ),
@@ -2488,46 +1689,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   Widget _buildAppointmentHistoryCard() {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            const Color(0xFFFAFBFC),
-            const Color(0xFFF8F9FA),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.6),
-          width: 1.5,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFF59E0B).withOpacity(0.12),
-            blurRadius: 28,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: const Color(0xFFF59E0B).withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
             color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -2537,47 +1708,24 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFFF59E0B).withOpacity(0.25),
-                      const Color(0xFFFBBF24).withOpacity(0.2),
-                      const Color(0xFFFCD34D).withOpacity(0.15),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFF59E0B).withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                      spreadRadius: 0,
-                    ),
-                    BoxShadow(
-                      color: const Color(0xFFF59E0B).withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                      spreadRadius: 0,
-                    ),
-                  ],
+                  color: Colors.amber.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(3),
                 ),
                 child: const Icon(
                   Icons.history_rounded,
-                  size: 16,
-                  color: Color(0xFFF59E0B),
+                  size: 18,
+                  color: Colors.amber,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               const Text(
                 'Appointment History',
                 style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1A1D29),
-                  letterSpacing: -0.2,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryText,
                 ),
               ),
             ],
@@ -2598,7 +1746,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF3B82F6).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(3),
                   border: Border.all(
                     color: const Color(0xFF3B82F6).withOpacity(0.2),
                     width: 1,
@@ -2681,12 +1829,14 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     final date = _formatDateToDDMMYYYY(appointment.appointmentDate);
     final time = appointment.appointmentTime;
 
-    // Get doctor name from current appointment if highlighted, otherwise use empty
-    String? doctorName;
+    // Get doctor name from history item or current appointment
+    String doctorName = appointment.doctorName ?? 'N/A';
     if (isHighlighted) {
       final currentAppointment = _viewModel.appointmentDetails;
-      doctorName =
-          currentAppointment?.doctorName ?? currentAppointment?.doctor?.name;
+      doctorName = currentAppointment?.doctorName ??
+          currentAppointment?.doctor?.name ??
+          appointment.doctorName ??
+          'N/A';
     }
 
     return _buildImageTimelineItem(
@@ -2829,7 +1979,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         timelineColor.withOpacity(0.2),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
             ],
@@ -2855,7 +2005,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           const Color(0xFFD1FAE5),
                         ],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(3),
                 border: Border.all(
                   color: isHighlighted
                       ? const Color(0xFFF59E0B).withOpacity(0.5)
@@ -2908,7 +2058,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                               timelineColor.withOpacity(0.15),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(3),
                           border: Border.all(
                             color: timelineColor.withOpacity(0.3),
                             width: 1,
@@ -2950,7 +2100,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                                 timelineColor.withOpacity(0.15),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(3),
                             border: Border.all(
                               color: timelineColor.withOpacity(0.3),
                               width: 1,
@@ -2965,7 +2115,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            _formatDoctorName(doctorName),
+                            _viewModel.formatDoctorName(doctorName),
                             style: TextStyle(
                               color: const Color(0xFF1A1D29),
                               fontSize: 14,
@@ -3087,34 +2237,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   Widget _buildDetailItem(String label, String value) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            const Color(0xFFFAFBFC),
-            const Color(0xFFF8F9FA),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.5),
-          width: 1.2,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: -1,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(0.02),
             blurRadius: 4,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -3254,7 +2386,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             const Color(0xFFF8F9FA),
           ],
         ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(
           color: const Color(0xFFE8EBF0).withOpacity(0.5),
           width: 1.2,
@@ -3304,39 +2436,21 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   }
 
   Widget _buildVitalSignItem(String label, String value, IconData icon) {
-    // Keep red icon but use patient details theme for borders/shadows
-    const Color vitalSignColor = Color(0xFFEF4444);
+    // Premium Blue/Indigo theme
+    const Color vitalSignColor = kBlueColor;
     const Color patientThemeColor = Color(0xFF10B981);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            const Color(0xFFFAFBFC),
-            const Color(0xFFF8F9FA),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.5),
-          width: 1.2,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: patientThemeColor.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: -1,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(0.02),
             blurRadius: 4,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -3356,7 +2470,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       vitalSignColor.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(3),
                 ),
                 child: Icon(icon, size: 12, color: vitalSignColor),
               ),
@@ -3445,38 +2559,19 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: isTerminalStatus
-                ? null
-                : () {
-                    setState(() {
-                      _isEditingStatus = !_isEditingStatus;
-                      if (!_isEditingStatus) {
-                        _selectedStatusForUpdate = null;
-                        _statusNotesController.clear();
-                      }
-                    });
-                  },
+            borderRadius: BorderRadius.circular(3),
+            onTap: isTerminalStatus ? null : _viewModel.toggleStatusEditing,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    _isEditingStatus ? const Color(0xFF6366F1) : statusColor,
-                    (_isEditingStatus ? const Color(0xFF6366F1) : statusColor)
-                        .withOpacity(0.8),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12),
+                color: _isEditingStatus ? kAccentColor : statusColor,
+                borderRadius: BorderRadius.circular(3),
                 boxShadow: [
                   BoxShadow(
-                    color:
-                        (_isEditingStatus
-                                ? const Color(0xFF6366F1)
-                                : statusColor)
-                            .withOpacity(0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    color: (_isEditingStatus ? kAccentColor : statusColor)
+                        .withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -3523,6 +2618,10 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             ),
           ),
         ),
+        if (appointment?.bookingMode == 'walk_in') ...[
+          const SizedBox(width: 8),
+          const BookingModeBadge(bookingMode: 'walk_in', scaleFactor: 1.0),
+        ],
       ],
     );
   }
@@ -3530,8 +2629,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   // Build editable booking details layout
   Widget _buildEditableBookingDetailsLayout() {
     return _buildEditableDetailsLayout([
-      {'label': 'Token No', 'controller': _bookingAppointmentIdController},
-      {'label': 'Booked On', 'controller': _bookingBookedOnController},
+      {
+        'label': 'Token No',
+        'controller': _bookingAppointmentIdController,
+        'readOnly': true,
+      },
+      {
+        'label': 'Booked On',
+        'controller': _bookingBookedOnController,
+        'readOnly': true,
+      },
       {'label': 'Appointment Date', 'controller': _bookingDateController},
       {'label': 'Appointment Time', 'controller': _bookingTimeController},
       {'label': 'Doctor Assigned', 'controller': _bookingDoctorController},
@@ -3551,8 +2658,6 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       {'label': 'Contact Number', 'controller': _patientPhoneController},
       {'label': 'Address', 'controller': _patientAddressController},
       {'label': 'Blood Group', 'controller': _patientBloodGroupController},
-      {'label': 'Smoking Status', 'controller': _patientSmokingController},
-      {'label': 'Alcohol Use', 'controller': _patientAlcoholController},
       {'label': 'Height (cm)', 'controller': _patientHeightController},
     ]);
   }
@@ -3569,6 +2674,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 child: _buildEditableDetailItem(
                   detail['label'] as String,
                   detail['controller'] as TextEditingController,
+                  readOnly: detail['readOnly'] as bool? ?? false,
                 ),
               ),
             )
@@ -3585,6 +2691,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[0]['label'] as String,
                 details[0]['controller'] as TextEditingController,
+                readOnly: details[0]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3592,6 +2699,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[1]['label'] as String,
                 details[1]['controller'] as TextEditingController,
+                readOnly: details[1]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3599,6 +2707,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[2]['label'] as String,
                 details[2]['controller'] as TextEditingController,
+                readOnly: details[2]['readOnly'] as bool? ?? false,
               ),
             ),
           ],
@@ -3611,6 +2720,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[3]['label'] as String,
                 details[3]['controller'] as TextEditingController,
+                readOnly: details[3]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3618,6 +2728,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[4]['label'] as String,
                 details[4]['controller'] as TextEditingController,
+                readOnly: details[4]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3625,6 +2736,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[5]['label'] as String,
                 details[5]['controller'] as TextEditingController,
+                readOnly: details[5]['readOnly'] as bool? ?? false,
               ),
             ),
           ],
@@ -3637,6 +2749,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[6]['label'] as String,
                 details[6]['controller'] as TextEditingController,
+                readOnly: details[6]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3644,6 +2757,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               child: _buildEditableDetailItem(
                 details[7]['label'] as String,
                 details[7]['controller'] as TextEditingController,
+                readOnly: details[7]['readOnly'] as bool? ?? false,
               ),
             ),
             const SizedBox(width: 6),
@@ -3657,34 +2771,26 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   // Helper method to build editable detail item (2 columns layout)
   Widget _buildEditableDetailItem(
     String label,
-    TextEditingController controller,
-  ) {
+    TextEditingController controller, {
+    bool readOnly = false,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.white, const Color(0xFFFAFBFC)],
-        ),
-        borderRadius: BorderRadius.circular(10),
+        color: readOnly ? const Color(0xFFF3F4F6) : const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(
-          color: const Color(0xFFE8EBF0).withOpacity(0.6),
-          width: 1,
+          color: readOnly ? const Color(0xFFD1D5DB) : const Color(0xFFE8EBF0),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 2,
-            offset: const Offset(0, 0.5),
-          ),
-        ],
+        boxShadow: readOnly
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -3701,13 +2807,16 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           const SizedBox(height: 4),
           TextField(
             controller: controller,
-            style: const TextStyle(
-              color: Color(0xFF1A1D29),
+            readOnly: readOnly,
+            style: TextStyle(
+              color: readOnly
+                  ? const Color(0xFF4B5563)
+                  : const Color(0xFF1A1D29),
               fontSize: 13,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.2,
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.zero,
               border: InputBorder.none,
@@ -3730,28 +2839,28 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[0]['label'] as String,
                 details[0]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[1]['label'] as String,
                 details[1]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[2]['label'] as String,
                 details[2]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[3]['label'] as String,
                 details[3]['controller'] as TextEditingController,
               ),
@@ -3763,28 +2872,28 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[4]['label'] as String,
                 details[4]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[5]['label'] as String,
                 details[5]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[6]['label'] as String,
                 details[6]['controller'] as TextEditingController,
               ),
             ),
             const SizedBox(width: 4),
             Expanded(
-              child: _buildEditablePatientDetailItem(
+              child: _buildFieldForPatientDetail(
                 details[7]['label'] as String,
                 details[7]['controller'] as TextEditingController,
               ),
@@ -3797,7 +2906,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           Row(
             children: [
               Expanded(
-                child: _buildEditablePatientDetailItem(
+                child: _buildFieldForPatientDetail(
                   details[8]['label'] as String,
                   details[8]['controller'] as TextEditingController,
                 ),
@@ -3805,7 +2914,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               if (details.length > 9) ...[
                 const SizedBox(width: 4),
                 Expanded(
-                  child: _buildEditablePatientDetailItem(
+                  child: _buildFieldForPatientDetail(
                     details[9]['label'] as String,
                     details[9]['controller'] as TextEditingController,
                   ),
@@ -3818,10 +2927,14 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   }
 
   // Helper method to build editable patient detail item (4 columns layout)
-  Widget _buildEditablePatientDetailItem(
+  Widget _buildFieldForPatientDetail(
     String label,
     TextEditingController controller,
   ) {
+    if (label.toLowerCase() == 'gender') {
+      return _buildGenderDropdown(controller);
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
@@ -3830,7 +2943,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           end: Alignment.bottomRight,
           colors: [Colors.white, const Color(0xFFFAFBFC)],
         ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(
           color: const Color(0xFFE8EBF0).withOpacity(0.6),
           width: 1,
@@ -3879,6 +2992,111 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGenderDropdown(TextEditingController controller) {
+    final currentValue =
+        controller.text.isNotEmpty && _genderOptions.contains(controller.text)
+        ? controller.text
+        : null;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white, const Color(0xFFFAFBFC)],
+        ),
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(
+          color: const Color(0xFFE8EBF0).withOpacity(0.6),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10B981).withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 2,
+            offset: const Offset(0, 0.5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Gender',
+            style: const TextStyle(
+              color: Color(0xFF6B7280),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.1,
+            ),
+          ),
+          const SizedBox(height: 4),
+          DropdownButtonFormField<String>(
+            value: currentValue,
+            decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+              border: InputBorder.none,
+            ),
+            items: _genderOptions
+                .map(
+                  (option) => DropdownMenuItem(
+                    value: option,
+                    child: Text(
+                      option,
+                      style: const TextStyle(
+                        color: Color(0xFF1A1D29),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                controller.text = value;
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isPhoneNumberValid(String phone) {
+    final digits = phone.replaceAll(RegExp(r'[^0-9+]'), '');
+    return digits.length >= 7;
+  }
+
+  void _showPatientValidationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: const Color(0xFFEF4444),
+      ),
+    );
+  }
+
+  bool _isNumericValue(String value) {
+    return double.tryParse(value) != null;
+  }
+
+  void _showVitalsValidationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: const Color(0xFFEF4444),
       ),
     );
   }
@@ -3932,7 +3150,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     return _buildDetailsLayout([
       {
         'label': 'Token No',
-        'value': appointment?.tokenNumber?.toString() ?? 'N/A',
+        'value': appointment?.displayToken ?? appointment?.tokenNumber?.toString() ?? 'N/A',
       },
       {'label': 'Booked On', 'value': formatDate(appointment?.createdAt)},
       {
@@ -3945,7 +3163,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       },
       {
         'label': 'Doctor Assigned',
-        'value': _formatDoctorName(
+        'value': _viewModel.formatDoctorName(
           appointment?.doctorName ?? appointment?.doctor?.name ?? 'N/A',
         ),
       },
@@ -3953,10 +3171,11 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       {'label': 'Reason for Visit', 'value': appointment?.notes ?? 'N/A'},
       {
         'label': 'Consultation Type',
-        'value': _formatConsultationType(
+        'value': _viewModel.formatConsultationType(
           appointment?.consultationType ?? 'N/A',
         ),
       },
+      {'label': 'Queue Position', 'value': appointment?.queuePosition?.toString() ?? 'N/A'},
       {'label': 'Status', 'value': appointment?.status ?? 'N/A'},
     ]);
   }
@@ -3977,31 +3196,22 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFF6366F1).withOpacity(0.3),
-          width: 1.5,
-        ),
+        color: kCardColor,
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: kBorderColor),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: _buildStatusUpdateWidget(currentStatus, allowedStatuses),
     );
   }
-
-  // Status update state
-  String? _selectedStatusForUpdate;
-  final TextEditingController _statusNotesController = TextEditingController();
-  bool _isUpdatingStatus = false;
 
   /// Build status update widget with compact dropdown (auto-updates on selection)
   Widget _buildStatusUpdateWidget(
@@ -4014,9 +3224,9 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+              color: kBgColor,
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: kBorderColor, width: 1),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -4058,7 +3268,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          _formatStatusLabel(status),
+                          _viewModel.formatStatusLabel(status),
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF1A1D29),
@@ -4078,75 +3288,27 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           return;
                         }
 
-                        setState(() {
-                          _isUpdatingStatus = true;
-                          _selectedStatusForUpdate = value;
-                        });
+                        final result = await _viewModel.changeStatus(value);
+                        if (!mounted) return;
 
-                        try {
-                          final success = await _viewModel
-                              .updateAppointmentStatus(
-                                appointmentId: appointment.id!,
-                                clinicPatientId:
-                                    appointment.clinicPatientId ??
-                                    widget.clinicPatientId ??
-                                    '',
-                                status: value,
-                                notes: null,
-                                clinicId: appointment.clinic?.id,
-                              );
-
+                        if (result.success) {
+                          _refreshDashboardList();
                           if (mounted) {
-                            if (success) {
-                              // Refresh dashboard appointment list
-                              _refreshDashboardList();
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Status updated to ${_formatStatusLabel(value)}',
-                                  ),
-                                  backgroundColor: const Color(0xFF10B981),
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                              setState(() {
-                                _selectedStatusForUpdate = null;
-                                _isEditingStatus = false;
-                              });
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    _viewModel.errorMessage ??
-                                        'Failed to update status',
-                                  ),
-                                  backgroundColor: const Color(0xFFEF4444),
-                                ),
-                              );
-                              setState(() {
-                                _selectedStatusForUpdate = null;
-                              });
-                            }
-                          }
-                        } catch (e) {
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Error: ${e.toString()}'),
-                                backgroundColor: const Color(0xFFEF4444),
-                              ),
+                            _showSuccessDialog(
+                              result.message ?? 'Status updated successfully',
                             );
-                            setState(() {
-                              _selectedStatusForUpdate = null;
-                            });
                           }
-                        } finally {
-                          if (mounted) {
-                            setState(() {
-                              _isUpdatingStatus = false;
-                            });
-                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                result.message ??
+                                    _viewModel.errorMessage ??
+                                    'Failed to update status',
+                              ),
+                              backgroundColor: const Color(0xFFEF4444),
+                            ),
+                          );
                         }
                       },
                 icon: _isUpdatingStatus
@@ -4193,14 +3355,6 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       default:
         return const Color(0xFF6B7280);
     }
-  }
-
-  /// Format status label for display
-  String _formatStatusLabel(String status) {
-    return status
-        .split('_')
-        .map((word) => word[0].toUpperCase() + word.substring(1))
-        .join(' ');
   }
 
   Widget _buildPatientDetailsSection(BuildContext context) {
@@ -4259,11 +3413,6 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       {'label': 'Address', 'value': address},
       {'label': 'Blood Group', 'value': clinicPatient.bloodGroup ?? 'N/A'},
       {
-        'label': 'Smoking Status',
-        'value': clinicPatient.smokingStatus ?? 'N/A',
-      },
-      {'label': 'Alcohol Use', 'value': clinicPatient.alcoholUse ?? 'N/A'},
-      {
         'label': 'Height (cm)',
         'value': clinicPatient.heightCm?.toString() ?? 'N/A',
       },
@@ -4294,4 +3443,146 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
       ),
     );
   }
+
+  void _showSuccessDialog(String message) {
+    final appointment = _viewModel.appointmentDetails;
+    final patientName = _viewModel.clinicPatient?.firstName ?? 'Patient';
+    final status = appointment?.status ?? 'Updated';
+    final token = appointment?.displayToken ?? appointment?.tokenNumber?.toString() ?? 'N/A';
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        child: Container(
+          width: 400,
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Success Icon with glow
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withOpacity(0.1),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF10B981).withOpacity(0.1),
+                      blurRadius: 20,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.check_circle_rounded,
+                  color: Color(0xFF10B981),
+                  size: 48,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Success!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E293B),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF64748B),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // Structured detail model
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(3),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Column(
+                  children: [
+                    _buildSuccessRow('Patient', patientName),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Divider(height: 1, color: Color(0xFFE2E8F0)),
+                    ),
+                    _buildSuccessRow('Token', '#$token'),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Divider(height: 1, color: Color(0xFFE2E8F0)),
+                    ),
+                    _buildSuccessRow('New Status', _viewModel.formatStatusLabel(status)),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E293B),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  child: const Text(
+                    'Done',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuccessRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF64748B),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF1E293B),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
 }

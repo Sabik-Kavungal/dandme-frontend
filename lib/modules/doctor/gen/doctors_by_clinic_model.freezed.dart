@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,915 +9,867 @@ part of '../models/doctors_by_clinic_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-ClinicInfoModel _$ClinicInfoModelFromJson(Map<String, dynamic> json) {
-  return _ClinicInfoModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ClinicInfoModel {
-  String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: "clinic_code")
-  String get clinicCode => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get address => throw _privateConstructorUsedError;
+
+ String get id;@JsonKey(name: "clinic_code") String get clinicCode; String get name; String get address;
+/// Create a copy of ClinicInfoModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ClinicInfoModelCopyWith<ClinicInfoModel> get copyWith => _$ClinicInfoModelCopyWithImpl<ClinicInfoModel>(this as ClinicInfoModel, _$identity);
 
   /// Serializes this ClinicInfoModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ClinicInfoModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ClinicInfoModelCopyWith<ClinicInfoModel> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClinicInfoModel&&(identical(other.id, id) || other.id == id)&&(identical(other.clinicCode, clinicCode) || other.clinicCode == clinicCode)&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,clinicCode,name,address);
+
+@override
+String toString() {
+  return 'ClinicInfoModel(id: $id, clinicCode: $clinicCode, name: $name, address: $address)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ClinicInfoModelCopyWith<$Res> {
-  factory $ClinicInfoModelCopyWith(
-    ClinicInfoModel value,
-    $Res Function(ClinicInfoModel) then,
-  ) = _$ClinicInfoModelCopyWithImpl<$Res, ClinicInfoModel>;
-  @useResult
-  $Res call({
-    String id,
-    @JsonKey(name: "clinic_code") String clinicCode,
-    String name,
-    String address,
-  });
-}
+abstract mixin class $ClinicInfoModelCopyWith<$Res>  {
+  factory $ClinicInfoModelCopyWith(ClinicInfoModel value, $Res Function(ClinicInfoModel) _then) = _$ClinicInfoModelCopyWithImpl;
+@useResult
+$Res call({
+ String id,@JsonKey(name: "clinic_code") String clinicCode, String name, String address
+});
 
+
+
+
+}
 /// @nodoc
-class _$ClinicInfoModelCopyWithImpl<$Res, $Val extends ClinicInfoModel>
+class _$ClinicInfoModelCopyWithImpl<$Res>
     implements $ClinicInfoModelCopyWith<$Res> {
-  _$ClinicInfoModelCopyWithImpl(this._value, this._then);
+  _$ClinicInfoModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ClinicInfoModel _self;
+  final $Res Function(ClinicInfoModel) _then;
 
-  /// Create a copy of ClinicInfoModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? clinicCode = null,
-    Object? name = null,
-    Object? address = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            clinicCode: null == clinicCode
-                ? _value.clinicCode
-                : clinicCode // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            address: null == address
-                ? _value.address
-                : address // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of ClinicInfoModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? clinicCode = null,Object? name = null,Object? address = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,clinicCode: null == clinicCode ? _self.clinicCode : clinicCode // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ClinicInfoModelImplCopyWith<$Res>
-    implements $ClinicInfoModelCopyWith<$Res> {
-  factory _$$ClinicInfoModelImplCopyWith(
-    _$ClinicInfoModelImpl value,
-    $Res Function(_$ClinicInfoModelImpl) then,
-  ) = __$$ClinicInfoModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String id,
-    @JsonKey(name: "clinic_code") String clinicCode,
-    String name,
-    String address,
-  });
 }
 
-/// @nodoc
-class __$$ClinicInfoModelImplCopyWithImpl<$Res>
-    extends _$ClinicInfoModelCopyWithImpl<$Res, _$ClinicInfoModelImpl>
-    implements _$$ClinicInfoModelImplCopyWith<$Res> {
-  __$$ClinicInfoModelImplCopyWithImpl(
-    _$ClinicInfoModelImpl _value,
-    $Res Function(_$ClinicInfoModelImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ClinicInfoModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? clinicCode = null,
-    Object? name = null,
-    Object? address = null,
-  }) {
-    return _then(
-      _$ClinicInfoModelImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        clinicCode: null == clinicCode
-            ? _value.clinicCode
-            : clinicCode // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        address: null == address
-            ? _value.address
-            : address // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [ClinicInfoModel].
+extension ClinicInfoModelPatterns on ClinicInfoModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClinicInfoModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ClinicInfoModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClinicInfoModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicInfoModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClinicInfoModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ClinicInfoModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: "clinic_code")  String clinicCode,  String name,  String address)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ClinicInfoModel() when $default != null:
+return $default(_that.id,_that.clinicCode,_that.name,_that.address);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: "clinic_code")  String clinicCode,  String name,  String address)  $default,) {final _that = this;
+switch (_that) {
+case _ClinicInfoModel():
+return $default(_that.id,_that.clinicCode,_that.name,_that.address);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: "clinic_code")  String clinicCode,  String name,  String address)?  $default,) {final _that = this;
+switch (_that) {
+case _ClinicInfoModel() when $default != null:
+return $default(_that.id,_that.clinicCode,_that.name,_that.address);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ClinicInfoModelImpl implements _ClinicInfoModel {
-  const _$ClinicInfoModelImpl({
-    required this.id,
-    @JsonKey(name: "clinic_code") required this.clinicCode,
-    required this.name,
-    required this.address,
-  });
 
-  factory _$ClinicInfoModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ClinicInfoModelImplFromJson(json);
+class _ClinicInfoModel implements ClinicInfoModel {
+  const _ClinicInfoModel({required this.id, @JsonKey(name: "clinic_code") required this.clinicCode, required this.name, required this.address});
+  factory _ClinicInfoModel.fromJson(Map<String, dynamic> json) => _$ClinicInfoModelFromJson(json);
 
-  @override
-  final String id;
-  @override
-  @JsonKey(name: "clinic_code")
-  final String clinicCode;
-  @override
-  final String name;
-  @override
-  final String address;
+@override final  String id;
+@override@JsonKey(name: "clinic_code") final  String clinicCode;
+@override final  String name;
+@override final  String address;
 
-  @override
-  String toString() {
-    return 'ClinicInfoModel(id: $id, clinicCode: $clinicCode, name: $name, address: $address)';
-  }
+/// Create a copy of ClinicInfoModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClinicInfoModelCopyWith<_ClinicInfoModel> get copyWith => __$ClinicInfoModelCopyWithImpl<_ClinicInfoModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ClinicInfoModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.clinicCode, clinicCode) ||
-                other.clinicCode == clinicCode) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.address, address) || other.address == address));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, clinicCode, name, address);
-
-  /// Create a copy of ClinicInfoModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ClinicInfoModelImplCopyWith<_$ClinicInfoModelImpl> get copyWith =>
-      __$$ClinicInfoModelImplCopyWithImpl<_$ClinicInfoModelImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ClinicInfoModelImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ClinicInfoModelToJson(this, );
 }
 
-abstract class _ClinicInfoModel implements ClinicInfoModel {
-  const factory _ClinicInfoModel({
-    required final String id,
-    @JsonKey(name: "clinic_code") required final String clinicCode,
-    required final String name,
-    required final String address,
-  }) = _$ClinicInfoModelImpl;
-
-  factory _ClinicInfoModel.fromJson(Map<String, dynamic> json) =
-      _$ClinicInfoModelImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  @JsonKey(name: "clinic_code")
-  String get clinicCode;
-  @override
-  String get name;
-  @override
-  String get address;
-
-  /// Create a copy of ClinicInfoModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ClinicInfoModelImplCopyWith<_$ClinicInfoModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClinicInfoModel&&(identical(other.id, id) || other.id == id)&&(identical(other.clinicCode, clinicCode) || other.clinicCode == clinicCode)&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address));
 }
 
-DoctorInClinicModel _$DoctorInClinicModelFromJson(Map<String, dynamic> json) {
-  return _DoctorInClinicModel.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,clinicCode,name,address);
+
+@override
+String toString() {
+  return 'ClinicInfoModel(id: $id, clinicCode: $clinicCode, name: $name, address: $address)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClinicInfoModelCopyWith<$Res> implements $ClinicInfoModelCopyWith<$Res> {
+  factory _$ClinicInfoModelCopyWith(_ClinicInfoModel value, $Res Function(_ClinicInfoModel) _then) = __$ClinicInfoModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String id,@JsonKey(name: "clinic_code") String clinicCode, String name, String address
+});
+
+
+
+
+}
+/// @nodoc
+class __$ClinicInfoModelCopyWithImpl<$Res>
+    implements _$ClinicInfoModelCopyWith<$Res> {
+  __$ClinicInfoModelCopyWithImpl(this._self, this._then);
+
+  final _ClinicInfoModel _self;
+  final $Res Function(_ClinicInfoModel) _then;
+
+/// Create a copy of ClinicInfoModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? clinicCode = null,Object? name = null,Object? address = null,}) {
+  return _then(_ClinicInfoModel(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,clinicCode: null == clinicCode ? _self.clinicCode : clinicCode // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$DoctorInClinicModel {
-  String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: "user_id")
-  String get userId => throw _privateConstructorUsedError;
-  @JsonKey(name: "doctor_code")
-  String get doctorCode => throw _privateConstructorUsedError;
-  @JsonKey(name: "first_name")
-  String get firstName => throw _privateConstructorUsedError;
-  @JsonKey(name: "last_name")
-  String get lastName => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  String get phone => throw _privateConstructorUsedError;
-  String get specialization => throw _privateConstructorUsedError;
-  @JsonKey(name: "license_number")
-  String get licenseNumber => throw _privateConstructorUsedError;
-  @JsonKey(name: "is_active")
-  bool get isActive => throw _privateConstructorUsedError;
-  @JsonKey(name: "is_main_doctor")
-  bool get isMainDoctor => throw _privateConstructorUsedError;
-  @JsonKey(name: "created_at")
-  String? get createdAt => throw _privateConstructorUsedError;
+
+ String get id;@JsonKey(name: "user_id") String get userId;@JsonKey(name: "doctor_code") String get doctorCode;@JsonKey(name: "first_name") String get firstName;@JsonKey(name: "last_name") String get lastName; String get email; String get phone; String get specialization;@JsonKey(name: "license_number") String get licenseNumber;@JsonKey(name: "is_active") bool get isActive;@JsonKey(name: "is_main_doctor") bool get isMainDoctor;@JsonKey(name: "created_at") String? get createdAt;
+/// Create a copy of DoctorInClinicModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DoctorInClinicModelCopyWith<DoctorInClinicModel> get copyWith => _$DoctorInClinicModelCopyWithImpl<DoctorInClinicModel>(this as DoctorInClinicModel, _$identity);
 
   /// Serializes this DoctorInClinicModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DoctorInClinicModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DoctorInClinicModelCopyWith<DoctorInClinicModel> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoctorInClinicModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.licenseNumber, licenseNumber) || other.licenseNumber == licenseNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isMainDoctor, isMainDoctor) || other.isMainDoctor == isMainDoctor)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,userId,doctorCode,firstName,lastName,email,phone,specialization,licenseNumber,isActive,isMainDoctor,createdAt);
+
+@override
+String toString() {
+  return 'DoctorInClinicModel(id: $id, userId: $userId, doctorCode: $doctorCode, firstName: $firstName, lastName: $lastName, email: $email, phone: $phone, specialization: $specialization, licenseNumber: $licenseNumber, isActive: $isActive, isMainDoctor: $isMainDoctor, createdAt: $createdAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DoctorInClinicModelCopyWith<$Res> {
-  factory $DoctorInClinicModelCopyWith(
-    DoctorInClinicModel value,
-    $Res Function(DoctorInClinicModel) then,
-  ) = _$DoctorInClinicModelCopyWithImpl<$Res, DoctorInClinicModel>;
-  @useResult
-  $Res call({
-    String id,
-    @JsonKey(name: "user_id") String userId,
-    @JsonKey(name: "doctor_code") String doctorCode,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String email,
-    String phone,
-    String specialization,
-    @JsonKey(name: "license_number") String licenseNumber,
-    @JsonKey(name: "is_active") bool isActive,
-    @JsonKey(name: "is_main_doctor") bool isMainDoctor,
-    @JsonKey(name: "created_at") String? createdAt,
-  });
-}
+abstract mixin class $DoctorInClinicModelCopyWith<$Res>  {
+  factory $DoctorInClinicModelCopyWith(DoctorInClinicModel value, $Res Function(DoctorInClinicModel) _then) = _$DoctorInClinicModelCopyWithImpl;
+@useResult
+$Res call({
+ String id,@JsonKey(name: "user_id") String userId,@JsonKey(name: "doctor_code") String doctorCode,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String email, String phone, String specialization,@JsonKey(name: "license_number") String licenseNumber,@JsonKey(name: "is_active") bool isActive,@JsonKey(name: "is_main_doctor") bool isMainDoctor,@JsonKey(name: "created_at") String? createdAt
+});
 
+
+
+
+}
 /// @nodoc
-class _$DoctorInClinicModelCopyWithImpl<$Res, $Val extends DoctorInClinicModel>
+class _$DoctorInClinicModelCopyWithImpl<$Res>
     implements $DoctorInClinicModelCopyWith<$Res> {
-  _$DoctorInClinicModelCopyWithImpl(this._value, this._then);
+  _$DoctorInClinicModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DoctorInClinicModel _self;
+  final $Res Function(DoctorInClinicModel) _then;
 
-  /// Create a copy of DoctorInClinicModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? userId = null,
-    Object? doctorCode = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? email = null,
-    Object? phone = null,
-    Object? specialization = null,
-    Object? licenseNumber = null,
-    Object? isActive = null,
-    Object? isMainDoctor = null,
-    Object? createdAt = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            doctorCode: null == doctorCode
-                ? _value.doctorCode
-                : doctorCode // ignore: cast_nullable_to_non_nullable
-                      as String,
-            firstName: null == firstName
-                ? _value.firstName
-                : firstName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastName: null == lastName
-                ? _value.lastName
-                : lastName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            phone: null == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as String,
-            specialization: null == specialization
-                ? _value.specialization
-                : specialization // ignore: cast_nullable_to_non_nullable
-                      as String,
-            licenseNumber: null == licenseNumber
-                ? _value.licenseNumber
-                : licenseNumber // ignore: cast_nullable_to_non_nullable
-                      as String,
-            isActive: null == isActive
-                ? _value.isActive
-                : isActive // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            isMainDoctor: null == isMainDoctor
-                ? _value.isMainDoctor
-                : isMainDoctor // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            createdAt: freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of DoctorInClinicModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? doctorCode = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? phone = null,Object? specialization = null,Object? licenseNumber = null,Object? isActive = null,Object? isMainDoctor = null,Object? createdAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,licenseNumber: null == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
+as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,isMainDoctor: null == isMainDoctor ? _self.isMainDoctor : isMainDoctor // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$DoctorInClinicModelImplCopyWith<$Res>
-    implements $DoctorInClinicModelCopyWith<$Res> {
-  factory _$$DoctorInClinicModelImplCopyWith(
-    _$DoctorInClinicModelImpl value,
-    $Res Function(_$DoctorInClinicModelImpl) then,
-  ) = __$$DoctorInClinicModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String id,
-    @JsonKey(name: "user_id") String userId,
-    @JsonKey(name: "doctor_code") String doctorCode,
-    @JsonKey(name: "first_name") String firstName,
-    @JsonKey(name: "last_name") String lastName,
-    String email,
-    String phone,
-    String specialization,
-    @JsonKey(name: "license_number") String licenseNumber,
-    @JsonKey(name: "is_active") bool isActive,
-    @JsonKey(name: "is_main_doctor") bool isMainDoctor,
-    @JsonKey(name: "created_at") String? createdAt,
-  });
 }
 
-/// @nodoc
-class __$$DoctorInClinicModelImplCopyWithImpl<$Res>
-    extends _$DoctorInClinicModelCopyWithImpl<$Res, _$DoctorInClinicModelImpl>
-    implements _$$DoctorInClinicModelImplCopyWith<$Res> {
-  __$$DoctorInClinicModelImplCopyWithImpl(
-    _$DoctorInClinicModelImpl _value,
-    $Res Function(_$DoctorInClinicModelImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DoctorInClinicModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? userId = null,
-    Object? doctorCode = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? email = null,
-    Object? phone = null,
-    Object? specialization = null,
-    Object? licenseNumber = null,
-    Object? isActive = null,
-    Object? isMainDoctor = null,
-    Object? createdAt = freezed,
-  }) {
-    return _then(
-      _$DoctorInClinicModelImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        doctorCode: null == doctorCode
-            ? _value.doctorCode
-            : doctorCode // ignore: cast_nullable_to_non_nullable
-                  as String,
-        firstName: null == firstName
-            ? _value.firstName
-            : firstName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastName: null == lastName
-            ? _value.lastName
-            : lastName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        phone: null == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as String,
-        specialization: null == specialization
-            ? _value.specialization
-            : specialization // ignore: cast_nullable_to_non_nullable
-                  as String,
-        licenseNumber: null == licenseNumber
-            ? _value.licenseNumber
-            : licenseNumber // ignore: cast_nullable_to_non_nullable
-                  as String,
-        isActive: null == isActive
-            ? _value.isActive
-            : isActive // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        isMainDoctor: null == isMainDoctor
-            ? _value.isMainDoctor
-            : isMainDoctor // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        createdAt: freezed == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DoctorInClinicModel].
+extension DoctorInClinicModelPatterns on DoctorInClinicModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DoctorInClinicModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DoctorInClinicModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DoctorInClinicModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorInClinicModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DoctorInClinicModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorInClinicModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: "user_id")  String userId, @JsonKey(name: "doctor_code")  String doctorCode, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String email,  String phone,  String specialization, @JsonKey(name: "license_number")  String licenseNumber, @JsonKey(name: "is_active")  bool isActive, @JsonKey(name: "is_main_doctor")  bool isMainDoctor, @JsonKey(name: "created_at")  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DoctorInClinicModel() when $default != null:
+return $default(_that.id,_that.userId,_that.doctorCode,_that.firstName,_that.lastName,_that.email,_that.phone,_that.specialization,_that.licenseNumber,_that.isActive,_that.isMainDoctor,_that.createdAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: "user_id")  String userId, @JsonKey(name: "doctor_code")  String doctorCode, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String email,  String phone,  String specialization, @JsonKey(name: "license_number")  String licenseNumber, @JsonKey(name: "is_active")  bool isActive, @JsonKey(name: "is_main_doctor")  bool isMainDoctor, @JsonKey(name: "created_at")  String? createdAt)  $default,) {final _that = this;
+switch (_that) {
+case _DoctorInClinicModel():
+return $default(_that.id,_that.userId,_that.doctorCode,_that.firstName,_that.lastName,_that.email,_that.phone,_that.specialization,_that.licenseNumber,_that.isActive,_that.isMainDoctor,_that.createdAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: "user_id")  String userId, @JsonKey(name: "doctor_code")  String doctorCode, @JsonKey(name: "first_name")  String firstName, @JsonKey(name: "last_name")  String lastName,  String email,  String phone,  String specialization, @JsonKey(name: "license_number")  String licenseNumber, @JsonKey(name: "is_active")  bool isActive, @JsonKey(name: "is_main_doctor")  bool isMainDoctor, @JsonKey(name: "created_at")  String? createdAt)?  $default,) {final _that = this;
+switch (_that) {
+case _DoctorInClinicModel() when $default != null:
+return $default(_that.id,_that.userId,_that.doctorCode,_that.firstName,_that.lastName,_that.email,_that.phone,_that.specialization,_that.licenseNumber,_that.isActive,_that.isMainDoctor,_that.createdAt);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DoctorInClinicModelImpl implements _DoctorInClinicModel {
-  const _$DoctorInClinicModelImpl({
-    required this.id,
-    @JsonKey(name: "user_id") required this.userId,
-    @JsonKey(name: "doctor_code") required this.doctorCode,
-    @JsonKey(name: "first_name") required this.firstName,
-    @JsonKey(name: "last_name") required this.lastName,
-    required this.email,
-    required this.phone,
-    required this.specialization,
-    @JsonKey(name: "license_number") required this.licenseNumber,
-    @JsonKey(name: "is_active") this.isActive = true,
-    @JsonKey(name: "is_main_doctor") this.isMainDoctor = false,
-    @JsonKey(name: "created_at") this.createdAt,
-  });
 
-  factory _$DoctorInClinicModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DoctorInClinicModelImplFromJson(json);
+class _DoctorInClinicModel implements DoctorInClinicModel {
+  const _DoctorInClinicModel({required this.id, @JsonKey(name: "user_id") required this.userId, @JsonKey(name: "doctor_code") required this.doctorCode, @JsonKey(name: "first_name") required this.firstName, @JsonKey(name: "last_name") required this.lastName, required this.email, required this.phone, required this.specialization, @JsonKey(name: "license_number") required this.licenseNumber, @JsonKey(name: "is_active") this.isActive = true, @JsonKey(name: "is_main_doctor") this.isMainDoctor = false, @JsonKey(name: "created_at") this.createdAt});
+  factory _DoctorInClinicModel.fromJson(Map<String, dynamic> json) => _$DoctorInClinicModelFromJson(json);
 
-  @override
-  final String id;
-  @override
-  @JsonKey(name: "user_id")
-  final String userId;
-  @override
-  @JsonKey(name: "doctor_code")
-  final String doctorCode;
-  @override
-  @JsonKey(name: "first_name")
-  final String firstName;
-  @override
-  @JsonKey(name: "last_name")
-  final String lastName;
-  @override
-  final String email;
-  @override
-  final String phone;
-  @override
-  final String specialization;
-  @override
-  @JsonKey(name: "license_number")
-  final String licenseNumber;
-  @override
-  @JsonKey(name: "is_active")
-  final bool isActive;
-  @override
-  @JsonKey(name: "is_main_doctor")
-  final bool isMainDoctor;
-  @override
-  @JsonKey(name: "created_at")
-  final String? createdAt;
+@override final  String id;
+@override@JsonKey(name: "user_id") final  String userId;
+@override@JsonKey(name: "doctor_code") final  String doctorCode;
+@override@JsonKey(name: "first_name") final  String firstName;
+@override@JsonKey(name: "last_name") final  String lastName;
+@override final  String email;
+@override final  String phone;
+@override final  String specialization;
+@override@JsonKey(name: "license_number") final  String licenseNumber;
+@override@JsonKey(name: "is_active") final  bool isActive;
+@override@JsonKey(name: "is_main_doctor") final  bool isMainDoctor;
+@override@JsonKey(name: "created_at") final  String? createdAt;
 
-  @override
-  String toString() {
-    return 'DoctorInClinicModel(id: $id, userId: $userId, doctorCode: $doctorCode, firstName: $firstName, lastName: $lastName, email: $email, phone: $phone, specialization: $specialization, licenseNumber: $licenseNumber, isActive: $isActive, isMainDoctor: $isMainDoctor, createdAt: $createdAt)';
-  }
+/// Create a copy of DoctorInClinicModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DoctorInClinicModelCopyWith<_DoctorInClinicModel> get copyWith => __$DoctorInClinicModelCopyWithImpl<_DoctorInClinicModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DoctorInClinicModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.doctorCode, doctorCode) ||
-                other.doctorCode == doctorCode) &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.specialization, specialization) ||
-                other.specialization == specialization) &&
-            (identical(other.licenseNumber, licenseNumber) ||
-                other.licenseNumber == licenseNumber) &&
-            (identical(other.isActive, isActive) ||
-                other.isActive == isActive) &&
-            (identical(other.isMainDoctor, isMainDoctor) ||
-                other.isMainDoctor == isMainDoctor) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    userId,
-    doctorCode,
-    firstName,
-    lastName,
-    email,
-    phone,
-    specialization,
-    licenseNumber,
-    isActive,
-    isMainDoctor,
-    createdAt,
-  );
-
-  /// Create a copy of DoctorInClinicModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DoctorInClinicModelImplCopyWith<_$DoctorInClinicModelImpl> get copyWith =>
-      __$$DoctorInClinicModelImplCopyWithImpl<_$DoctorInClinicModelImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DoctorInClinicModelImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$DoctorInClinicModelToJson(this, );
 }
 
-abstract class _DoctorInClinicModel implements DoctorInClinicModel {
-  const factory _DoctorInClinicModel({
-    required final String id,
-    @JsonKey(name: "user_id") required final String userId,
-    @JsonKey(name: "doctor_code") required final String doctorCode,
-    @JsonKey(name: "first_name") required final String firstName,
-    @JsonKey(name: "last_name") required final String lastName,
-    required final String email,
-    required final String phone,
-    required final String specialization,
-    @JsonKey(name: "license_number") required final String licenseNumber,
-    @JsonKey(name: "is_active") final bool isActive,
-    @JsonKey(name: "is_main_doctor") final bool isMainDoctor,
-    @JsonKey(name: "created_at") final String? createdAt,
-  }) = _$DoctorInClinicModelImpl;
-
-  factory _DoctorInClinicModel.fromJson(Map<String, dynamic> json) =
-      _$DoctorInClinicModelImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  @JsonKey(name: "user_id")
-  String get userId;
-  @override
-  @JsonKey(name: "doctor_code")
-  String get doctorCode;
-  @override
-  @JsonKey(name: "first_name")
-  String get firstName;
-  @override
-  @JsonKey(name: "last_name")
-  String get lastName;
-  @override
-  String get email;
-  @override
-  String get phone;
-  @override
-  String get specialization;
-  @override
-  @JsonKey(name: "license_number")
-  String get licenseNumber;
-  @override
-  @JsonKey(name: "is_active")
-  bool get isActive;
-  @override
-  @JsonKey(name: "is_main_doctor")
-  bool get isMainDoctor;
-  @override
-  @JsonKey(name: "created_at")
-  String? get createdAt;
-
-  /// Create a copy of DoctorInClinicModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DoctorInClinicModelImplCopyWith<_$DoctorInClinicModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoctorInClinicModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.doctorCode, doctorCode) || other.doctorCode == doctorCode)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.licenseNumber, licenseNumber) || other.licenseNumber == licenseNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isMainDoctor, isMainDoctor) || other.isMainDoctor == isMainDoctor)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
-DoctorsByClinicResponse _$DoctorsByClinicResponseFromJson(
-  Map<String, dynamic> json,
-) {
-  return _DoctorsByClinicResponse.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,userId,doctorCode,firstName,lastName,email,phone,specialization,licenseNumber,isActive,isMainDoctor,createdAt);
+
+@override
+String toString() {
+  return 'DoctorInClinicModel(id: $id, userId: $userId, doctorCode: $doctorCode, firstName: $firstName, lastName: $lastName, email: $email, phone: $phone, specialization: $specialization, licenseNumber: $licenseNumber, isActive: $isActive, isMainDoctor: $isMainDoctor, createdAt: $createdAt)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DoctorInClinicModelCopyWith<$Res> implements $DoctorInClinicModelCopyWith<$Res> {
+  factory _$DoctorInClinicModelCopyWith(_DoctorInClinicModel value, $Res Function(_DoctorInClinicModel) _then) = __$DoctorInClinicModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String id,@JsonKey(name: "user_id") String userId,@JsonKey(name: "doctor_code") String doctorCode,@JsonKey(name: "first_name") String firstName,@JsonKey(name: "last_name") String lastName, String email, String phone, String specialization,@JsonKey(name: "license_number") String licenseNumber,@JsonKey(name: "is_active") bool isActive,@JsonKey(name: "is_main_doctor") bool isMainDoctor,@JsonKey(name: "created_at") String? createdAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$DoctorInClinicModelCopyWithImpl<$Res>
+    implements _$DoctorInClinicModelCopyWith<$Res> {
+  __$DoctorInClinicModelCopyWithImpl(this._self, this._then);
+
+  final _DoctorInClinicModel _self;
+  final $Res Function(_DoctorInClinicModel) _then;
+
+/// Create a copy of DoctorInClinicModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? doctorCode = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? phone = null,Object? specialization = null,Object? licenseNumber = null,Object? isActive = null,Object? isMainDoctor = null,Object? createdAt = freezed,}) {
+  return _then(_DoctorInClinicModel(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,doctorCode: null == doctorCode ? _self.doctorCode : doctorCode // ignore: cast_nullable_to_non_nullable
+as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,specialization: null == specialization ? _self.specialization : specialization // ignore: cast_nullable_to_non_nullable
+as String,licenseNumber: null == licenseNumber ? _self.licenseNumber : licenseNumber // ignore: cast_nullable_to_non_nullable
+as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,isMainDoctor: null == isMainDoctor ? _self.isMainDoctor : isMainDoctor // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$DoctorsByClinicResponse {
-  ClinicInfoModel get clinic => throw _privateConstructorUsedError;
-  List<DoctorInClinicModel> get doctors => throw _privateConstructorUsedError;
-  @JsonKey(name: "total_count")
-  int get totalCount => throw _privateConstructorUsedError;
+
+ ClinicInfoModel get clinic; List<DoctorInClinicModel> get doctors;@JsonKey(name: "total_count") int get totalCount;
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DoctorsByClinicResponseCopyWith<DoctorsByClinicResponse> get copyWith => _$DoctorsByClinicResponseCopyWithImpl<DoctorsByClinicResponse>(this as DoctorsByClinicResponse, _$identity);
 
   /// Serializes this DoctorsByClinicResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DoctorsByClinicResponseCopyWith<DoctorsByClinicResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoctorsByClinicResponse&&(identical(other.clinic, clinic) || other.clinic == clinic)&&const DeepCollectionEquality().equals(other.doctors, doctors)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinic,const DeepCollectionEquality().hash(doctors),totalCount);
+
+@override
+String toString() {
+  return 'DoctorsByClinicResponse(clinic: $clinic, doctors: $doctors, totalCount: $totalCount)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DoctorsByClinicResponseCopyWith<$Res> {
-  factory $DoctorsByClinicResponseCopyWith(
-    DoctorsByClinicResponse value,
-    $Res Function(DoctorsByClinicResponse) then,
-  ) = _$DoctorsByClinicResponseCopyWithImpl<$Res, DoctorsByClinicResponse>;
-  @useResult
-  $Res call({
-    ClinicInfoModel clinic,
-    List<DoctorInClinicModel> doctors,
-    @JsonKey(name: "total_count") int totalCount,
-  });
+abstract mixin class $DoctorsByClinicResponseCopyWith<$Res>  {
+  factory $DoctorsByClinicResponseCopyWith(DoctorsByClinicResponse value, $Res Function(DoctorsByClinicResponse) _then) = _$DoctorsByClinicResponseCopyWithImpl;
+@useResult
+$Res call({
+ ClinicInfoModel clinic, List<DoctorInClinicModel> doctors,@JsonKey(name: "total_count") int totalCount
+});
 
-  $ClinicInfoModelCopyWith<$Res> get clinic;
+
+$ClinicInfoModelCopyWith<$Res> get clinic;
+
 }
-
 /// @nodoc
-class _$DoctorsByClinicResponseCopyWithImpl<
-  $Res,
-  $Val extends DoctorsByClinicResponse
->
+class _$DoctorsByClinicResponseCopyWithImpl<$Res>
     implements $DoctorsByClinicResponseCopyWith<$Res> {
-  _$DoctorsByClinicResponseCopyWithImpl(this._value, this._then);
+  _$DoctorsByClinicResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DoctorsByClinicResponse _self;
+  final $Res Function(DoctorsByClinicResponse) _then;
 
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clinic = null,
-    Object? doctors = null,
-    Object? totalCount = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            clinic: null == clinic
-                ? _value.clinic
-                : clinic // ignore: cast_nullable_to_non_nullable
-                      as ClinicInfoModel,
-            doctors: null == doctors
-                ? _value.doctors
-                : doctors // ignore: cast_nullable_to_non_nullable
-                      as List<DoctorInClinicModel>,
-            totalCount: null == totalCount
-                ? _value.totalCount
-                : totalCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ClinicInfoModelCopyWith<$Res> get clinic {
-    return $ClinicInfoModelCopyWith<$Res>(_value.clinic, (value) {
-      return _then(_value.copyWith(clinic: value) as $Val);
-    });
-  }
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? clinic = null,Object? doctors = null,Object? totalCount = null,}) {
+  return _then(_self.copyWith(
+clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfoModel,doctors: null == doctors ? _self.doctors : doctors // ignore: cast_nullable_to_non_nullable
+as List<DoctorInClinicModel>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
-
-/// @nodoc
-abstract class _$$DoctorsByClinicResponseImplCopyWith<$Res>
-    implements $DoctorsByClinicResponseCopyWith<$Res> {
-  factory _$$DoctorsByClinicResponseImplCopyWith(
-    _$DoctorsByClinicResponseImpl value,
-    $Res Function(_$DoctorsByClinicResponseImpl) then,
-  ) = __$$DoctorsByClinicResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    ClinicInfoModel clinic,
-    List<DoctorInClinicModel> doctors,
-    @JsonKey(name: "total_count") int totalCount,
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoModelCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoModelCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
   });
-
-  @override
-  $ClinicInfoModelCopyWith<$Res> get clinic;
+}
 }
 
-/// @nodoc
-class __$$DoctorsByClinicResponseImplCopyWithImpl<$Res>
-    extends
-        _$DoctorsByClinicResponseCopyWithImpl<
-          $Res,
-          _$DoctorsByClinicResponseImpl
-        >
-    implements _$$DoctorsByClinicResponseImplCopyWith<$Res> {
-  __$$DoctorsByClinicResponseImplCopyWithImpl(
-    _$DoctorsByClinicResponseImpl _value,
-    $Res Function(_$DoctorsByClinicResponseImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clinic = null,
-    Object? doctors = null,
-    Object? totalCount = null,
-  }) {
-    return _then(
-      _$DoctorsByClinicResponseImpl(
-        clinic: null == clinic
-            ? _value.clinic
-            : clinic // ignore: cast_nullable_to_non_nullable
-                  as ClinicInfoModel,
-        doctors: null == doctors
-            ? _value._doctors
-            : doctors // ignore: cast_nullable_to_non_nullable
-                  as List<DoctorInClinicModel>,
-        totalCount: null == totalCount
-            ? _value.totalCount
-            : totalCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DoctorsByClinicResponse].
+extension DoctorsByClinicResponsePatterns on DoctorsByClinicResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DoctorsByClinicResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DoctorsByClinicResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DoctorsByClinicResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ClinicInfoModel clinic,  List<DoctorInClinicModel> doctors, @JsonKey(name: "total_count")  int totalCount)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse() when $default != null:
+return $default(_that.clinic,_that.doctors,_that.totalCount);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ClinicInfoModel clinic,  List<DoctorInClinicModel> doctors, @JsonKey(name: "total_count")  int totalCount)  $default,) {final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse():
+return $default(_that.clinic,_that.doctors,_that.totalCount);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ClinicInfoModel clinic,  List<DoctorInClinicModel> doctors, @JsonKey(name: "total_count")  int totalCount)?  $default,) {final _that = this;
+switch (_that) {
+case _DoctorsByClinicResponse() when $default != null:
+return $default(_that.clinic,_that.doctors,_that.totalCount);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DoctorsByClinicResponseImpl implements _DoctorsByClinicResponse {
-  const _$DoctorsByClinicResponseImpl({
-    required this.clinic,
-    required final List<DoctorInClinicModel> doctors,
-    @JsonKey(name: "total_count") required this.totalCount,
-  }) : _doctors = doctors;
 
-  factory _$DoctorsByClinicResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DoctorsByClinicResponseImplFromJson(json);
+class _DoctorsByClinicResponse implements DoctorsByClinicResponse {
+  const _DoctorsByClinicResponse({required this.clinic, required final  List<DoctorInClinicModel> doctors, @JsonKey(name: "total_count") required this.totalCount}): _doctors = doctors;
+  factory _DoctorsByClinicResponse.fromJson(Map<String, dynamic> json) => _$DoctorsByClinicResponseFromJson(json);
 
-  @override
-  final ClinicInfoModel clinic;
-  final List<DoctorInClinicModel> _doctors;
-  @override
-  List<DoctorInClinicModel> get doctors {
-    if (_doctors is EqualUnmodifiableListView) return _doctors;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_doctors);
-  }
-
-  @override
-  @JsonKey(name: "total_count")
-  final int totalCount;
-
-  @override
-  String toString() {
-    return 'DoctorsByClinicResponse(clinic: $clinic, doctors: $doctors, totalCount: $totalCount)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DoctorsByClinicResponseImpl &&
-            (identical(other.clinic, clinic) || other.clinic == clinic) &&
-            const DeepCollectionEquality().equals(other._doctors, _doctors) &&
-            (identical(other.totalCount, totalCount) ||
-                other.totalCount == totalCount));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    clinic,
-    const DeepCollectionEquality().hash(_doctors),
-    totalCount,
-  );
-
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DoctorsByClinicResponseImplCopyWith<_$DoctorsByClinicResponseImpl>
-  get copyWith =>
-      __$$DoctorsByClinicResponseImplCopyWithImpl<
-        _$DoctorsByClinicResponseImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DoctorsByClinicResponseImplToJson(this);
-  }
+@override final  ClinicInfoModel clinic;
+ final  List<DoctorInClinicModel> _doctors;
+@override List<DoctorInClinicModel> get doctors {
+  if (_doctors is EqualUnmodifiableListView) return _doctors;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_doctors);
 }
 
-abstract class _DoctorsByClinicResponse implements DoctorsByClinicResponse {
-  const factory _DoctorsByClinicResponse({
-    required final ClinicInfoModel clinic,
-    required final List<DoctorInClinicModel> doctors,
-    @JsonKey(name: "total_count") required final int totalCount,
-  }) = _$DoctorsByClinicResponseImpl;
+@override@JsonKey(name: "total_count") final  int totalCount;
 
-  factory _DoctorsByClinicResponse.fromJson(Map<String, dynamic> json) =
-      _$DoctorsByClinicResponseImpl.fromJson;
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DoctorsByClinicResponseCopyWith<_DoctorsByClinicResponse> get copyWith => __$DoctorsByClinicResponseCopyWithImpl<_DoctorsByClinicResponse>(this, _$identity);
 
-  @override
-  ClinicInfoModel get clinic;
-  @override
-  List<DoctorInClinicModel> get doctors;
-  @override
-  @JsonKey(name: "total_count")
-  int get totalCount;
-
-  /// Create a copy of DoctorsByClinicResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DoctorsByClinicResponseImplCopyWith<_$DoctorsByClinicResponseImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$DoctorsByClinicResponseToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoctorsByClinicResponse&&(identical(other.clinic, clinic) || other.clinic == clinic)&&const DeepCollectionEquality().equals(other._doctors, _doctors)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clinic,const DeepCollectionEquality().hash(_doctors),totalCount);
+
+@override
+String toString() {
+  return 'DoctorsByClinicResponse(clinic: $clinic, doctors: $doctors, totalCount: $totalCount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DoctorsByClinicResponseCopyWith<$Res> implements $DoctorsByClinicResponseCopyWith<$Res> {
+  factory _$DoctorsByClinicResponseCopyWith(_DoctorsByClinicResponse value, $Res Function(_DoctorsByClinicResponse) _then) = __$DoctorsByClinicResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ ClinicInfoModel clinic, List<DoctorInClinicModel> doctors,@JsonKey(name: "total_count") int totalCount
+});
+
+
+@override $ClinicInfoModelCopyWith<$Res> get clinic;
+
+}
+/// @nodoc
+class __$DoctorsByClinicResponseCopyWithImpl<$Res>
+    implements _$DoctorsByClinicResponseCopyWith<$Res> {
+  __$DoctorsByClinicResponseCopyWithImpl(this._self, this._then);
+
+  final _DoctorsByClinicResponse _self;
+  final $Res Function(_DoctorsByClinicResponse) _then;
+
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? clinic = null,Object? doctors = null,Object? totalCount = null,}) {
+  return _then(_DoctorsByClinicResponse(
+clinic: null == clinic ? _self.clinic : clinic // ignore: cast_nullable_to_non_nullable
+as ClinicInfoModel,doctors: null == doctors ? _self._doctors : doctors // ignore: cast_nullable_to_non_nullable
+as List<DoctorInClinicModel>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of DoctorsByClinicResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ClinicInfoModelCopyWith<$Res> get clinic {
+  
+  return $ClinicInfoModelCopyWith<$Res>(_self.clinic, (value) {
+    return _then(_self.copyWith(clinic: value));
+  });
+}
+}
+
+// dart format on

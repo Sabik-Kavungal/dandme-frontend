@@ -1,18 +1,23 @@
-import 'package:a/modules/clinic/models/clinic_model.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/organization/models/organization_model.dart';
-import 'package:a/modules/organization/viewmodels/organization_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_model.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/organization/viewmodels/organization_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' as io;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddClinicScreen extends StatefulWidget {
   final String? organizationId;
   final String? organizationName;
+  final ClinicModel? editClinic;
 
   const AddClinicScreen({
     super.key,
     this.organizationId,
     this.organizationName,
+    this.editClinic,
   });
 
   @override
@@ -24,7 +29,6 @@ class _AddClinicScreenState extends State<AddClinicScreen>
   final _formKey = GlobalKey<FormState>();
 
   // Clinic form controllers
-  final TextEditingController _clinicCodeController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -33,10 +37,6 @@ class _AddClinicScreenState extends State<AddClinicScreen>
       TextEditingController();
 
   // Admin form controllers
-  final TextEditingController _adminFirstNameController =
-      TextEditingController();
-  final TextEditingController _adminLastNameController =
-      TextEditingController();
   final TextEditingController _adminEmailController = TextEditingController();
   final TextEditingController _adminUsernameController =
       TextEditingController();
@@ -46,6 +46,18 @@ class _AddClinicScreenState extends State<AddClinicScreen>
 
   String? _selectedOrganizationId;
   bool _isLoading = false;
+  bool _obscureAdminPassword = true;
+  String? _selectedClinicType;
+  final List<String> _clinicTypes = [
+    'Allopathy',
+    'Homeopathy',
+    'Ayurvedic',
+    'Unani',
+    'Siddha',
+    'Physiotherapy',
+    'Veterinary',
+  ];
+
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
@@ -68,6 +80,17 @@ class _AddClinicScreenState extends State<AddClinicScreen>
         );
     _animationController.forward();
 
+    // Populate fields if in edit mode
+    if (widget.editClinic != null) {
+      _nameController.text = widget.editClinic!.name;
+      _emailController.text = widget.editClinic!.email ?? '';
+      _phoneController.text = widget.editClinic!.phone ?? '';
+      _addressController.text = widget.editClinic!.address ?? '';
+      _licenseNumberController.text = widget.editClinic!.licenseNumber ?? '';
+      _selectedClinicType = widget.editClinic!.clinicType;
+      _selectedOrganizationId = widget.editClinic!.organizationId;
+    }
+
     // Load organizations when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final orgVM = Provider.of<OrganizationViewModel>(context, listen: false);
@@ -78,14 +101,11 @@ class _AddClinicScreenState extends State<AddClinicScreen>
   @override
   void dispose() {
     _animationController.dispose();
-    _clinicCodeController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
     _licenseNumberController.dispose();
-    _adminFirstNameController.dispose();
-    _adminLastNameController.dispose();
     _adminEmailController.dispose();
     _adminUsernameController.dispose();
     _adminPhoneController.dispose();
@@ -124,6 +144,19 @@ class _AddClinicScreenState extends State<AddClinicScreen>
     return null;
   }
 
+  String? _validateEmailOptional(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    if (!emailRegex.hasMatch(value.trim())) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
   String? _validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) {
       return null; // Phone is optional
@@ -145,6 +178,18 @@ class _AddClinicScreenState extends State<AddClinicScreen>
       return 'Password must be at least 6 characters';
     }
     return null;
+  }
+
+  XFile? _logoFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _logoFile = image;
+      });
+    }
   }
 
   Future<void> _handleSubmit() async {
@@ -172,40 +217,72 @@ class _AddClinicScreenState extends State<AddClinicScreen>
         listen: false,
       );
 
-      final clinic = CreateClinicModel(
-        organizationId: _selectedOrganizationId!,
-        clinicCode: _clinicCodeController.text.trim(),
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim().isEmpty
-            ? null
-            : _emailController.text.trim(),
-        phone: _phoneController.text.trim().isEmpty
-            ? null
-            : _phoneController.text.trim(),
-        address: _addressController.text.trim().isEmpty
-            ? null
-            : _addressController.text.trim(),
-        licenseNumber: _licenseNumberController.text.trim().isEmpty
-            ? null
-            : _licenseNumberController.text.trim(),
-        adminFirstName: _adminFirstNameController.text.trim(),
-        adminLastName: _adminLastNameController.text.trim(),
-        adminEmail: _adminEmailController.text.trim(),
-        adminUsername: _adminUsernameController.text.trim(),
-        adminPhone: _adminPhoneController.text.trim().isEmpty
-            ? null
-            : _adminPhoneController.text.trim(),
-        adminPassword: _adminPasswordController.text.trim(),
-      );
+      bool success;
+      if (widget.editClinic != null) {
+        // Edit mode
+        final updateData = <String, dynamic>{
+          'name': _nameController.text.trim(),
+          'clinic_type': _selectedClinicType,
+          'email': _emailController.text.trim().isEmpty
+              ? null
+              : _emailController.text.trim(),
+          'phone': _phoneController.text.trim().isEmpty
+              ? null
+              : _phoneController.text.trim(),
+          'address': _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
+          'license_number': _licenseNumberController.text.trim().isEmpty
+              ? null
+              : _licenseNumberController.text.trim(),
+          'organization_id': _selectedOrganizationId,
+        };
 
-      final success = await clinicViewModel.addClinic(clinic, context);
+        success = await clinicViewModel.updateClinic(
+          widget.editClinic!.id!,
+          updateData,
+          context,
+        );
+      } else {
+        // Add mode
+        final clinic = CreateClinicModel(
+          organizationId: _selectedOrganizationId!,
+          clinicCode: null,
+          name: _nameController.text.trim(),
+          clinicType: _selectedClinicType,
+          email: _emailController.text.trim().isEmpty
+              ? null
+              : _emailController.text.trim(),
+          phone: _phoneController.text.trim().isEmpty
+              ? null
+              : _phoneController.text.trim(),
+          address: _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
+          licenseNumber: _licenseNumberController.text.trim().isEmpty
+              ? null
+              : _licenseNumberController.text.trim(),
+          adminFirstName: '',
+          adminLastName: '',
+          adminEmail: _adminEmailController.text.trim(),
+          adminUsername: _adminUsernameController.text.trim(),
+          adminPhone: _adminPhoneController.text.trim().isEmpty
+              ? null
+              : _adminPhoneController.text.trim(),
+          adminPassword: _adminPasswordController.text.trim(),
+        );
+
+        success = await clinicViewModel.addClinic(clinic, _logoFile, context);
+      }
 
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Clinic "${_nameController.text}" created successfully!',
+                widget.editClinic != null
+                    ? 'Clinic "${_nameController.text}" updated successfully!'
+                    : 'Clinic "${_nameController.text}" created successfully!',
               ),
               backgroundColor: const Color(0xFF10B981),
             ),
@@ -214,7 +291,12 @@ class _AddClinicScreenState extends State<AddClinicScreen>
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(clinicViewModel.error ?? 'Failed to create clinic'),
+              content: Text(
+                clinicViewModel.error ??
+                    (widget.editClinic != null
+                        ? 'Failed to update clinic'
+                        : 'Failed to create clinic'),
+              ),
               backgroundColor: const Color(0xFFDC2626),
             ),
           );
@@ -224,7 +306,11 @@ class _AddClinicScreenState extends State<AddClinicScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error creating clinic: $e'),
+            content: Text(
+              widget.editClinic != null
+                  ? 'Error updating clinic: $e'
+                  : 'Error creating clinic: $e',
+            ),
             backgroundColor: const Color(0xFFDC2626),
           ),
         );
@@ -319,10 +405,12 @@ class _AddClinicScreenState extends State<AddClinicScreen>
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Add Clinic',
-                                  style: TextStyle(
+                                  widget.editClinic != null
+                                      ? 'Edit Clinic'
+                                      : 'Add Clinic',
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,
                                     color: Color(0xFF333333),
@@ -352,25 +440,81 @@ class _AddClinicScreenState extends State<AddClinicScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // Logo Picker
+                                      Center(
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 120,
+                                              height: 120,
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFF3F4F6),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: const Color(
+                                                    0xFFE5E7EB,
+                                                  ),
+                                                  width: 2,
+                                                ),
+                                                image: _logoFile != null
+                                                    ? DecorationImage(
+                                                        image: kIsWeb
+                                                            ? NetworkImage(
+                                                                _logoFile!.path,
+                                                              )
+                                                            : FileImage(
+                                                                    io.File(
+                                                                      _logoFile!
+                                                                          .path,
+                                                                    ),
+                                                                  )
+                                                                  as ImageProvider,
+                                                        fit: BoxFit.contain,
+                                                      )
+                                                    : null,
+                                              ),
+                                              child: _logoFile == null
+                                                  ? const Icon(
+                                                      Icons.business,
+                                                      size: 60,
+                                                      color: Color(0xFF9CA3AF),
+                                                    )
+                                                  : null,
+                                            ),
+                                            Positioned(
+                                              bottom: -4,
+                                              right: -4,
+                                              child: InkWell(
+                                                onTap: _pickImage,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                    8,
+                                                  ),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        color: Color(
+                                                          0xFF3B82F6,
+                                                        ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                  child: const Icon(
+                                                    Icons.camera_alt,
+                                                    size: 18,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 24),
+
                                       // Organization Selection
                                       _buildOrganizationDropdown(
                                         orgVM.organizations,
                                         isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Clinic Code (Required)
-                                      _buildTextField(
-                                        label: 'Clinic Code',
-                                        hint: 'Enter clinic code',
-                                        controller: _clinicCodeController,
-                                        validator: (value) => _validateRequired(
-                                          value,
-                                          'Clinic code',
-                                        ),
-                                        required: true,
-                                        icon: Icons.qr_code_outlined,
-                                        isMobile: isMobile,
                                       ),
                                       const SizedBox(height: 20),
 
@@ -389,13 +533,30 @@ class _AddClinicScreenState extends State<AddClinicScreen>
                                       ),
                                       const SizedBox(height: 20),
 
-                                      // Email (Required)
+                                      // Clinic Type (Required)
+                                      _buildDropdown(
+                                        label: 'Clinic Category',
+                                        hint: 'Select category',
+                                        value: _selectedClinicType,
+                                        items: _clinicTypes,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedClinicType = value;
+                                          });
+                                        },
+                                        required: true,
+                                        icon: Icons.category_outlined,
+                                        isMobile: isMobile,
+                                      ),
+                                      const SizedBox(height: 20),
+
+                                      // Email (Optional)
                                       _buildTextField(
                                         label: 'Email Address',
                                         hint: 'Enter email address',
                                         controller: _emailController,
-                                        validator: _validateEmail,
-                                        required: true,
+                                        validator: _validateEmailOptional,
+                                        required: false,
                                         icon: Icons.email_outlined,
                                         keyboardType:
                                             TextInputType.emailAddress,
@@ -441,125 +602,109 @@ class _AddClinicScreenState extends State<AddClinicScreen>
                                       ),
                                       const SizedBox(height: 32),
 
-                                      // Admin Section Header
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 8,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(8),
-                                              decoration: BoxDecoration(
-                                                color: const Color(
-                                                  0xFF3B82F6,
-                                                ).withValues(alpha: 0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
+                                      if (widget.editClinic == null) ...[
+                                        // Admin Section Header
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.all(
+                                                  8,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(
+                                                    0xFF3B82F6,
+                                                  ).withValues(alpha: 0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.admin_panel_settings,
+                                                  color: Color(0xFF3B82F6),
+                                                  size: 16,
+                                                ),
                                               ),
-                                              child: const Icon(
-                                                Icons.admin_panel_settings,
-                                                color: Color(0xFF3B82F6),
-                                                size: 16,
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Admin Information',
+                                                style: TextStyle(
+                                                  fontSize: isMobile ? 14 : 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: const Color(
+                                                    0xFF333333,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              'Admin Information',
-                                              style: TextStyle(
-                                                fontSize: isMobile ? 14 : 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: const Color(0xFF333333),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+
+                                        // Admin Email (Required)
+                                        _buildTextField(
+                                          label: 'Admin Email',
+                                          hint: 'Enter admin email address',
+                                          controller: _adminEmailController,
+                                          validator: _validateEmail,
+                                          required: true,
+                                          icon: Icons.email_outlined,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          isMobile: isMobile,
+                                        ),
+                                        const SizedBox(height: 20),
+
+                                        // Admin Username (Required)
+                                        _buildTextField(
+                                          label: 'Admin Username',
+                                          hint: 'Enter admin username',
+                                          controller: _adminUsernameController,
+                                          validator: (value) =>
+                                              _validateRequired(
+                                                value,
+                                                'Admin username',
                                               ),
-                                            ),
-                                          ],
+                                          required: true,
+                                          icon: Icons.account_circle_outlined,
+                                          isMobile: isMobile,
                                         ),
-                                      ),
-                                      const SizedBox(height: 16),
+                                        const SizedBox(height: 20),
 
-                                      // Admin First Name (Required)
-                                      _buildTextField(
-                                        label: 'Admin First Name',
-                                        hint: 'Enter admin first name',
-                                        controller: _adminFirstNameController,
-                                        validator: (value) => _validateRequired(
-                                          value,
-                                          'Admin first name',
+                                        // Admin Phone (Optional)
+                                        _buildTextField(
+                                          label: 'Admin Phone Number',
+                                          hint: 'Enter 10-digit phone number',
+                                          controller: _adminPhoneController,
+                                          validator: _validatePhone,
+                                          required: false,
+                                          icon: Icons.phone_outlined,
+                                          keyboardType: TextInputType.phone,
+                                          isMobile: isMobile,
                                         ),
-                                        required: true,
-                                        icon: Icons.person_outlined,
-                                        isMobile: isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
+                                        const SizedBox(height: 20),
 
-                                      // Admin Last Name (Required)
-                                      _buildTextField(
-                                        label: 'Admin Last Name',
-                                        hint: 'Enter admin last name',
-                                        controller: _adminLastNameController,
-                                        validator: (value) => _validateRequired(
-                                          value,
-                                          'Admin last name',
+                                        // Admin Password (Required)
+                                        _buildTextField(
+                                          label: 'Admin Password',
+                                          hint: 'Enter admin password',
+                                          controller: _adminPasswordController,
+                                          validator: _validatePassword,
+                                          required: true,
+                                          icon: Icons.lock_outlined,
+                                          isPassword: true,
+                                          obscureText: _obscureAdminPassword,
+                                          onToggleVisibility: () {
+                                            setState(() {
+                                              _obscureAdminPassword =
+                                                  !_obscureAdminPassword;
+                                            });
+                                          },
+                                          isMobile: isMobile,
                                         ),
-                                        required: true,
-                                        icon: Icons.person_outlined,
-                                        isMobile: isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Admin Email (Required)
-                                      _buildTextField(
-                                        label: 'Admin Email',
-                                        hint: 'Enter admin email address',
-                                        controller: _adminEmailController,
-                                        validator: _validateEmail,
-                                        required: true,
-                                        icon: Icons.email_outlined,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        isMobile: isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Admin Username (Required)
-                                      _buildTextField(
-                                        label: 'Admin Username',
-                                        hint: 'Enter admin username',
-                                        controller: _adminUsernameController,
-                                        validator: (value) => _validateRequired(
-                                          value,
-                                          'Admin username',
-                                        ),
-                                        required: true,
-                                        icon: Icons.account_circle_outlined,
-                                        isMobile: isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Admin Phone (Optional)
-                                      _buildTextField(
-                                        label: 'Admin Phone Number',
-                                        hint: 'Enter 10-digit phone number',
-                                        controller: _adminPhoneController,
-                                        validator: _validatePhone,
-                                        required: false,
-                                        icon: Icons.phone_outlined,
-                                        keyboardType: TextInputType.phone,
-                                        isMobile: isMobile,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Admin Password (Required)
-                                      _buildTextField(
-                                        label: 'Admin Password',
-                                        hint: 'Enter admin password',
-                                        controller: _adminPasswordController,
-                                        validator: _validatePassword,
-                                        required: true,
-                                        icon: Icons.lock_outlined,
-                                        isPassword: true,
-                                        isMobile: isMobile,
-                                      ),
+                                      ],
                                       const SizedBox(height: 32),
 
                                       // Action Buttons
@@ -659,6 +804,18 @@ class _AddClinicScreenState extends State<AddClinicScreen>
     List<OrganizationModel> organizations,
     bool isMobile,
   ) {
+    // Current valid items
+    final validOrganizations = organizations
+        .where((org) => org.id != null)
+        .toList();
+    final validIds = validOrganizations.map((org) => org.id).toList();
+
+    // Reset selected ID if it's no longer in the list (prevents crashes)
+    if (_selectedOrganizationId != null &&
+        !validIds.contains(_selectedOrganizationId)) {
+      _selectedOrganizationId = null;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -731,7 +888,7 @@ class _AddClinicScreenState extends State<AddClinicScreen>
             fillColor: Colors.white,
             errorStyle: const TextStyle(fontSize: 12),
           ),
-          items: organizations.map((org) {
+          items: organizations.where((org) => org.id != null).map((org) {
             return DropdownMenuItem<String>(
               value: org.id,
               child: Text(org.name, style: const TextStyle(fontSize: 14)),
@@ -753,6 +910,104 @@ class _AddClinicScreenState extends State<AddClinicScreen>
     );
   }
 
+  Widget _buildDropdown({
+    required String label,
+    required String hint,
+    required String? value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+    bool required = false,
+    required IconData icon,
+    required bool isMobile,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: isMobile ? 13 : 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF333333),
+              ),
+            ),
+            if (required) ...[
+              const SizedBox(width: 4),
+              const Text(
+                '*',
+                style: TextStyle(
+                  color: Color(0xFFDC2626),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<String>(
+          value: value,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: const Color(0xFFB3B3B3),
+              fontSize: isMobile ? 13 : 14,
+            ),
+            prefixIcon: Icon(icon, size: 20, color: const Color(0xFF666666)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: Color(0xFF3B82F6),
+                width: 1.5,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFDC2626)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: Color(0xFFDC2626),
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            errorStyle: const TextStyle(fontSize: 12),
+          ),
+          items: items.map((item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(item, style: const TextStyle(fontSize: 14)),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          validator: (value) {
+            if (required && (value == null || value.isEmpty)) {
+              return 'Please select $label';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildTextField({
     required String label,
     required String hint,
@@ -763,6 +1018,8 @@ class _AddClinicScreenState extends State<AddClinicScreen>
     TextInputType? keyboardType,
     int maxLines = 1,
     bool isPassword = false,
+    bool? obscureText,
+    VoidCallback? onToggleVisibility,
     required bool isMobile,
   }) {
     return Column(
@@ -797,7 +1054,7 @@ class _AddClinicScreenState extends State<AddClinicScreen>
           validator: validator,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          obscureText: isPassword,
+          obscureText: obscureText ?? isPassword,
           style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
@@ -806,6 +1063,18 @@ class _AddClinicScreenState extends State<AddClinicScreen>
               fontSize: isMobile ? 13 : 14,
             ),
             prefixIcon: Icon(icon, size: 20, color: const Color(0xFF666666)),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      obscureText == true
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      size: 20,
+                      color: const Color(0xFF666666),
+                    ),
+                    onPressed: onToggleVisibility,
+                  )
+                : null,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: maxLines > 1 ? 16 : 14,

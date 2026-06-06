@@ -7,6 +7,10 @@
 import 'package:flutter/material.dart';
 
 class AppConstants {
+  // Server Configuration
+  static const String serverUrl = 'https://api.doctorandmeonline.com';
+  static const String apiBaseUrl = '$serverUrl/api';
+
   // Colors
   static const Color primaryColor = Color(0xFF007BFF);
   static const Color secondaryColor = Color(0xFF6C757D);

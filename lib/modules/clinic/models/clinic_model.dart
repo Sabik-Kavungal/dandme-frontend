@@ -4,12 +4,13 @@ part '../gen/clinic_model.freezed.dart';
 part '../gen/clinic_model.g.dart';
 
 @freezed
-class ClinicModel with _$ClinicModel {
+abstract class ClinicModel with _$ClinicModel {
   const factory ClinicModel({
     String? id,
     @JsonKey(name: 'organization_id') required String organizationId,
-    @JsonKey(name: 'clinic_code') required String clinicCode,
+    @JsonKey(name: 'clinic_code') String? clinicCode,
     required String name,
+    @JsonKey(name: 'clinic_type') String? clinicType,
     String? email,
     String? phone,
     String? address,
@@ -23,6 +24,7 @@ class ClinicModel with _$ClinicModel {
     @JsonKey(name: 'admin_username') String? adminUsername,
     @JsonKey(name: 'admin_phone') String? adminPhone,
     @JsonKey(name: 'admin_password') String? adminPassword,
+    String? logo,
   }) = _ClinicModel;
 
   factory ClinicModel.fromJson(Map<String, dynamic> json) =>
@@ -31,11 +33,12 @@ class ClinicModel with _$ClinicModel {
 
 // Separate model for creating clinics with required admin fields
 @freezed
-class CreateClinicModel with _$CreateClinicModel {
+abstract class CreateClinicModel with _$CreateClinicModel {
   const factory CreateClinicModel({
     @JsonKey(name: 'organization_id') required String organizationId,
-    @JsonKey(name: 'clinic_code') required String clinicCode,
+    @JsonKey(name: 'clinic_code') String? clinicCode,
     required String name,
+    @JsonKey(name: 'clinic_type') String? clinicType,
     String? email,
     String? phone,
     String? address,

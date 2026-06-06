@@ -4,7 +4,7 @@ part '../gen/role_model.g.dart';
 
 // Role response model
 @freezed
-class RoleModel with _$RoleModel {
+abstract class RoleModel with _$RoleModel {
   const factory RoleModel({
     required String id,
     required String name,
@@ -23,7 +23,7 @@ class RoleModel with _$RoleModel {
 
 // Model for creating a role
 @freezed
-class CreateRoleModel with _$CreateRoleModel {
+abstract class CreateRoleModel with _$CreateRoleModel {
   const factory CreateRoleModel({
     required String name,
     String? description,
@@ -36,7 +36,7 @@ class CreateRoleModel with _$CreateRoleModel {
 
 // Model for updating a role
 @freezed
-class UpdateRoleModel with _$UpdateRoleModel {
+abstract class UpdateRoleModel with _$UpdateRoleModel {
   const factory UpdateRoleModel({
     String? name,
     String? description,
@@ -49,7 +49,7 @@ class UpdateRoleModel with _$UpdateRoleModel {
 
 // Model for updating role permissions only
 @freezed
-class UpdateRolePermissionsModel with _$UpdateRolePermissionsModel {
+abstract class UpdateRolePermissionsModel with _$UpdateRolePermissionsModel {
   const factory UpdateRolePermissionsModel({
     required Map<String, dynamic> permissions,
   }) = _UpdateRolePermissionsModel;
@@ -60,7 +60,7 @@ class UpdateRolePermissionsModel with _$UpdateRolePermissionsModel {
 
 // Permission template model
 @freezed
-class PermissionTemplate with _$PermissionTemplate {
+abstract class PermissionTemplate with _$PermissionTemplate {
   const factory PermissionTemplate({
     required String name,
     required String description,
@@ -73,7 +73,7 @@ class PermissionTemplate with _$PermissionTemplate {
 
 // Permission templates response
 @freezed
-class PermissionTemplatesResponse with _$PermissionTemplatesResponse {
+abstract class PermissionTemplatesResponse with _$PermissionTemplatesResponse {
   const factory PermissionTemplatesResponse({
     required List<PermissionTemplate> templates,
   }) = _PermissionTemplatesResponse;
@@ -84,7 +84,7 @@ class PermissionTemplatesResponse with _$PermissionTemplatesResponse {
 
 // Role users model
 @freezed
-class RoleUserModel with _$RoleUserModel {
+abstract class RoleUserModel with _$RoleUserModel {
   const factory RoleUserModel({
     required String id,
     String? email,
@@ -108,7 +108,7 @@ class RoleUserModel with _$RoleUserModel {
 
 // Pagination model
 @freezed
-class RolePagination with _$RolePagination {
+abstract class RolePagination with _$RolePagination {
   const factory RolePagination({
     required int page,
     @JsonKey(name: 'page_size') required int pageSize,
@@ -122,7 +122,7 @@ class RolePagination with _$RolePagination {
 
 // Roles list response
 @freezed
-class RolesListResponse with _$RolesListResponse {
+abstract class RolesListResponse with _$RolesListResponse {
   const factory RolesListResponse({
     required List<RoleModel> roles,
     required RolePagination pagination,
@@ -134,7 +134,7 @@ class RolesListResponse with _$RolesListResponse {
 
 // Role users response
 @freezed
-class RoleUsersResponse with _$RoleUsersResponse {
+abstract class RoleUsersResponse with _$RoleUsersResponse {
   const factory RoleUsersResponse({
     required List<RoleUserModel> users,
     required RolePagination pagination,

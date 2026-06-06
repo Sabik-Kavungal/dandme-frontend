@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/superadmin/viewmodels/role_management_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/user_management_viewmodel.dart';
-import 'package:a/modules/superadmin/models/user_model_admin.dart';
+import 'package:drandme/modules/superadmin/viewmodels/role_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/user_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/models/user_model_admin.dart';
 
 class AssignRoleDialog extends StatefulWidget {
   final String userId;

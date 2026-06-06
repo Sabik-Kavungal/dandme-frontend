@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/clinic/models/clinic_doctor_link_model.dart';
-import 'package:a/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_doctor_link_model.dart';
+import 'package:drandme/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
 
 class ClinicDoctorLinksListScreen extends StatefulWidget {
   const ClinicDoctorLinksListScreen({super.key});

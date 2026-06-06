@@ -5,14 +5,16 @@ part '../gen/appointment_history_model.g.dart';
 
 /// Appointment history item model
 @freezed
-class AppointmentHistoryItem with _$AppointmentHistoryItem {
+abstract class AppointmentHistoryItem with _$AppointmentHistoryItem {
   const factory AppointmentHistoryItem({
     required String id,
     @JsonKey(name: 'clinic_id') required String clinicId,
     @JsonKey(name: 'clinic_patient_id') String? clinicPatientId,
-    @JsonKey(name: 'appointment_date') required String appointmentDate, // DD/MM/YYYY format
-    @JsonKey(name: 'appointment_time') required String appointmentTime, // HH:MM AM/PM format
+    @JsonKey(name: 'appointment_date') required String appointmentDate,
+    @JsonKey(name: 'appointment_time') required String appointmentTime,
     @JsonKey(name: 'consultation_type') required String consultationType,
+    @JsonKey(name: 'doctor_name') String? doctorName,
+    @JsonKey(name: 'doctor_prefix') String? doctorPrefix,
     String? reason,
     String? notes,
     required String status,
@@ -28,7 +30,7 @@ class AppointmentHistoryItem with _$AppointmentHistoryItem {
 
 /// Appointment history response model
 @freezed
-class AppointmentHistoryResponse with _$AppointmentHistoryResponse {
+abstract class AppointmentHistoryResponse with _$AppointmentHistoryResponse {
   const factory AppointmentHistoryResponse({
     required bool success,
     @JsonKey(name: 'clinic_patient_id') required String clinicPatientId,

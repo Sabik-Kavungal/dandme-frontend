@@ -60,7 +60,7 @@ class CustomDropdownField extends StatelessWidget {
               ],
             ),
             border: Border.all(color: borderColor, width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(2),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF6366F1).withOpacity(0.04),
@@ -140,12 +140,6 @@ class CustomDropdownField extends StatelessWidget {
 
   /// Helper method to get user-friendly labels
   String _getDisplayLabel(String value, String label) {
-    // Add "Dr." prefix for doctor names
-    if (_isDoctorField(label) &&
-        !value.startsWith('Dr.') &&
-        value != 'Loading...') {
-      return 'Dr. $value';
-    }
 
     // Consultation type labels
     switch (value) {

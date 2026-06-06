@@ -8,16 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 // ViewModel imports
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/organization/viewmodels/organization_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_settings_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/doctor_details_viewmodel.dart';
-import 'package:a/modules/clinic/viewmodels/slot_configuration_viewmodel.dart';
-import 'package:a/modules/doctor/viewmodels/doctor_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/user_management_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/role_management_viewmodel.dart';
-import 'package:a/modules/superadmin/viewmodels/department_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/organization/viewmodels/organization_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_settings_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/doctor_details_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/slot_configuration_viewmodel.dart';
+import 'package:drandme/modules/doctor/viewmodels/doctor_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/user_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/role_management_viewmodel.dart';
+import 'package:drandme/modules/superadmin/viewmodels/department_viewmodel.dart';
 
 /// Defines which providers should be loaded for each role
 class RoleBasedProviders {
@@ -39,8 +39,12 @@ class RoleBasedProviders {
       ChangeNotifierProvider<AuthViewModel>.value(value: authViewModel),
     ];
 
-    // If no role is specified (not logged in), return only AuthViewModel
+    // If no role is specified (not logged in), return ALL providers.
+    // This prevents the 'dependents.isEmpty is not true' assertion error and
+    // SliverPadding crashes when logging out, because it prevents the providers
+    // from abruptly unmounting while the active screens are still transitioning out.
     if (userRole == null || userRole.isEmpty) {
+      providers.addAll(_getSuperAdminProviders(lazy, authViewModel));
       return providers;
     }
 
@@ -83,8 +87,8 @@ class RoleBasedProviders {
         return _getPharmacistProviders(lazy, authViewModel);
 
       default:
-        // For unknown roles, provide basic functionality
-        return _getBasicProviders(lazy, authViewModel);
+        // Return all providers even for unknown roles to prevent unmounting transitions.
+        return _getSuperAdminProviders(lazy, authViewModel);
     }
   }
 
@@ -103,7 +107,7 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProvider<UserManagementViewModel>(
@@ -115,7 +119,7 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DepartmentViewModel>(
-        create: (context) => DepartmentViewModel(),
+        create: (context) => DepartmentViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProxyProvider<AuthViewModel, DoctorDetailsViewModel>(
@@ -154,7 +158,7 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProvider<UserManagementViewModel>(
@@ -162,7 +166,7 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DepartmentViewModel>(
-        create: (context) => DepartmentViewModel(),
+        create: (context) => DepartmentViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProxyProvider<AuthViewModel, DoctorDetailsViewModel>(
@@ -197,11 +201,11 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProvider<DepartmentViewModel>(
-        create: (context) => DepartmentViewModel(),
+        create: (context) => DepartmentViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProxyProvider<AuthViewModel, DoctorDetailsViewModel>(
@@ -232,7 +236,7 @@ class RoleBasedProviders {
   ) {
     return [
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
       ChangeNotifierProvider<ClinicViewModel>(
@@ -271,7 +275,7 @@ class RoleBasedProviders {
         lazy: lazy,
       ),
       ChangeNotifierProvider<DoctorViewModel>(
-        create: (context) => DoctorViewModel(),
+        create: (context) => DoctorViewModel(authViewModel),
         lazy: lazy,
       ),
     ];
@@ -290,18 +294,9 @@ class RoleBasedProviders {
     ];
   }
 
-  /// Basic providers for unknown/guest roles
-  static List<SingleChildWidget> _getBasicProviders(
-    bool lazy,
-    AuthViewModel authViewModel,
-  ) {
-    return [
-      ChangeNotifierProvider<ClinicViewModel>(
-        create: (context) => ClinicViewModel(),
-        lazy: lazy,
-      ),
-    ];
-  }
+  // This functionality has been intentionally removed because tearing down
+  // providers during navigating changes causes widget tree assertions.
+  // Instead we load all super admin providers by default.
 
   /// Get a human-readable list of loaded providers for a role
   /// Useful for debugging and logging
@@ -371,7 +366,17 @@ class RoleBasedProviders {
         break;
 
       default:
-        providerNames.addAll(['ClinicViewModel']);
+        providerNames.addAll([
+          'OrganizationViewModel',
+          'ClinicViewModel',
+          'DoctorViewModel',
+          'UserManagementViewModel',
+          'RoleManagementViewModel',
+          'DepartmentViewModel',
+          'DoctorDetailsViewModel',
+          'ClinicSettingsViewModel',
+          'SlotConfigurationViewModel',
+        ]);
     }
 
     return providerNames;

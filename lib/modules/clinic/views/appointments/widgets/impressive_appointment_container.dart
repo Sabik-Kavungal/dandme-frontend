@@ -17,10 +17,10 @@ class ImpressiveAppointmentContainer extends StatelessWidget {
       padding: EdgeInsets.all(10 * scaleFactor),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(3),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.06),
+            color: const Color(0xFF6366F1).withValues(alpha: 0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
             spreadRadius: -2,

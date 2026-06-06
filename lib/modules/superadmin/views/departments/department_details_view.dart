@@ -1,6 +1,6 @@
-import 'package:a/modules/superadmin/models/department_model.dart';
-import 'package:a/modules/superadmin/viewmodels/department_viewmodel.dart';
-import 'package:a/modules/superadmin/views/departments/add_edit_department_view.dart';
+import 'package:drandme/modules/superadmin/models/department_model.dart';
+import 'package:drandme/modules/superadmin/viewmodels/department_viewmodel.dart';
+import 'package:drandme/modules/superadmin/views/departments/add_edit_department_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +22,8 @@ class _DepartmentDetailsViewState extends State<DepartmentDetailsView> {
         context,
         listen: false,
       );
-      departmentVM.fetchDepartment(context, widget.departmentId);
-      departmentVM.fetchDoctorsByDepartment(context, widget.departmentId);
+      departmentVM.fetchDepartment(widget.departmentId);
+      departmentVM.fetchDoctorsByDepartment(widget.departmentId);
     });
   }
 
@@ -146,12 +146,8 @@ class _DepartmentDetailsViewState extends State<DepartmentDetailsView> {
                     ElevatedButton.icon(
                       onPressed: () {
                         departmentVM.clearError();
-                        departmentVM.fetchDepartment(
-                          context,
-                          widget.departmentId,
-                        );
+                        departmentVM.fetchDepartment(widget.departmentId);
                         departmentVM.fetchDoctorsByDepartment(
-                          context,
                           widget.departmentId,
                         );
                       },
@@ -179,11 +175,8 @@ class _DepartmentDetailsViewState extends State<DepartmentDetailsView> {
 
           return RefreshIndicator(
             onRefresh: () async {
-              await departmentVM.fetchDepartment(context, widget.departmentId);
-              await departmentVM.fetchDoctorsByDepartment(
-                context,
-                widget.departmentId,
-              );
+              await departmentVM.fetchDepartment(widget.departmentId);
+              await departmentVM.fetchDoctorsByDepartment(widget.departmentId);
             },
             child: SingleChildScrollView(
               padding: EdgeInsets.all(isMobile ? 16 : 24),
@@ -586,7 +579,7 @@ class _DepartmentDetailsViewState extends State<DepartmentDetailsView> {
             context,
             listen: false,
           );
-          departmentVM.fetchDepartment(context, widget.departmentId);
+          departmentVM.fetchDepartment(widget.departmentId);
         });
   }
 
@@ -611,7 +604,6 @@ class _DepartmentDetailsViewState extends State<DepartmentDetailsView> {
                 listen: false,
               );
               final success = await departmentVM.deleteDepartment(
-                context,
                 department.id,
               );
               if (context.mounted) {

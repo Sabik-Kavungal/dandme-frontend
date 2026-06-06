@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
-import 'package:a/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
-import 'package:a/modules/clinic/views/appointments/widgets/unified_button.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
 
-/// Impressive patient registration dialog with age, gender, and date of birth
+// ─── Supported country codes ──────────────────────────────────────────────────
+const List<CountryCode> countryCodes = [
+  CountryCode(name: 'India', code: 'IN', flag: '🇮🇳', dialCode: '+91'),
+  CountryCode(name: 'UAE', code: 'AE', flag: '🇦🇪', dialCode: '+971'),
+  CountryCode(name: 'Saudi Arabia', code: 'SA', flag: '🇸🇦', dialCode: '+966'),
+];
+
+// ─── Same design tokens as payment_confirmation_popup ─────────────────────────
+const _kText = Color(0xFF1A1A2E);
+const _kSub = Color(0xFF6B7280);
+const _kBorder = Color(0xFFE5E7EB);
+const _kBg = Color(0xFFF9FAFB);
+const _kFocus = Colors.black;
+
 class QuickPatientRegistrationDialog extends StatefulWidget {
   final NewAppointmentViewModel viewModel;
-
   const QuickPatientRegistrationDialog({super.key, required this.viewModel});
 
   @override
@@ -17,298 +27,261 @@ class QuickPatientRegistrationDialog extends StatefulWidget {
 
 class _QuickPatientRegistrationDialogState
     extends State<QuickPatientRegistrationDialog> {
-  CountryCode _selectedCountryCode = defaultCountryCode;
-  DateTime? _selectedDateOfBirth;
-  String? _selectedGender;
+  final _formKey = GlobalKey<FormState>();
+  final _firstNameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _ageCtrl = TextEditingController();
+  final _addressCtrl = TextEditingController();
+
+  CountryCode _countryCode = defaultCountryCode;
+  String? _gender;
+  bool _submitting = false;
+
+  @override
+  void dispose() {
+    _firstNameCtrl.dispose();
+    _phoneCtrl.dispose();
+    _ageCtrl.dispose();
+    _addressCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final firstNameController = TextEditingController();
-    final lastNameController = TextEditingController();
-    final phoneController = TextEditingController();
-    final ageController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+      child: SizedBox(
+        width: 480,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Impressive header with gradient
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEF4444),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(
-                      Icons.person_add,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'Register New Patient',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ),
+            // ── Title bar ──────────────────────────────────────────────────
+            _TitleBar(onClose: () => Navigator.pop(context)),
 
-            // Form content
-            Padding(
-              padding: const EdgeInsets.all(20),
+            // ── Form body ──────────────────────────────────────────────────
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.70,
+              ),
               child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: Form(
-                  key: formKey,
+                  key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTextField(
-                        controller: firstNameController,
-                        label: 'First Name *',
-                        icon: Icons.person,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'First name is required';
-                          }
-                          return null;
-                        },
+                      // ── Name ─────────────────────────────────────────────
+                      _Field(
+                        label: 'Name *',
+                        hint: '',
+                        controller: _firstNameCtrl,
+                        validator: (v) =>
+                            (v == null || v.trim().isEmpty) ? 'Required' : null,
                       ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: lastNameController,
-                        label: 'Last Name *',
-                        icon: Icons.person_outline,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Last name is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      PhoneNumberField(
-                        phoneController: phoneController,
-                        label: 'Phone Number *',
-                        hint: 'Enter phone number',
-                        isRequired: true,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Phone number is required';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {},
-                      ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
-                      // Age field
-                      TextFormField(
-                        controller: ageController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Age',
-                          hintText: 'Enter age',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF1E293B),
-                              width: 2,
+                      // ── Phone ─────────────────────────────────────────────
+                      _Label('Phone Number *'),
+                      const SizedBox(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Country code picker
+                          Container(
+                            height: 46,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: _kBg,
+                              border: Border.all(color: _kBorder),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.cake,
-                            color: Color(0xFFEF4444),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Gender dropdown
-                      DropdownButtonFormField<String>(
-                        value: _selectedGender,
-                        decoration: InputDecoration(
-                          labelText: 'Gender',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF1E293B),
-                              width: 2,
-                            ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.wc,
-                            color: Color(0xFFEF4444),
-                          ),
-                        ),
-                        items: ['Male', 'Female', 'Other'].map((gender) {
-                          return DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Date of Birth field
-                      InkWell(
-                        onTap: () async {
-                          final date = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now().subtract(
-                              const Duration(days: 365 * 25),
-                            ),
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                          );
-                          if (date != null) {
-                            setState(() {
-                              _selectedDateOfBirth = date;
-                            });
-                          }
-                        },
-                        child: InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: 'Date of Birth',
-                            hintText: _selectedDateOfBirth == null
-                                ? 'Select date of birth'
-                                : DateFormat(
-                                    'MMM dd, yyyy',
-                                  ).format(_selectedDateOfBirth!),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[300]!),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[300]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Color(0xFF1E293B),
-                                width: 2,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<CountryCode>(
+                                value: _countryCode,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  size: 16,
+                                  color: _kSub,
+                                ),
+                                items: countryCodes
+                                    .map(
+                                      (c) => DropdownMenuItem(
+                                        value: c,
+                                        child: Text(
+                                          '${c.flag} ${c.dialCode}',
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (v) =>
+                                    setState(() => _countryCode = v!),
                               ),
                             ),
-                            prefixIcon: const Icon(
-                              Icons.calendar_today,
-                              color: Color(0xFFEF4444),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _Field(
+                              label: '',
+                              hint: '',
+                              controller: _phoneCtrl,
+                              keyboardType: TextInputType.phone,
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? 'Required'
+                                  : null,
                             ),
                           ),
-                          child: Text(
-                            _selectedDateOfBirth == null
-                                ? 'Select date of birth'
-                                : DateFormat(
-                                    'MMM dd, yyyy',
-                                  ).format(_selectedDateOfBirth!),
-                            style: TextStyle(
-                              color: _selectedDateOfBirth == null
-                                  ? Colors.grey[600]
-                                  : Colors.black87,
-                            ),
-                          ),
-                        ),
+                        ],
                       ),
+                      const SizedBox(height: 14),
+
+                      // ── Age + Gender row ──────────────────────────────────
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _Field(
+                              label: 'Age',
+                              hint: '',
+                              controller: _ageCtrl,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const _Label('Gender'),
+                                const SizedBox(height: 6),
+                                Container(
+                                  height: 46,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _kBg,
+                                    border: Border.all(color: _kBorder),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: _gender,
+                                      isExpanded: true,
+                                      hint: const Text(
+                                        'Select',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: _kSub,
+                                        ),
+                                      ),
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        size: 16,
+                                        color: _kSub,
+                                        ),
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: _kText,
+                                      ),
+                                      items: ['Male', 'Female', 'Other']
+                                          .map(
+                                            (g) => DropdownMenuItem(
+                                              value: g,
+                                              child: Text(g),
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: (v) =>
+                                          setState(() => _gender = v),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // ── Address ──────────────────────────────────────────
+                      _Field(
+                        label: 'Address',
+                        hint: '',
+                        controller: _addressCtrl,
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
             ),
 
-            // Action buttons
+            // ── Action buttons ─────────────────────────────────────────────
             Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(16),
-                  bottomRight: Radius.circular(16),
-                ),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: _kBorder)),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      firstNameController.dispose();
-                      lastNameController.dispose();
-                      phoneController.dispose();
-                      ageController.dispose();
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.grey),
+                  // Cancel
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _submitting
+                          ? null
+                          : () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: _kSub,
+                        side: const BorderSide(color: _kBorder),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  UnifiedButton(
-                    text: 'Register Patient',
-                    icon: Icons.check_circle,
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        await _handleRegistration(
-                          context,
-                          firstNameController,
-                          lastNameController,
-                          phoneController,
-                          ageController.text.isEmpty
-                              ? null
-                              : int.tryParse(ageController.text),
-                        );
-                      }
-                    },
-                    scaleFactor: 1.0,
+                  // Register
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton(
+                      onPressed: _submitting ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: _kBorder,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: _submitting
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              'Register Patient',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                    ),
                   ),
                 ],
               ),
@@ -319,104 +292,44 @@ class _QuickPatientRegistrationDialogState
     );
   }
 
-  /// Build impressive text field
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
-    required String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF1E293B), width: 2),
-        ),
-        prefixIcon: Icon(icon, color: const Color(0xFFEF4444)),
-      ),
-      validator: validator,
-    );
-  }
+  // ─── submit ───────────────────────────────────────────────────────────────
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  /// Handle patient registration
-  Future<void> _handleRegistration(
-    BuildContext context,
-    TextEditingController firstNameController,
-    TextEditingController lastNameController,
-    TextEditingController phoneController,
-    int? age,
-  ) async {
-    // Show loading
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Registering patient...'),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    setState(() => _submitting = true);
 
-    // Create patient with enhanced fields
     final newPatient = await widget.viewModel.createClinicPatient(
-      firstName: firstNameController.text.trim(),
-      lastName: lastNameController.text.trim(),
-      phone: '${_selectedCountryCode.dialCode}${phoneController.text.trim()}',
-      age: age,
-      gender: _selectedGender,
-      dateOfBirth: _selectedDateOfBirth?.toIso8601String(),
+      firstName: _firstNameCtrl.text.trim(),
+      lastName: '',
+      phone: '${_countryCode.dialCode}${_phoneCtrl.text.trim()}',
+      age: _ageCtrl.text.isEmpty ? null : int.tryParse(_ageCtrl.text),
+      gender: _gender,
+      address: _addressCtrl.text.trim(),
     );
 
-    // Close loading dialog
-    Navigator.pop(context);
+    if (!mounted) return;
+    setState(() => _submitting = false);
 
     if (newPatient != null) {
-      // Success - close registration dialog
-      firstNameController.dispose();
-      lastNameController.dispose();
-      phoneController.dispose();
       Navigator.pop(context);
-
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '✅ Patient ${newPatient.firstName} ${newPatient.lastName} registered successfully!',
+            '✅ ${newPatient.firstName} ${newPatient.lastName} registered!',
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: const Color(0xFF059669),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           duration: const Duration(seconds: 3),
         ),
       );
     } else {
-      // Show error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            '❌ Failed to register patient. ${widget.viewModel.error}',
-          ),
-          backgroundColor: Colors.red,
+          content: Text('❌ ${widget.viewModel.error}'),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           duration: const Duration(seconds: 4),
         ),
       );
@@ -424,13 +337,129 @@ class _QuickPatientRegistrationDialogState
   }
 }
 
-/// Helper function to show the dialog
+// ─── Small shared widgets ─────────────────────────────────────────────────────
+
+class _TitleBar extends StatelessWidget {
+  final VoidCallback onClose;
+  const _TitleBar({required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 8, 16),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: _kBorder)),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              'Register New Patient',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: _kText,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: onClose,
+            icon: const Icon(Icons.close_rounded, size: 18, color: _kSub),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Label extends StatelessWidget {
+  final String text;
+  const _Label(this.text);
+
+  @override
+  Widget build(BuildContext context) => text.isEmpty
+      ? const SizedBox.shrink()
+      : Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: _kText,
+          ),
+        );
+}
+
+class _Field extends StatelessWidget {
+  final String label, hint;
+  final TextEditingController controller;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
+
+  const _Field({
+    required this.label,
+    required this.hint,
+    required this.controller,
+    this.keyboardType,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label.isNotEmpty) ...[_Label(label), const SizedBox(height: 6)],
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: validator,
+          style: const TextStyle(fontSize: 13, color: _kText),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(fontSize: 13, color: _kSub),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 13,
+            ),
+            filled: true,
+            fillColor: _kBg,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: _kBorder),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: _kBorder),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: _kFocus, width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+            ),
+            errorStyle: const TextStyle(fontSize: 11),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Helper function to open the dialog
 void showQuickPatientRegistrationDialog(
   BuildContext context,
   NewAppointmentViewModel viewModel,
 ) {
   showDialog(
     context: context,
-    builder: (context) => QuickPatientRegistrationDialog(viewModel: viewModel),
+    builder: (_) => QuickPatientRegistrationDialog(viewModel: viewModel),
   );
 }

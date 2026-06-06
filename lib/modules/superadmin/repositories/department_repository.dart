@@ -1,5 +1,5 @@
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/superadmin/models/department_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/superadmin/models/department_model.dart';
 
 class DepartmentRepository {
   final ServiceRepo _serviceRepo = ServiceRepo();
@@ -10,7 +10,7 @@ class DepartmentRepository {
     required CreateDepartmentInput input,
   }) async {
     final response = await _serviceRepo.requist(
-      'organizations/departments',
+      'departments',
       method: 'POST',
       body: input.toJson(),
       token: token,
@@ -41,7 +41,7 @@ class DepartmentRepository {
         .join('&');
 
     final response = await _serviceRepo.requist(
-      'organizations/departments?$queryString',
+      'departments?$queryString',
       method: 'GET',
       token: token,
       useOrgApi: true,
@@ -83,7 +83,7 @@ class DepartmentRepository {
     required String departmentId,
   }) async {
     final response = await _serviceRepo.requist(
-      'organizations/departments/$departmentId',
+      'departments/$departmentId',
       method: 'GET',
       token: token,
       useOrgApi: true,
@@ -107,7 +107,7 @@ class DepartmentRepository {
     required UpdateDepartmentInput input,
   }) async {
     final response = await _serviceRepo.requist(
-      'organizations/departments/$departmentId',
+      'departments/$departmentId',
       method: 'PUT',
       body: input.toJson(),
       token: token,
@@ -123,7 +123,7 @@ class DepartmentRepository {
     required String departmentId,
   }) async {
     final response = await _serviceRepo.requist(
-      'organizations/departments/$departmentId',
+      'departments/$departmentId',
       method: 'DELETE',
       token: token,
       useOrgApi: true,
@@ -145,7 +145,7 @@ class DepartmentRepository {
         .join('&');
 
     final response = await _serviceRepo.requist(
-      'organizations/departments/$departmentId/doctors?$queryString',
+      'departments/$departmentId/doctors?$queryString',
       method: 'GET',
       token: token,
       useOrgApi: true,
@@ -199,13 +199,13 @@ class DepartmentRepository {
       print(
         '╚════════════════════════════════════════════════════════════════╝',
       );
-      print('📍 Endpoint: organizations/doctors/clinic/$clinicId');
+      print('📍 Endpoint: doctors/clinic/$clinicId');
       print('🔑 Token: ${token.substring(0, 20)}...');
       print('🏥 Clinic ID: $clinicId');
       print('');
 
       final response = await _serviceRepo.requist(
-        'organizations/doctors/clinic/$clinicId',
+        'doctors/clinic/$clinicId',
         method: 'GET',
         token: token,
         useOrgApi: true,

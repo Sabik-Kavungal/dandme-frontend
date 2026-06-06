@@ -6,15 +6,17 @@ part of '../models/appointment_history_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppointmentHistoryItemImpl _$$AppointmentHistoryItemImplFromJson(
+_AppointmentHistoryItem _$AppointmentHistoryItemFromJson(
   Map<String, dynamic> json,
-) => _$AppointmentHistoryItemImpl(
+) => _AppointmentHistoryItem(
   id: json['id'] as String,
   clinicId: json['clinic_id'] as String,
   clinicPatientId: json['clinic_patient_id'] as String?,
   appointmentDate: json['appointment_date'] as String,
   appointmentTime: json['appointment_time'] as String,
   consultationType: json['consultation_type'] as String,
+  doctorName: json['doctor_name'] as String?,
+  doctorPrefix: json['doctor_prefix'] as String?,
   reason: json['reason'] as String?,
   notes: json['notes'] as String?,
   status: json['status'] as String,
@@ -24,27 +26,29 @@ _$AppointmentHistoryItemImpl _$$AppointmentHistoryItemImplFromJson(
   createdAt: json['created_at'] as String,
 );
 
-Map<String, dynamic> _$$AppointmentHistoryItemImplToJson(
-  _$AppointmentHistoryItemImpl instance,
+Map<String, dynamic> _$AppointmentHistoryItemToJson(
+  _AppointmentHistoryItem instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'clinic_id': instance.clinicId,
-  if (instance.clinicPatientId case final value?) 'clinic_patient_id': value,
+  'clinic_patient_id': ?instance.clinicPatientId,
   'appointment_date': instance.appointmentDate,
   'appointment_time': instance.appointmentTime,
   'consultation_type': instance.consultationType,
-  if (instance.reason case final value?) 'reason': value,
-  if (instance.notes case final value?) 'notes': value,
+  'doctor_name': ?instance.doctorName,
+  'doctor_prefix': ?instance.doctorPrefix,
+  'reason': ?instance.reason,
+  'notes': ?instance.notes,
   'status': instance.status,
-  if (instance.feeAmount case final value?) 'fee_amount': value,
+  'fee_amount': ?instance.feeAmount,
   'payment_status': instance.paymentStatus,
   'booking_number': instance.bookingNumber,
   'created_at': instance.createdAt,
 };
 
-_$AppointmentHistoryResponseImpl _$$AppointmentHistoryResponseImplFromJson(
+_AppointmentHistoryResponse _$AppointmentHistoryResponseFromJson(
   Map<String, dynamic> json,
-) => _$AppointmentHistoryResponseImpl(
+) => _AppointmentHistoryResponse(
   success: json['success'] as bool,
   clinicPatientId: json['clinic_patient_id'] as String,
   clinicId: json['clinic_id'] as String?,
@@ -54,12 +58,12 @@ _$AppointmentHistoryResponseImpl _$$AppointmentHistoryResponseImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$AppointmentHistoryResponseImplToJson(
-  _$AppointmentHistoryResponseImpl instance,
+Map<String, dynamic> _$AppointmentHistoryResponseToJson(
+  _AppointmentHistoryResponse instance,
 ) => <String, dynamic>{
   'success': instance.success,
   'clinic_patient_id': instance.clinicPatientId,
-  if (instance.clinicId case final value?) 'clinic_id': value,
+  'clinic_id': ?instance.clinicId,
   'total': instance.total,
   'appointments': instance.appointments.map((e) => e.toJson()).toList(),
 };

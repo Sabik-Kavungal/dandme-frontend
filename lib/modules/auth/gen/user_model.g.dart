@@ -6,68 +6,67 @@ part of '../models/user_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
-    _$UserModelImpl(
-      id: json['id'] as String?,
-      firstName: json['firstName'] as String?,
-      lastName: json['lastName'] as String?,
-      email: json['email'] as String?,
-      username: json['username'] as String?,
-      phone: json['phone'] as String?,
-      dateOfBirth: json['dateOfBirth'] as String?,
-      gender: json['gender'] as String?,
-      isActive: json['isActive'] as bool?,
-      lastLogin: json['lastLogin'] as String?,
-      createdAt: json['createdAt'] as String?,
-      role: json['role'] as String?,
-      roleId: json['roleId'] as String?,
-      organizationId: json['organizationId'] as String?,
-      clinicId: json['clinicId'] as String?,
-      serviceId: json['serviceId'] as String?,
-    );
+_UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
+  id: json['id'] as String?,
+  firstName: json['firstName'] as String?,
+  lastName: json['lastName'] as String?,
+  email: json['email'] as String?,
+  username: json['username'] as String?,
+  phone: json['phone'] as String?,
+  dateOfBirth: json['dateOfBirth'] as String?,
+  gender: json['gender'] as String?,
+  isActive: json['isActive'] as bool?,
+  lastLogin: json['lastLogin'] as String?,
+  createdAt: json['createdAt'] as String?,
+  role: json['role'] as String?,
+  roleId: json['roleId'] as String?,
+  organizationId: json['organizationId'] as String?,
+  clinicId: json['clinicId'] as String?,
+  serviceId: json['serviceId'] as String?,
+  logo: json['logo'] as String?,
+);
 
-Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
+Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
-      if (instance.id case final value?) 'id': value,
-      if (instance.firstName case final value?) 'firstName': value,
-      if (instance.lastName case final value?) 'lastName': value,
-      if (instance.email case final value?) 'email': value,
-      if (instance.username case final value?) 'username': value,
-      if (instance.phone case final value?) 'phone': value,
-      if (instance.dateOfBirth case final value?) 'dateOfBirth': value,
-      if (instance.gender case final value?) 'gender': value,
-      if (instance.isActive case final value?) 'isActive': value,
-      if (instance.lastLogin case final value?) 'lastLogin': value,
-      if (instance.createdAt case final value?) 'createdAt': value,
-      if (instance.role case final value?) 'role': value,
-      if (instance.roleId case final value?) 'roleId': value,
-      if (instance.organizationId case final value?) 'organizationId': value,
-      if (instance.clinicId case final value?) 'clinicId': value,
-      if (instance.serviceId case final value?) 'serviceId': value,
+      'id': ?instance.id,
+      'firstName': ?instance.firstName,
+      'lastName': ?instance.lastName,
+      'email': ?instance.email,
+      'username': ?instance.username,
+      'phone': ?instance.phone,
+      'dateOfBirth': ?instance.dateOfBirth,
+      'gender': ?instance.gender,
+      'isActive': ?instance.isActive,
+      'lastLogin': ?instance.lastLogin,
+      'createdAt': ?instance.createdAt,
+      'role': ?instance.role,
+      'roleId': ?instance.roleId,
+      'organizationId': ?instance.organizationId,
+      'clinicId': ?instance.clinicId,
+      'serviceId': ?instance.serviceId,
+      'logo': ?instance.logo,
     };
 
-_$UserRoleImpl _$$UserRoleImplFromJson(Map<String, dynamic> json) =>
-    _$UserRoleImpl(
-      id: json['id'] as String?,
-      name: json['name'] as String?,
-      permissions: json['permissions'] as Map<String, dynamic>?,
-      clinicId: json['clinic_id'] as String?,
-      organizationId: json['organization_id'] as String?,
-      serviceId: json['service_id'] as String?,
-    );
+_UserRole _$UserRoleFromJson(Map<String, dynamic> json) => _UserRole(
+  id: json['id'] as String?,
+  name: json['name'] as String?,
+  permissions: json['permissions'] as Map<String, dynamic>?,
+  clinicId: json['clinic_id'] as String?,
+  organizationId: json['organization_id'] as String?,
+  serviceId: json['service_id'] as String?,
+);
 
-Map<String, dynamic> _$$UserRoleImplToJson(_$UserRoleImpl instance) =>
-    <String, dynamic>{
-      if (instance.id case final value?) 'id': value,
-      if (instance.name case final value?) 'name': value,
-      if (instance.permissions case final value?) 'permissions': value,
-      if (instance.clinicId case final value?) 'clinic_id': value,
-      if (instance.organizationId case final value?) 'organization_id': value,
-      if (instance.serviceId case final value?) 'service_id': value,
-    };
+Map<String, dynamic> _$UserRoleToJson(_UserRole instance) => <String, dynamic>{
+  'id': ?instance.id,
+  'name': ?instance.name,
+  'permissions': ?instance.permissions,
+  'clinic_id': ?instance.clinicId,
+  'organization_id': ?instance.organizationId,
+  'service_id': ?instance.serviceId,
+};
 
-_$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
-    _$LoginResponseImpl(
+_LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
+    _LoginResponse(
       accessToken: json['accessToken'] as String?,
       email: json['email'] as String?,
       expiresIn: (json['expiresIn'] as num?)?.toInt(),
@@ -86,41 +85,39 @@ _$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
       serviceId: json['serviceId'] as String?,
     );
 
-Map<String, dynamic> _$$LoginResponseImplToJson(_$LoginResponseImpl instance) =>
+Map<String, dynamic> _$LoginResponseToJson(_LoginResponse instance) =>
     <String, dynamic>{
-      if (instance.accessToken case final value?) 'accessToken': value,
-      if (instance.email case final value?) 'email': value,
-      if (instance.expiresIn case final value?) 'expiresIn': value,
-      if (instance.firstName case final value?) 'firstName': value,
-      if (instance.id case final value?) 'id': value,
-      if (instance.lastName case final value?) 'lastName': value,
-      if (instance.phone case final value?) 'phone': value,
-      if (instance.refreshToken case final value?) 'refreshToken': value,
-      if (instance.roles?.map((e) => e.toJson()).toList() case final value?)
-        'roles': value,
-      if (instance.tokenType case final value?) 'tokenType': value,
-      if (instance.username case final value?) 'username': value,
-      if (instance.organizationId case final value?) 'organizationId': value,
-      if (instance.clinicId case final value?) 'clinicId': value,
-      if (instance.serviceId case final value?) 'serviceId': value,
+      'accessToken': ?instance.accessToken,
+      'email': ?instance.email,
+      'expiresIn': ?instance.expiresIn,
+      'firstName': ?instance.firstName,
+      'id': ?instance.id,
+      'lastName': ?instance.lastName,
+      'phone': ?instance.phone,
+      'refreshToken': ?instance.refreshToken,
+      'roles': ?instance.roles?.map((e) => e.toJson()).toList(),
+      'tokenType': ?instance.tokenType,
+      'username': ?instance.username,
+      'organizationId': ?instance.organizationId,
+      'clinicId': ?instance.clinicId,
+      'serviceId': ?instance.serviceId,
     };
 
-_$TokenModelImpl _$$TokenModelImplFromJson(Map<String, dynamic> json) =>
-    _$TokenModelImpl(
-      accessToken: json['accessToken'] as String?,
-      refreshToken: json['refreshToken'] as String?,
-      userId: json['userId'] as String?,
-    );
+_TokenModel _$TokenModelFromJson(Map<String, dynamic> json) => _TokenModel(
+  accessToken: json['accessToken'] as String?,
+  refreshToken: json['refreshToken'] as String?,
+  userId: json['userId'] as String?,
+);
 
-Map<String, dynamic> _$$TokenModelImplToJson(_$TokenModelImpl instance) =>
+Map<String, dynamic> _$TokenModelToJson(_TokenModel instance) =>
     <String, dynamic>{
-      if (instance.accessToken case final value?) 'accessToken': value,
-      if (instance.refreshToken case final value?) 'refreshToken': value,
-      if (instance.userId case final value?) 'userId': value,
+      'accessToken': ?instance.accessToken,
+      'refreshToken': ?instance.refreshToken,
+      'userId': ?instance.userId,
     };
 
-_$AuthResponseImpl _$$AuthResponseImplFromJson(Map<String, dynamic> json) =>
-    _$AuthResponseImpl(
+_AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) =>
+    _AuthResponse(
       user: json['user'] == null
           ? null
           : UserModel.fromJson(json['user'] as Map<String, dynamic>),
@@ -128,9 +125,9 @@ _$AuthResponseImpl _$$AuthResponseImplFromJson(Map<String, dynamic> json) =>
       refreshToken: json['refreshToken'] as String?,
     );
 
-Map<String, dynamic> _$$AuthResponseImplToJson(_$AuthResponseImpl instance) =>
+Map<String, dynamic> _$AuthResponseToJson(_AuthResponse instance) =>
     <String, dynamic>{
-      if (instance.user?.toJson() case final value?) 'user': value,
-      if (instance.accessToken case final value?) 'accessToken': value,
-      if (instance.refreshToken case final value?) 'refreshToken': value,
+      'user': ?instance.user?.toJson(),
+      'accessToken': ?instance.accessToken,
+      'refreshToken': ?instance.refreshToken,
     };

@@ -1,7 +1,6 @@
-import 'package:a/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
 import 'package:flutter/material.dart';
-import 'package:a/core/config/navigation_helper.dart';
-
+import 'package:drandme/core/config/navigation_helper.dart';
 
 class OrganizationDetailsScreen extends StatefulWidget {
   final OrganizationModel organization;
@@ -20,39 +19,8 @@ class _OrganizationDetailsScreenState extends State<OrganizationDetailsScreen> {
   // Organization data from the passed model
   OrganizationModel get _organizationData => widget.organization;
 
-  // Sample clinics data - Replace with actual API data
-  final List<Map<String, dynamic>> _clinics = [
-    {
-      'id': 'clinic-1',
-      'clinic_code': 'CLC-001',
-      'name': 'Main Branch Clinic',
-      'email': 'main@citymedical.com',
-      'phone': '9876543220',
-      'address': '123 Main Street, City Center',
-      'license_number': 'CLN-2024-001',
-      'status': 'Active',
-    },
-    {
-      'id': 'clinic-2',
-      'clinic_code': 'CLC-002',
-      'name': 'North Branch Clinic',
-      'email': 'north@citymedical.com',
-      'phone': '9876543221',
-      'address': '456 North Avenue',
-      'license_number': 'CLN-2024-002',
-      'status': 'Active',
-    },
-    {
-      'id': 'clinic-3',
-      'clinic_code': 'CLC-003',
-      'name': 'South Branch Clinic',
-      'email': 'south@citymedical.com',
-      'phone': '9876543222',
-      'address': '789 South Boulevard',
-      'license_number': 'CLN-2024-003',
-      'status': 'Active',
-    },
-  ];
+  // Clinics data - Should ideally be fetched from API based on organization
+  final List<Map<String, dynamic>> _clinics = [];
 
   List<Map<String, dynamic>> get _filteredClinics {
     if (_searchQuery.isEmpty) {

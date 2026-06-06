@@ -77,6 +77,7 @@ class AppointmentHelpers {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      initialEntryMode: DatePickerEntryMode.calendar,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(

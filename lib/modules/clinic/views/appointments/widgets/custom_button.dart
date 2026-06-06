@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:drandme/core/widgets/app_loader.dart';
 
 /// A reusable custom button widget with consistent styling
 class CustomButton extends StatelessWidget {
@@ -34,7 +35,7 @@ class CustomButton extends StatelessWidget {
               horizontal: 24 * scaleFactor,
               vertical: 12 * scaleFactor,
             ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         elevation: 3,
         shadowColor: Colors.black.withOpacity(0.2),
       ),
@@ -42,9 +43,10 @@ class CustomButton extends StatelessWidget {
           ? SizedBox(
               height: 18 * scaleFactor,
               width: 18 * scaleFactor,
-              child: const CircularProgressIndicator(
+              child: const AppLoader(
+                size: 18,
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                color: Colors.white,
               ),
             )
           : Text(

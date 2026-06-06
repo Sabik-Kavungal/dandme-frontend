@@ -1,6 +1,9 @@
-import 'package:a/modules/doctor/models/doctor_model.dart';
-import 'package:a/modules/doctor/viewmodels/doctor_viewmodel.dart';
+import 'package:drandme/modules/doctor/models/doctor_model.dart';
+import 'package:drandme/modules/doctor/viewmodels/doctor_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' as io;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddDoctorScreen extends StatefulWidget {
@@ -24,17 +27,24 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
   final TextEditingController passwordController = TextEditingController();
 
   // Doctor fields
-  final TextEditingController doctorCodeController = TextEditingController();
   final TextEditingController specializationController =
       TextEditingController();
   final TextEditingController licenseController = TextEditingController();
-
-  // Mode selection
-  bool isExistingUser = false;
-  final TextEditingController userIdController = TextEditingController();
+  final TextEditingController consultationFeeController =
+      TextEditingController();
+  final TextEditingController followUpFeeController = TextEditingController();
+  final TextEditingController followUpDaysController = TextEditingController();
+  final TextEditingController qualificationController = TextEditingController();
+  final TextEditingController experienceYearsController =
+      TextEditingController();
+  final TextEditingController bioController = TextEditingController();
 
   // Loading state
   bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  XFile? _profileImageFile;
+  final ImagePicker _picker = ImagePicker();
 
   // Animation
   late AnimationController _animationController;
@@ -72,10 +82,14 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     usernameController.dispose();
     phoneController.dispose();
     passwordController.dispose();
-    doctorCodeController.dispose();
     specializationController.dispose();
     licenseController.dispose();
-    userIdController.dispose();
+    consultationFeeController.dispose();
+    followUpFeeController.dispose();
+    followUpDaysController.dispose();
+    qualificationController.dispose();
+    experienceYearsController.dispose();
+    bioController.dispose();
     super.dispose();
   }
 
@@ -93,13 +107,14 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     emailController.text = doctor.email ?? '';
     usernameController.text = doctor.username ?? '';
     phoneController.text = doctor.phone ?? '';
-    doctorCodeController.text = doctor.doctorCode ?? '';
     specializationController.text = doctor.specialization ?? '';
     licenseController.text = doctor.licenseNumber ?? '';
-    userIdController.text = doctor.userId ?? '';
-
-    // Determine mode based on whether userId is present
-    isExistingUser = doctor.userId != null && doctor.userId!.isNotEmpty;
+    consultationFeeController.text = doctor.consultationFee?.toString() ?? '';
+    followUpFeeController.text = doctor.followUpFee?.toString() ?? '';
+    followUpDaysController.text = doctor.followUpDays?.toString() ?? '';
+    qualificationController.text = doctor.qualification ?? '';
+    experienceYearsController.text = doctor.experienceYears?.toString() ?? '';
+    bioController.text = doctor.bio ?? '';
   }
 
   // Validation methods
@@ -136,7 +151,16 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     return null;
   }
 
-  void _saveDoctor(BuildContext context) async {
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _profileImageFile = image;
+      });
+    }
+  }
+
+  Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -151,53 +175,67 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
         listen: false,
       );
 
-      // Create DoctorModel based on mode
-      DoctorModel doctor;
+      final doctor = DoctorModel(
+        // User fields
+        firstName: firstNameController.text.trim(),
+        lastName: lastNameController.text.trim(),
+        email: emailController.text.trim(),
+        username: usernameController.text.trim(),
+        password: passwordController.text.isNotEmpty
+            ? passwordController.text.trim()
+            : null,
+        phone: phoneController.text.trim().isEmpty
+            ? null
+            : phoneController.text.trim(),
 
-      if (isExistingUser) {
-        doctor = DoctorModel(
-          userId: userIdController.text.trim(),
-          doctorCode: doctorCodeController.text.trim(),
-          specialization: specializationController.text.trim().isEmpty
-              ? null
-              : specializationController.text.trim(),
-          licenseNumber: licenseController.text.trim().isEmpty
-              ? null
-              : licenseController.text.trim(),
+        // Link existing user if not creating new
+        userId: widget.editDoctor?.userId,
+
+        // Doctor fields
+        specialization: specializationController.text.trim(),
+        licenseNumber: licenseController.text.trim(),
+        consultationFee:
+            double.tryParse(consultationFeeController.text.trim()) ?? 0.0,
+        followUpFee: followUpFeeController.text.trim().isEmpty
+            ? null
+            : double.tryParse(followUpFeeController.text.trim()),
+        followUpDays: followUpDaysController.text.trim().isEmpty
+            ? null
+            : int.tryParse(followUpDaysController.text.trim()),
+        qualification: qualificationController.text.trim(),
+        experienceYears:
+            int.tryParse(experienceYearsController.text.trim()) ?? 0,
+        bio: bioController.text.trim(),
+      );
+
+      bool isSuccess = false;
+      String? message;
+
+      if (widget.editDoctor != null) {
+        // Update existing doctor
+        isSuccess = await doctorViewModel.updateDoctor(
+          widget.editDoctor!.drid!,
+          doctor,
+          _profileImageFile,
         );
+        message = isSuccess ? 'Doctor profile updated successfully!' : null;
       } else {
-        doctor = DoctorModel(
-          firstName: firstNameController.text.trim(),
-          lastName: lastNameController.text.trim(),
-          email: emailController.text.trim(),
-          username: usernameController.text.trim(),
-          phone: phoneController.text.trim().isEmpty
-              ? null
-              : phoneController.text.trim(),
-          password: passwordController.text.isNotEmpty
-              ? passwordController.text
-              : null,
-          doctorCode: doctorCodeController.text.trim(),
-          specialization: specializationController.text.trim().isEmpty
-              ? null
-              : specializationController.text.trim(),
-          licenseNumber: licenseController.text.trim().isEmpty
-              ? null
-              : licenseController.text.trim(),
+        // Add new doctor
+        final result = await doctorViewModel.addDoctor(
+          doctor,
+          _profileImageFile,
         );
+        isSuccess = result != null;
+        message = isSuccess
+            ? 'Doctor "${firstNameController.text} ${lastNameController.text}" added successfully! Your unique doctor ID is: $result'
+            : null;
       }
 
-      final success = await doctorViewModel.addDoctor(doctor, context);
-
       if (mounted) {
-        if (success) {
+        if (isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                widget.editDoctor == null
-                    ? 'Doctor added successfully!'
-                    : 'Doctor updated successfully!',
-              ),
+              content: Text(message ?? 'Success'),
               backgroundColor: const Color(0xFF10B981),
             ),
           );
@@ -205,9 +243,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Error: ${doctorViewModel.error ?? 'Failed to save doctor'}',
-              ),
+              content: Text(doctorViewModel.error ?? 'Operation failed'),
               backgroundColor: const Color(0xFFDC2626),
             ),
           );
@@ -217,7 +253,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text('Error adding doctor: $e'),
             backgroundColor: const Color(0xFFDC2626),
           ),
         );
@@ -248,7 +284,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     }
 
     return Material(
-      color: Colors.black.withValues(alpha: 0.5),
+      color: Colors.black.withOpacity(0.5),
       child: GestureDetector(
         onTap: _closePanel,
         child: Stack(
@@ -273,7 +309,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: Colors.black.withOpacity(0.2),
                           blurRadius: 20,
                           offset: const Offset(-2, 0),
                         ),
@@ -344,263 +380,172 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Mode Selection
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFAF5FF),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: const Color(0xFFE9D5FF),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  // Profile Image Picker
+                                  Center(
+                                    child: Stack(
                                       children: [
-                                        const Text(
-                                          'User Type',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF333333),
+                                        Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF3F4F6),
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: const Color(0xFFE5E7EB),
+                                              width: 2,
+                                            ),
+                                            image: _profileImageFile != null
+                                                ? DecorationImage(
+                                                    image: kIsWeb
+                                                        ? NetworkImage(
+                                                            _profileImageFile!
+                                                                .path,
+                                                          )
+                                                        : FileImage(
+                                                                io.File(
+                                                                  _profileImageFile!
+                                                                      .path,
+                                                                ),
+                                                              )
+                                                              as ImageProvider,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : null,
                                           ),
+                                          child: _profileImageFile == null
+                                              ? const Icon(
+                                                  Icons.person,
+                                                  size: 50,
+                                                  color: Color(0xFF9CA3AF),
+                                                )
+                                              : null,
                                         ),
-                                        const SizedBox(height: 12),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    isExistingUser = false;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    12,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: !isExistingUser
-                                                        ? const Color(
-                                                            0xFF9333EA,
-                                                          )
-                                                        : Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: !isExistingUser
-                                                          ? const Color(
-                                                              0xFF9333EA,
-                                                            )
-                                                          : const Color(
-                                                              0xFFE9D5FF,
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.person_add,
-                                                        size: 16,
-                                                        color: !isExistingUser
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xFF9333EA,
-                                                              ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Text(
-                                                        'New User',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: !isExistingUser
-                                                              ? Colors.white
-                                                              : const Color(
-                                                                  0xFF9333EA,
-                                                                ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          child: InkWell(
+                                            onTap: _pickImage,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFF9333EA),
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(
+                                                Icons.camera_alt,
+                                                size: 16,
+                                                color: Colors.white,
                                               ),
                                             ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    isExistingUser = true;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    12,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: isExistingUser
-                                                        ? const Color(
-                                                            0xFF9333EA,
-                                                          )
-                                                        : Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: isExistingUser
-                                                          ? const Color(
-                                                              0xFF9333EA,
-                                                            )
-                                                          : const Color(
-                                                              0xFFE9D5FF,
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.link,
-                                                        size: 16,
-                                                        color: isExistingUser
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xFF9333EA,
-                                                              ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Text(
-                                                        'Existing User',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: isExistingUser
-                                                              ? Colors.white
-                                                              : const Color(
-                                                                  0xFF9333EA,
-                                                                ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   const SizedBox(height: 24),
 
-                                  // Conditional User Fields
-                                  if (isExistingUser) ...[
-                                    // User ID
-                                    _buildTextField(
-                                      label: 'User ID',
-                                      hint: 'Enter existing user ID',
-                                      controller: userIdController,
-                                      validator: (value) =>
-                                          _validateRequired(value, 'User ID'),
-                                      required: true,
-                                      icon: Icons.badge_outlined,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
-                                  ] else ...[
-                                    // First Name
-                                    _buildTextField(
-                                      label: 'First Name',
-                                      hint: 'Enter first name',
-                                      controller: firstNameController,
-                                      validator: (value) => _validateRequired(
-                                        value,
-                                        'First name',
+                                  // Profile Fields
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildTextField(
+                                          label: 'First Name',
+                                          hint: 'First name',
+                                          controller: firstNameController,
+                                          validator: (value) =>
+                                              _validateRequired(
+                                                value,
+                                                'First name',
+                                              ),
+                                          required: true,
+                                          icon: Icons.person_outline,
+                                          isMobile: isMobile,
+                                        ),
                                       ),
-                                      required: true,
-                                      icon: Icons.person_outlined,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: _buildTextField(
+                                          label: 'Last Name',
+                                          hint: 'Last name',
+                                          controller: lastNameController,
+                                          validator: (value) =>
+                                              _validateRequired(
+                                                value,
+                                                'Last name',
+                                              ),
+                                          required: true,
+                                          icon: Icons.person_outline,
+                                          isMobile: isMobile,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                    // Last Name
-                                    _buildTextField(
-                                      label: 'Last Name',
-                                      hint: 'Enter last name',
-                                      controller: lastNameController,
-                                      validator: (value) =>
-                                          _validateRequired(value, 'Last name'),
-                                      required: true,
-                                      icon: Icons.person_outlined,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
+                                  // Email
+                                  _buildTextField(
+                                    label: 'Email Address',
+                                    hint: 'Enter email address',
+                                    controller: emailController,
+                                    validator: _validateEmail,
+                                    required: true,
+                                    icon: Icons.email_outlined,
+                                    keyboardType: TextInputType.emailAddress,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                    // Email
-                                    _buildTextField(
-                                      label: 'Email Address',
-                                      hint: 'Enter email address',
-                                      controller: emailController,
-                                      validator: _validateEmail,
-                                      required: true,
-                                      icon: Icons.email_outlined,
-                                      keyboardType: TextInputType.emailAddress,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
+                                  // Username
+                                  _buildTextField(
+                                    label: 'Username',
+                                    hint: 'Enter username',
+                                    controller: usernameController,
+                                    validator: (value) =>
+                                        _validateRequired(value, 'Username'),
+                                    required: true,
+                                    icon: Icons.account_circle_outlined,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                    // Username
-                                    _buildTextField(
-                                      label: 'Username',
-                                      hint: 'Enter username',
-                                      controller: usernameController,
-                                      validator: (value) =>
-                                          _validateRequired(value, 'Username'),
-                                      required: true,
-                                      icon: Icons.account_circle_outlined,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
+                                  // Phone
+                                  _buildTextField(
+                                    label: 'Phone Number',
+                                    hint: 'Enter 10-digit phone number',
+                                    controller: phoneController,
+                                    validator: _validatePhone,
+                                    required: false,
+                                    icon: Icons.phone_outlined,
+                                    keyboardType: TextInputType.phone,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                    // Phone
-                                    _buildTextField(
-                                      label: 'Phone Number',
-                                      hint: 'Enter 10-digit phone number',
-                                      controller: phoneController,
-                                      validator: _validatePhone,
-                                      required: false,
-                                      icon: Icons.phone_outlined,
-                                      keyboardType: TextInputType.phone,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 20),
-
-                                    // Password
-                                    _buildTextField(
-                                      label: 'Password',
-                                      hint: 'Enter password',
-                                      controller: passwordController,
-                                      validator: (value) =>
-                                          _validateRequired(value, 'Password'),
-                                      required: true,
-                                      icon: Icons.lock_outlined,
-                                      isPassword: true,
-                                      isMobile: isMobile,
-                                    ),
-                                    const SizedBox(height: 24),
-                                  ],
+                                  // Password
+                                  _buildTextField(
+                                    label: 'Password',
+                                    hint: widget.editDoctor != null
+                                        ? 'Enter new password (optional)'
+                                        : 'Enter password',
+                                    controller: passwordController,
+                                    validator: widget.editDoctor == null
+                                        ? (value) => _validateRequired(
+                                            value,
+                                            'Password',
+                                          )
+                                        : null,
+                                    required: widget.editDoctor == null,
+                                    icon: Icons.lock_outlined,
+                                    isPassword: true,
+                                    obscureText: _obscurePassword,
+                                    onToggleVisibility: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 24),
 
                                   // Doctor Information Section Header
                                   Container(
@@ -639,19 +584,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                                   ),
                                   const SizedBox(height: 16),
 
-                                  // Doctor Code
-                                  _buildTextField(
-                                    label: 'Doctor Code',
-                                    hint: 'Enter doctor code',
-                                    controller: doctorCodeController,
-                                    validator: (value) =>
-                                        _validateRequired(value, 'Doctor code'),
-                                    required: true,
-                                    icon: Icons.qr_code_outlined,
-                                    isMobile: isMobile,
-                                  ),
-                                  const SizedBox(height: 20),
-
                                   // Specialization
                                   _buildTextField(
                                     label: 'Specialization',
@@ -672,6 +604,44 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                                     validator: null,
                                     required: false,
                                     icon: Icons.card_membership_outlined,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
+
+                                  // Qualification
+                                  _buildTextField(
+                                    label: 'Qualification',
+                                    hint: 'e.g. MBBS, MD (Pediatrics)',
+                                    controller: qualificationController,
+                                    validator: null,
+                                    required: false,
+                                    icon: Icons.history_edu_outlined,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
+
+                                  // Experience Years
+                                  _buildTextField(
+                                    label: 'Experience (Years)',
+                                    hint: 'e.g. 12',
+                                    controller: experienceYearsController,
+                                    validator: null,
+                                    required: false,
+                                    icon: Icons.work_history_outlined,
+                                    keyboardType: TextInputType.number,
+                                    isMobile: isMobile,
+                                  ),
+                                  const SizedBox(height: 20),
+
+                                  // Bio
+                                  _buildTextField(
+                                    label: 'Biography',
+                                    hint: 'Enter professional bio',
+                                    controller: bioController,
+                                    validator: null,
+                                    required: false,
+                                    icon: Icons.text_snippet_outlined,
+                                    maxLines: 4,
                                     isMobile: isMobile,
                                   ),
                                   const SizedBox(height: 16),
@@ -744,7 +714,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                                         child: ElevatedButton(
                                           onPressed: _isLoading
                                               ? null
-                                              : () => _saveDoctor(context),
+                                              : _handleSubmit,
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: const Color(
                                               0xFF9333EA,
@@ -811,6 +781,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     TextInputType? keyboardType,
     int maxLines = 1,
     bool isPassword = false,
+    bool? obscureText,
+    VoidCallback? onToggleVisibility,
     required bool isMobile,
   }) {
     return Column(
@@ -845,7 +817,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
           validator: validator,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          obscureText: isPassword,
+          obscureText: obscureText ?? isPassword,
           style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
@@ -854,6 +826,18 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
               fontSize: isMobile ? 13 : 14,
             ),
             prefixIcon: Icon(icon, size: 20, color: const Color(0xFF666666)),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      obscureText == true
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      size: 20,
+                      color: const Color(0xFF666666),
+                    ),
+                    onPressed: onToggleVisibility,
+                  )
+                : null,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: maxLines > 1 ? 16 : 14,

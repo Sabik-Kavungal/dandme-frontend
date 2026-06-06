@@ -1,5 +1,5 @@
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/models/vitals_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/models/vitals_model.dart';
 
 class VitalsRepository {
   final ServiceRepo _serviceRepo;
@@ -278,20 +278,66 @@ class VitalsRepository {
         }
 
         try {
-          // Ensure clinic_patient_id is present in the response
-          final responseMap = response as Map<String, dynamic>;
-          if (!responseMap.containsKey('clinic_patient_id')) {
-            responseMap['clinic_patient_id'] = clinicPatientId;
+          Map<String, dynamic> responseMap;
+
+          if (response is List) {
+            // API returned a list of vitals directly
+            print(
+              'ℹ️ API returned a List. Wrapping into VitalsHistoryResponse.',
+            );
+            responseMap = {
+              'clinic_patient_id': clinicPatientId,
+              'total': response.length,
+              'vitals': response,
+            };
+          } else if (response is Map<String, dynamic>) {
+            responseMap = Map<String, dynamic>.from(response);
+
+            // Handle variations in API field names
+            if (responseMap['vitals_history'] != null &&
+                responseMap['vitals'] == null) {
+              responseMap['vitals'] = responseMap['vitals_history'];
+            }
+            if (responseMap['count'] != null && responseMap['total'] == null) {
+              responseMap['total'] = responseMap['count'];
+            }
+            if (responseMap['patient_id'] != null &&
+                responseMap['clinic_patient_id'] == null) {
+              responseMap['clinic_patient_id'] = responseMap['patient_id'];
+            }
+
+            // Ensure clinic_patient_id is present in the response
+            if (responseMap['clinic_patient_id'] == null) {
+              responseMap['clinic_patient_id'] = clinicPatientId;
+            }
+
+            // Ensure total is non-null
+            if (responseMap['total'] == null) {
+              final vitals = responseMap['vitals'];
+              if (vitals is List) {
+                responseMap['total'] = vitals.length;
+              } else {
+                responseMap['total'] = 0;
+              }
+            }
+          } else {
+            print('❌ Unexpected response format: ${response.runtimeType}');
+            return null;
           }
 
-          // Ensure each vital record has clinic_patient_id
-          if (responseMap.containsKey('vitals') &&
-              responseMap['vitals'] is List) {
+          // Ensure each vital record has clinic_patient_id if missing
+          if (responseMap['vitals'] is List) {
             final vitalsList = responseMap['vitals'] as List;
-            for (var vital in vitalsList) {
-              if (vital is Map<String, dynamic> &&
-                  !vital.containsKey('clinic_patient_id')) {
-                vital['clinic_patient_id'] = clinicPatientId;
+            for (var i = 0; i < vitalsList.length; i++) {
+              final vital = vitalsList[i];
+              if (vital is Map<String, dynamic>) {
+                if (vital['clinic_patient_id'] == null) {
+                  vitalsList[i] = {
+                    ...vital,
+                    'clinic_patient_id':
+                        responseMap['clinic_patient_id'] ?? clinicPatientId,
+                  };
+                }
               }
             }
           }

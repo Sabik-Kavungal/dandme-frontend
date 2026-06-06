@@ -6,8 +6,8 @@ part of '../models/vitals_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$VitalsRecordImpl _$$VitalsRecordImplFromJson(Map<String, dynamic> json) =>
-    _$VitalsRecordImpl(
+_VitalsRecord _$VitalsRecordFromJson(Map<String, dynamic> json) =>
+    _VitalsRecord(
       id: json['id'] as String?,
       clinicPatientId: json['clinic_patient_id'] as String?,
       appointmentId: json['appointment_id'] as String?,
@@ -23,37 +23,40 @@ _$VitalsRecordImpl _$$VitalsRecordImplFromJson(Map<String, dynamic> json) =>
       heightCm: (json['height_cm'] as num?)?.toInt(),
       weightKg: (json['weight_kg'] as num?)?.toDouble(),
       bmi: (json['bmi'] as num?)?.toDouble(),
+      smokingStatus: json['smoking_status'] as String?,
+      alcoholUse: json['alcohol_use'] as String?,
       notes: json['notes'] as String?,
       recordedBy: json['recorded_by'] as String?,
       recordedAt: json['recorded_at'] as String?,
     );
 
-Map<String, dynamic> _$$VitalsRecordImplToJson(
-  _$VitalsRecordImpl instance,
-) => <String, dynamic>{
-  if (instance.id case final value?) 'id': value,
-  if (instance.clinicPatientId case final value?) 'clinic_patient_id': value,
-  if (instance.appointmentId case final value?) 'appointment_id': value,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.systolicBp case final value?) 'systolic_bp': value,
-  if (instance.diastolicBp case final value?) 'diastolic_bp': value,
-  if (instance.bloodPressure case final value?) 'blood_pressure': value,
-  if (instance.temperature case final value?) 'temperature': value,
-  if (instance.pulseRate case final value?) 'pulse_rate': value,
-  if (instance.respBpm case final value?) 'resp_bpm': value,
-  if (instance.spo2Percent case final value?) 'spo2_percent': value,
-  if (instance.sugarMgdl case final value?) 'sugar_mgdl': value,
-  if (instance.heightCm case final value?) 'height_cm': value,
-  if (instance.weightKg case final value?) 'weight_kg': value,
-  if (instance.bmi case final value?) 'bmi': value,
-  if (instance.notes case final value?) 'notes': value,
-  if (instance.recordedBy case final value?) 'recorded_by': value,
-  if (instance.recordedAt case final value?) 'recorded_at': value,
-};
+Map<String, dynamic> _$VitalsRecordToJson(_VitalsRecord instance) =>
+    <String, dynamic>{
+      'id': ?instance.id,
+      'clinic_patient_id': ?instance.clinicPatientId,
+      'appointment_id': ?instance.appointmentId,
+      'clinic_id': ?instance.clinicId,
+      'systolic_bp': ?instance.systolicBp,
+      'diastolic_bp': ?instance.diastolicBp,
+      'blood_pressure': ?instance.bloodPressure,
+      'temperature': ?instance.temperature,
+      'pulse_rate': ?instance.pulseRate,
+      'resp_bpm': ?instance.respBpm,
+      'spo2_percent': ?instance.spo2Percent,
+      'sugar_mgdl': ?instance.sugarMgdl,
+      'height_cm': ?instance.heightCm,
+      'weight_kg': ?instance.weightKg,
+      'bmi': ?instance.bmi,
+      'smoking_status': ?instance.smokingStatus,
+      'alcohol_use': ?instance.alcoholUse,
+      'notes': ?instance.notes,
+      'recorded_by': ?instance.recordedBy,
+      'recorded_at': ?instance.recordedAt,
+    };
 
-_$VitalsHistoryResponseImpl _$$VitalsHistoryResponseImplFromJson(
+_VitalsHistoryResponse _$VitalsHistoryResponseFromJson(
   Map<String, dynamic> json,
-) => _$VitalsHistoryResponseImpl(
+) => _VitalsHistoryResponse(
   clinicPatientId: json['clinic_patient_id'] as String,
   total: (json['total'] as num).toInt(),
   vitals: (json['vitals'] as List<dynamic>)
@@ -61,92 +64,101 @@ _$VitalsHistoryResponseImpl _$$VitalsHistoryResponseImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$VitalsHistoryResponseImplToJson(
-  _$VitalsHistoryResponseImpl instance,
+Map<String, dynamic> _$VitalsHistoryResponseToJson(
+  _VitalsHistoryResponse instance,
 ) => <String, dynamic>{
   'clinic_patient_id': instance.clinicPatientId,
   'total': instance.total,
   'vitals': instance.vitals.map((e) => e.toJson()).toList(),
 };
 
-_$CreateVitalsRequestImpl _$$CreateVitalsRequestImplFromJson(
-  Map<String, dynamic> json,
-) => _$CreateVitalsRequestImpl(
-  clinicPatientId: json['clinic_patient_id'] as String,
-  clinicId: json['clinic_id'] as String?,
-  appointmentId: json['appointment_id'] as String?,
-  systolicBp: (json['systolic_bp'] as num?)?.toInt(),
-  diastolicBp: (json['diastolic_bp'] as num?)?.toInt(),
-  bloodPressure: json['blood_pressure'] as String?,
-  temperature: (json['temperature'] as num?)?.toDouble(),
-  pulseRate: (json['pulse_rate'] as num?)?.toInt(),
-  respBpm: (json['resp_bpm'] as num?)?.toInt(),
-  spo2Percent: (json['spo2_percent'] as num?)?.toInt(),
-  sugarMgdl: (json['sugar_mgdl'] as num?)?.toDouble(),
-  heightCm: (json['height_cm'] as num?)?.toInt(),
-  weightKg: (json['weight_kg'] as num?)?.toDouble(),
-  notes: json['notes'] as String?,
-  recordedBy: json['recorded_by'] as String,
-);
+_CreateVitalsRequest _$CreateVitalsRequestFromJson(Map<String, dynamic> json) =>
+    _CreateVitalsRequest(
+      appointmentId: json['appointment_id'] as String,
+      recordedBy: json['recorded_by'] as String,
+      clinicPatientId: json['clinic_patient_id'] as String?,
+      clinicId: json['clinic_id'] as String?,
+      systolicBp: (json['systolic_bp'] as num?)?.toInt(),
+      diastolicBp: (json['diastolic_bp'] as num?)?.toInt(),
+      bloodPressure: json['blood_pressure'] as String?,
+      temperature: (json['temperature'] as num?)?.toDouble(),
+      pulseRate: (json['pulse_rate'] as num?)?.toInt(),
+      respBpm: (json['resp_bpm'] as num?)?.toInt(),
+      spo2Percent: (json['spo2_percent'] as num?)?.toInt(),
+      sugarMgdl: (json['sugar_mgdl'] as num?)?.toDouble(),
+      heightCm: (json['height_cm'] as num?)?.toInt(),
+      weightKg: (json['weight_kg'] as num?)?.toDouble(),
+      bmi: (json['bmi'] as num?)?.toDouble(),
+      smokingStatus: json['smoking_status'] as String?,
+      alcoholUse: json['alcohol_use'] as String?,
+      notes: json['notes'] as String?,
+    );
 
-Map<String, dynamic> _$$CreateVitalsRequestImplToJson(
-  _$CreateVitalsRequestImpl instance,
+Map<String, dynamic> _$CreateVitalsRequestToJson(
+  _CreateVitalsRequest instance,
 ) => <String, dynamic>{
-  'clinic_patient_id': instance.clinicPatientId,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.appointmentId case final value?) 'appointment_id': value,
-  if (instance.systolicBp case final value?) 'systolic_bp': value,
-  if (instance.diastolicBp case final value?) 'diastolic_bp': value,
-  if (instance.bloodPressure case final value?) 'blood_pressure': value,
-  if (instance.temperature case final value?) 'temperature': value,
-  if (instance.pulseRate case final value?) 'pulse_rate': value,
-  if (instance.respBpm case final value?) 'resp_bpm': value,
-  if (instance.spo2Percent case final value?) 'spo2_percent': value,
-  if (instance.sugarMgdl case final value?) 'sugar_mgdl': value,
-  if (instance.heightCm case final value?) 'height_cm': value,
-  if (instance.weightKg case final value?) 'weight_kg': value,
-  if (instance.notes case final value?) 'notes': value,
+  'appointment_id': instance.appointmentId,
   'recorded_by': instance.recordedBy,
+  'clinic_patient_id': ?instance.clinicPatientId,
+  'clinic_id': ?instance.clinicId,
+  'systolic_bp': ?instance.systolicBp,
+  'diastolic_bp': ?instance.diastolicBp,
+  'blood_pressure': ?instance.bloodPressure,
+  'temperature': ?instance.temperature,
+  'pulse_rate': ?instance.pulseRate,
+  'resp_bpm': ?instance.respBpm,
+  'spo2_percent': ?instance.spo2Percent,
+  'sugar_mgdl': ?instance.sugarMgdl,
+  'height_cm': ?instance.heightCm,
+  'weight_kg': ?instance.weightKg,
+  'bmi': ?instance.bmi,
+  'smoking_status': ?instance.smokingStatus,
+  'alcohol_use': ?instance.alcoholUse,
+  'notes': ?instance.notes,
 };
 
-_$UpdateVitalsRequestImpl _$$UpdateVitalsRequestImplFromJson(
-  Map<String, dynamic> json,
-) => _$UpdateVitalsRequestImpl(
-  id: json['id'] as String,
-  clinicPatientId: json['clinic_patient_id'] as String,
-  clinicId: json['clinic_id'] as String?,
-  appointmentId: json['appointment_id'] as String?,
-  systolicBp: (json['systolic_bp'] as num?)?.toInt(),
-  diastolicBp: (json['diastolic_bp'] as num?)?.toInt(),
-  bloodPressure: json['blood_pressure'] as String?,
-  temperature: (json['temperature'] as num?)?.toDouble(),
-  pulseRate: (json['pulse_rate'] as num?)?.toInt(),
-  respBpm: (json['resp_bpm'] as num?)?.toInt(),
-  spo2Percent: (json['spo2_percent'] as num?)?.toInt(),
-  sugarMgdl: (json['sugar_mgdl'] as num?)?.toDouble(),
-  heightCm: (json['height_cm'] as num?)?.toInt(),
-  weightKg: (json['weight_kg'] as num?)?.toDouble(),
-  notes: json['notes'] as String?,
-  recordedBy: json['recorded_by'] as String,
-);
+_UpdateVitalsRequest _$UpdateVitalsRequestFromJson(Map<String, dynamic> json) =>
+    _UpdateVitalsRequest(
+      id: json['id'] as String,
+      appointmentId: json['appointment_id'] as String?,
+      recordedBy: json['recorded_by'] as String?,
+      clinicPatientId: json['clinic_patient_id'] as String?,
+      clinicId: json['clinic_id'] as String?,
+      systolicBp: (json['systolic_bp'] as num?)?.toInt(),
+      diastolicBp: (json['diastolic_bp'] as num?)?.toInt(),
+      bloodPressure: json['blood_pressure'] as String?,
+      temperature: (json['temperature'] as num?)?.toDouble(),
+      pulseRate: (json['pulse_rate'] as num?)?.toInt(),
+      respBpm: (json['resp_bpm'] as num?)?.toInt(),
+      spo2Percent: (json['spo2_percent'] as num?)?.toInt(),
+      sugarMgdl: (json['sugar_mgdl'] as num?)?.toDouble(),
+      heightCm: (json['height_cm'] as num?)?.toInt(),
+      weightKg: (json['weight_kg'] as num?)?.toDouble(),
+      bmi: (json['bmi'] as num?)?.toDouble(),
+      smokingStatus: json['smoking_status'] as String?,
+      alcoholUse: json['alcohol_use'] as String?,
+      notes: json['notes'] as String?,
+    );
 
-Map<String, dynamic> _$$UpdateVitalsRequestImplToJson(
-  _$UpdateVitalsRequestImpl instance,
+Map<String, dynamic> _$UpdateVitalsRequestToJson(
+  _UpdateVitalsRequest instance,
 ) => <String, dynamic>{
-  'id': instance.id,
-  'clinic_patient_id': instance.clinicPatientId,
-  if (instance.clinicId case final value?) 'clinic_id': value,
-  if (instance.appointmentId case final value?) 'appointment_id': value,
-  if (instance.systolicBp case final value?) 'systolic_bp': value,
-  if (instance.diastolicBp case final value?) 'diastolic_bp': value,
-  if (instance.bloodPressure case final value?) 'blood_pressure': value,
-  if (instance.temperature case final value?) 'temperature': value,
-  if (instance.pulseRate case final value?) 'pulse_rate': value,
-  if (instance.respBpm case final value?) 'resp_bpm': value,
-  if (instance.spo2Percent case final value?) 'spo2_percent': value,
-  if (instance.sugarMgdl case final value?) 'sugar_mgdl': value,
-  if (instance.heightCm case final value?) 'height_cm': value,
-  if (instance.weightKg case final value?) 'weight_kg': value,
-  if (instance.notes case final value?) 'notes': value,
-  'recorded_by': instance.recordedBy,
+  'appointment_id': ?instance.appointmentId,
+  'recorded_by': ?instance.recordedBy,
+  'clinic_patient_id': ?instance.clinicPatientId,
+  'clinic_id': ?instance.clinicId,
+  'systolic_bp': ?instance.systolicBp,
+  'diastolic_bp': ?instance.diastolicBp,
+  'blood_pressure': ?instance.bloodPressure,
+  'temperature': ?instance.temperature,
+  'pulse_rate': ?instance.pulseRate,
+  'resp_bpm': ?instance.respBpm,
+  'spo2_percent': ?instance.spo2Percent,
+  'sugar_mgdl': ?instance.sugarMgdl,
+  'height_cm': ?instance.heightCm,
+  'weight_kg': ?instance.weightKg,
+  'bmi': ?instance.bmi,
+  'smoking_status': ?instance.smokingStatus,
+  'alcohol_use': ?instance.alcoholUse,
+  'notes': ?instance.notes,
 };

@@ -1,21 +1,24 @@
 import 'dart:async';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/foundation.dart';
-import 'package:a/modules/clinic/models/appointment_model.dart'
+import 'package:drandme/modules/clinic/models/appointment_model.dart'
     hide PaymentMethod;
-import 'package:a/modules/clinic/repositories/clinic_appointment_repository.dart';
-import 'package:a/modules/superadmin/repositories/department_repository.dart';
-import 'package:a/modules/superadmin/models/department_model.dart';
-import 'package:a/modules/clinic/models/clinic_doctors_model.dart';
-import 'package:a/modules/clinic/models/doctor_time_slot_model.dart';
-import 'package:a/modules/clinic/models/doctor_session_slot_model.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart';
-import 'package:a/modules/clinic/models/payment_method_model.dart';
-import 'package:a/modules/clinic/repositories/doctor_session_slot_repository.dart';
-import 'package:a/modules/clinic/repositories/clinic_patient_repository.dart';
-import 'package:a/core/config/service.dart';
-import 'package:a/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
+import 'package:drandme/modules/clinic/repositories/clinic_appointment_repository.dart';
+import 'package:drandme/modules/superadmin/repositories/department_repository.dart';
+import 'package:drandme/modules/superadmin/models/department_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_doctors_model.dart';
+import 'package:drandme/modules/clinic/models/doctor_time_slot_model.dart';
+import 'package:drandme/modules/clinic/models/doctor_session_slot_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
+import 'package:drandme/modules/clinic/models/payment_method_model.dart';
+import 'package:drandme/modules/clinic/repositories/doctor_session_slot_repository.dart';
+import 'package:drandme/modules/clinic/repositories/clinic_patient_repository.dart';
+import 'package:drandme/modules/clinic/repositories/doctor_consultation_fees_repository.dart';
+import 'package:drandme/modules/clinic/models/doctor_consultation_fees_model.dart';
+import 'package:drandme/core/config/service.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:drandme/core/utils/loading_manager.dart';
 
 /// Search type enum for patient search
 enum SearchType { mobile, moId, name }
@@ -26,6 +29,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
   final DepartmentRepository _departmentRepository;
   final DoctorSessionSlotRepository _sessionSlotRepository;
   final ClinicPatientRepository _clinicPatientRepository;
+  final DoctorConsultationFeesRepository _consultationFeesRepository;
   final ServiceRepo _serviceRepo;
 
   // ✅ Debounce timer for search
@@ -36,7 +40,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
       _departmentRepository = DepartmentRepository(),
       _serviceRepo = ServiceRepo(),
       _sessionSlotRepository = DoctorSessionSlotRepository(ServiceRepo()),
-      _clinicPatientRepository = ClinicPatientRepository(ServiceRepo());
+      _clinicPatientRepository = ClinicPatientRepository(ServiceRepo()),
+      _consultationFeesRepository = DoctorConsultationFeesRepository(ServiceRepo());
+
+  // ✅ NEW: Navigation callback support
+  Function(String)? onNavigateCallback;
 
   // State variables
   bool _isLoading = false;
@@ -48,9 +56,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
   // Form data
   String _selectedConsultationType =
       'clinic_visit'; // Default to clinic visit (matches consultationTypeOptions)
-  String _selectedDepartment = 'Orthology';
+  String _selectedDepartment = 'Select Department';
   String? _selectedDepartmentId; // Track selected department ID
-  String _selectedDoctor = 'Loading...'; // Will be updated when doctors load
+  String _selectedDoctor = 'Select Doctor'; // Will be updated when doctors load
   String _selectedDate = '16, July';
   String _selectedTimeSlot = '09:00 AM';
   String _selectedPaymentMethod = 'Pay Now';
@@ -62,20 +70,24 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
   // Payment method selection
   PaymentMethod _selectedPaymentMethodEnum =
-      PaymentMethod.payLater; // Default to pay later
+      PaymentMethod.payNow; // Default to pay now
   PaymentType? _selectedPaymentType;
 
   // Selected slot details
   String? _selectedSlotId; // Use slot ID for unique identification
   DoctorTimeSlotResponse? _selectedSlotDetails;
 
+  // Walk-in booking support
+  String? _bookingMode = 'slot'; // 'slot' or 'walk_in'
+  DoctorSlotSession? _selectedWalkInSession;
+
+  // Rescheduling support
+  String? _rescheduleAppointmentId;
+
   // Date selection for slot filtering
   DateTime _selectedSlotDate = DateTime.now();
   List<DateTime> _availableDates = [];
   DateTime _displayedMonth = DateTime.now(); // Track which month to display
-
-  // Appointment context for reschedule
-  String? _appointmentClinicId;
 
   // Static consultation type options
   final List<String> consultationTypeOptions = [
@@ -90,7 +102,8 @@ class NewAppointmentViewModel extends ChangeNotifier {
   List<DepartmentModel> _departmentModels =
       []; // New department models from API
   List<Doctor> _doctors = [];
-  List<ClinicDoctorModel> _clinicDoctors = []; // Clinic doctors from API
+  List<ClinicDoctorModel> _clinicDoctors = []; // Filtered list for dropdown
+  List<ClinicDoctorModel> _allClinicDoctors = []; // All doctors in clinic (with fees)
   List<ConsultationType> _consultationTypes = [];
   List<TimeSlot> _availableTimeSlots = [];
   List<AvailableSlot> _doctorTimeSlots = []; // Doctor time slots from API
@@ -152,7 +165,46 @@ class NewAppointmentViewModel extends ChangeNotifier {
   ListSessionSlotsResponse? get sessionSlotsResponse =>
       _sessionSlotsResponse; // ✅ Expose session slots response
   String? get selectedSlotId => _selectedSlotId;
+
+  String? _originalSlotId;
+  String? get originalSlotId => _originalSlotId;
   DoctorTimeSlotResponse? get selectedSlotDetails => _selectedSlotDetails;
+  String? get bookingMode => _bookingMode;
+  DoctorSlotSession? get selectedWalkInSession => _selectedWalkInSession;
+  bool get isWalkIn => _bookingMode == 'walk_in';
+
+  // ✅ NEW: Walk-in availability from API
+  // Uses strict logic: ONLY allow walk-in if NO time slots are available
+  bool get walkinAvailable {
+    if (_sessionSlotsResponse == null) return false;
+
+    // ✅ CRITICAL: If there are ANY available time slots, DON'T show walk-in
+    // The user must select a time slot if available.
+    if (totalAvailableSlots > 0) {
+      return false;
+    }
+
+    // Trust API flag if strictly true
+    if (_sessionSlotsResponse!.walkinAvailable) return true;
+
+    // Fallback: If sessions are defined BUT NO slots are available, allow walk-in
+    return _sessionSlotsResponse!.slots.isNotEmpty;
+  }
+
+  /// ✅ NEW: Get total count of available slots across all sessions
+  int get totalAvailableSlots {
+    if (_sessionSlotsResponse == null) return 0;
+    int count = 0;
+    for (var day in _sessionSlotsResponse!.slots) {
+      for (var session in day.sessions) {
+        count += session.availableSlots;
+      }
+    }
+    return count;
+  }
+
+  String? get walkinReason => _sessionSlotsResponse?.walkinReason;
+
   List<ClinicPatient> get clinicPatients => _clinicPatients;
   List<ClinicPatient> get clinicPatientSearchResults =>
       _clinicPatientSearchResults;
@@ -200,16 +252,43 @@ class NewAppointmentViewModel extends ChangeNotifier {
     }
   }
 
-  // Initialize form data
   Future<void> initialize() async {
     // Generate static date list on initialization
     _generateAvailableDates();
 
-    // Load consultation types and departments
-    await Future.wait([loadDepartments(), loadConsultationTypes()]);
+    // Load consultation types, departments, and ALL doctors (with fees)
+    await Future.wait([
+      loadDepartments(),
+      loadConsultationTypes(),
+      loadAllClinicDoctors(),
+    ]);
+  }
 
-    // Load doctors by clinic
-    await loadDoctorsByClinic();
+  // ✅ NEW: Load all clinic doctors with fees
+  Future<void> loadAllClinicDoctors() async {
+    try {
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null || clinicId == null) return;
+
+      print('🔄 Loading all clinic doctors (with fees)...');
+
+      final response = await _serviceRepo.requist(
+        'doctors/clinic/$clinicId',
+        method: 'GET',
+        useOrgApi: true,
+        token: token,
+      );
+
+      if (response != null && response is Map<String, dynamic>) {
+        final clinicDoctorsResponse = ClinicDoctorsResponse.fromJson(response);
+        _allClinicDoctors = clinicDoctorsResponse.doctors;
+        print('✅ Loaded ${_allClinicDoctors.length} clinic doctors with fees');
+      }
+    } catch (e) {
+      print('❌ Error loading all clinic doctors: $e');
+    }
   }
 
   // Load departments from new Department API (filtered by logged-in clinic)
@@ -250,9 +329,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
           );
         }).toList();
 
-        // Set first department as selected (including ID)
-        _selectedDepartment = departmentsList.first.name;
-        _selectedDepartmentId = departmentsList.first.id;
+        // Do NOT auto-select first department anymore
+        _selectedDepartment = 'Select Department';
+        _selectedDepartmentId = null;
 
         _safeNotifyListeners();
       } else {
@@ -311,7 +390,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
       print('🔄 Fetching doctors for clinic: $clinicId');
 
       final response = await _serviceRepo.requist(
-        'organizations/doctors/clinic/$clinicId',
+        'doctors/clinic/$clinicId',
         method: 'GET',
         useOrgApi: true,
         token: _authViewModel.accessToken,
@@ -349,9 +428,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
         }).toList();
 
         if (_doctors.isNotEmpty) {
-          _selectedDoctor =
-              _clinicDoctors.first.fullName ??
-              '${_clinicDoctors.first.firstName} ${_clinicDoctors.first.lastName}';
+          // Do NOT auto-select first doctor anymore
+          _selectedDoctor = 'Select Doctor';
+          _selectedDoctorId = null;
           print('✅ Selected doctor: $_selectedDoctor');
 
           for (var i = 0; i < _clinicDoctors.length; i++) {
@@ -523,10 +602,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
   // Set selected date for slot filtering
   void selectSlotDate(DateTime date) {
-    // ✅ Validate date is within valid range (today to maxDateRangeInDays)
+    // ✅ Validate date is not in the past
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final maxDate = today.add(const Duration(days: 365)); // Max 365 days ahead
     final selectedDate = DateTime(date.year, date.month, date.day);
 
     if (selectedDate.isBefore(today)) {
@@ -536,15 +614,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
       return;
     }
 
-    // ✅ Clamp date to max range if it exceeds (prevents date picker assertion errors)
-    final clampedDate = selectedDate.isAfter(maxDate) ? maxDate : selectedDate;
-    _selectedSlotDate = clampedDate;
-
-    if (selectedDate.isAfter(maxDate)) {
-      print('⚠️ Selected date exceeds max range, clamped to: $clampedDate');
-    }
+    _selectedSlotDate = selectedDate;
     final dateString =
-        '${clampedDate.year}-${clampedDate.month.toString().padLeft(2, '0')}-${clampedDate.day.toString().padLeft(2, '0')}';
+        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
     // Get weekday name for better logging
     final weekdayNames = [
@@ -1091,36 +1163,10 @@ class NewAppointmentViewModel extends ChangeNotifier {
       );
 
       if (response != null) {
-        // ✅ Filter patients based on consultation type
-        List<ClinicPatient> filteredPatients = response.patients;
-
-        // If Follow-up consultation, only show patients with existing follow-ups
-        if (_selectedConsultationType == 'follow-up-via-clinic' ||
-            _selectedConsultationType == 'follow-up-via-video') {
-          filteredPatients = response.patients.where((patient) {
-            // Check if patient has matching follow-ups for selected doctor/department
-            final matchingFollowUps = patient.followUps.where((fu) {
-              final doctorMatch = fu.doctorId == _selectedDoctorId;
-              final departmentMatch =
-                  _selectedDepartmentId == null ||
-                  fu.departmentId == _selectedDepartmentId;
-              return doctorMatch && departmentMatch;
-            }).toList();
-
-            return matchingFollowUps.isNotEmpty;
-          }).toList();
-
-          print(
-            '🔍 Filtered to ${filteredPatients.length} patients with follow-ups',
-          );
-        }
-
         _clinicPatientSearchResults = List<ClinicPatient>.from(
-          filteredPatients,
+          response.patients,
         );
-        print(
-          '✅ Found ${filteredPatients.length} patients (total: ${response.patients.length})',
-        );
+        print('✅ Found ${response.patients.length} patients matching query');
         _safeNotifyListeners();
       } else {
         _clinicPatientSearchResults = <ClinicPatient>[];
@@ -1144,6 +1190,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
     String? email,
     int? age,
     String? gender,
+    String? address,
     String? dateOfBirth,
   }) async {
     try {
@@ -1171,6 +1218,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
         email: email,
         age: age,
         gender: gender,
+        address: address,
         dateOfBirth: dateOfBirth,
       );
 
@@ -1501,11 +1549,41 @@ class NewAppointmentViewModel extends ChangeNotifier {
       return null;
     }
 
-    // Validate slot
-    if (_selectedSlotId == null || _selectedSlotId!.isEmpty) {
-      _setError('Please select a time slot');
+    // ✅ NEW: Validation Logic Update
+    // 1. If user selected a slot: OK
+    // 2. If user selected NO slot, check if Walk-in is allowed:
+    //    - If Walk-in allowed: Auto-switch to Walk-in mode.
+    //    - If Walk-in NOT allowed: Show error "Please select a time slot".
+
+    // ✅ CRITICAL FIX: Skip slot validation completely if ALREADY in Walk-in mode
+    // This allows manual walk-in selection to bypass "Select Slot" error
+    if (_bookingMode == 'walk_in') {
+      print('🚶 Booking Mode is Walk-in - Skipping slot validation');
+    } else {
+      // Logic for 'slot' mode:
+      // 1. If slot selected: OK
+      // 2. If NO slot selected:
+      //    - If Walk-in available: Auto-switch to Walk-in
+      //    - If Walk-in NOT available: Validtion Error
+
+      if (_selectedSlotId == null || _selectedSlotId!.isEmpty) {
+        if (walkinAvailable) {
+          print('⚠️ No slot selected but Walk-in available. Auto-switching.');
+          setGeneralWalkInMode();
+          // Proceed...
+        } else {
+          _setError('Please select a time slot');
+          return null;
+        }
+      }
+    }
+
+    /*
+    if (_bookingMode == 'walk_in' && _selectedWalkInSession == null) {
+      _setError('Please select a session for walk-in');
       return null;
     }
+    */
 
     // ✅ Check if this is a follow-up appointment - ONLY when user selected follow-up type
     final isFollowUp = _selectedConsultationType.startsWith('follow-up');
@@ -1519,7 +1597,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
       );
       if (!isValid) {
         return null; // Validation failed, error already set
-      }
+      } 
 
       // Use the follow-up type determined by API validation
       isFreeFollowUp = _isFreeFollowUpFromAPI;
@@ -1530,7 +1608,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
     // ✅ Skip payment validation ONLY for FREE follow-up appointments
     if (!isFreeFollowUp) {
-      // Only validate payment for payLater and wayOff (payNow validation happens in popup)
+      //  
       if (_selectedPaymentMethodEnum == PaymentMethod.payLater ||
           _selectedPaymentMethodEnum == PaymentMethod.wayOff) {
         if (!isPaymentValid()) {
@@ -1575,7 +1653,13 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
       // Get time from selected slot details
       String appointmentTime;
-      if (_selectedSlotDetails != null) {
+      if (_bookingMode == 'walk_in' && _selectedWalkInSession != null) {
+        // Use session start time for walk-in
+        final timeStr = _extractTimeFromSlot(
+          _selectedWalkInSession!.startTime ?? '00:00',
+        );
+        appointmentTime = '$appointmentDate $timeStr:00';
+      } else if (_selectedSlotDetails != null) {
         // Extract HH:MM from slot start time (handles both HH:MM and ISO formats)
         final timeStr = _extractTimeFromSlot(_selectedSlotDetails!.startTime);
         appointmentTime = '$appointmentDate $timeStr:00';
@@ -1620,27 +1704,25 @@ class NewAppointmentViewModel extends ChangeNotifier {
         clinicPatientId: _selectedClinicPatient!.id,
         doctorId: _selectedDoctorId!,
         clinicId: clinicId,
-        departmentId:
-            _selectedDepartmentId != null && _selectedDepartmentId!.isNotEmpty
-            ? _selectedDepartmentId
-            : null, // ✅ Only pass if not null and not empty
-        individualSlotId: _selectedSlotId!,
+        individualSlotId:
+            _selectedSlotId ?? '', // Repository will omit if walk_in
         appointmentDate: appointmentDate,
         appointmentTime: appointmentTime,
-        consultationType:
-            _selectedConsultationType, // ✅ Send directly (follow-up-via-clinic or follow-up-via-video)
-        reason: _patientNotes.isNotEmpty ? _patientNotes : null,
-        notes: _patientNotes.isNotEmpty ? _patientNotes : null,
+        consultationType: _selectedConsultationType,
+        departmentId: _selectedDepartmentId,
+        reason: _patientNotes,
+        notes: _patientNotes,
         paymentMethod: isFreeFollowUp
             ? null
             : _paymentMethodToApiString(
-                currentPayment.method,
-              ), // ✅ Skip payment ONLY for FREE follow-ups
-        paymentType: isFreeFollowUp
-            ? null
-            : currentPayment
-                  .type
-                  ?.name, // ✅ Skip payment type ONLY for FREE follow-ups
+                _selectedPaymentMethodEnum,
+              ), // ✅ Use helper for correct strings (pay_now, pay_later, way_off)
+        paymentType:
+            _selectedPaymentType?.name, // ✅ Use .name (cash, card, upi)
+        bookingMode: _bookingMode, // ✅ NEW: walk_in or slot
+        appointmentMode: (_selectedConsultationType == 'video_consultation' || 
+                         _selectedConsultationType == 'follow-up-via-video') 
+                         ? 'online' : 'offline', // ✅ NEW: online or offline
       );
 
       if (result != null) {
@@ -1859,7 +1941,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
       // ✅ ENHANCED: Better error handling for backend validation failures
       String errorMessage = 'Error creating appointment: $e';
 
-      if (e.toString().contains('Not eligible for follow-up')) {
+      if (e.toString().contains('Slot time has passed') ||
+          e.toString().contains('past time slot')) {
+        errorMessage =
+            '❌ This time slot has expired! Please select a future time slot.';
+      } else if (e.toString().contains('Not eligible for follow-up')) {
         errorMessage =
             '❌ Follow-up validation failed: The backend could not find a previous appointment for this patient with the selected doctor and department.\n\nThis might be due to:\n• Data synchronization issues\n• Missing appointment records\n• Incorrect doctor/department mapping\n\nPlease try booking a regular appointment first, or contact support if this persists.';
       } else if (e.toString().contains('No previous appointment')) {
@@ -1867,7 +1953,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
             '❌ No previous appointment found: This patient has no appointment history with the selected doctor and department.\n\nPlease book a regular appointment first to create follow-up eligibility.';
       } else if (e.toString().contains('400')) {
         errorMessage =
-            '❌ Validation error: The backend rejected the appointment request.\n\nThis could be due to:\n• Invalid patient data\n• Missing required fields\n• Business rule violations\n\nPlease check the appointment details and try again.';
+            '❌ Validation error: The backend rejected the appointment request.\n\nThis could be due to:\n• Slot time has passed\n• Invalid patient data\n• Missing required fields\n• Business rule violations\n\nPlease check the appointment details and try again.';
       }
 
       _setError(errorMessage);
@@ -1938,10 +2024,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
         slotType: slotType,
         date: _selectedSlotDate.toString().split(' ')[0], // YYYY-MM-DD
       );
-    } else {
-      print(
-        '⚠️ No doctor selected - cannot load slots for consultation type: $type',
-      );
+    }
+
+    // ✅ AUTO-REFRESH: Update patient search results to show relevant follow-up badges
+    if (_lastPatientSearchQuery.isNotEmpty) {
+      searchClinicPatients(_lastPatientSearchQuery);
     }
 
     _safeNotifyListeners();
@@ -1955,6 +2042,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
       final dept = _departmentModels.firstWhere((d) => d.name == department);
       _selectedDepartmentId = dept.id;
       print('✅ Department selected: $department (ID: ${dept.id})');
+
+      // ✅ NEW: Reload doctors filtered by the selected department
+      _loadDoctorsBySelectedDepartment(dept.id);
     } catch (e) {
       _selectedDepartmentId = null;
       print('⚠️ Department ID not found for: $department');
@@ -1970,17 +2060,89 @@ class NewAppointmentViewModel extends ChangeNotifier {
     // ✅ NEW: Check follow-up status when department changes
     checkFollowUpStatusForUI();
 
-    // Doctors are already loaded by clinic, no need to reload
     _safeNotifyListeners();
   }
 
+  // ✅ Flag: tracks if no department has been selected yet (initial state)
+  bool _noDepartmentSelectedYet = true;
+  bool get noDepartmentSelectedYet => _noDepartmentSelectedYet;
+
+  // ✅ Track whether doctors are being loaded for a department
+  bool _isLoadingDoctors = false;
+  bool get isLoadingDoctors => _isLoadingDoctors;
+
+  /// ✅ Load doctors filtered by the selected department ID
+  Future<void> _loadDoctorsBySelectedDepartment(String departmentId) async {
+    try {
+      _isLoadingDoctors = true;
+      _noDepartmentSelectedYet = false;
+      _selectedDoctor = 'Loading...';
+      _safeNotifyListeners();
+
+      print('🔄 Filtering doctors for department ID: $departmentId');
+
+      // ✅ Optimization: Instead of just using the department API (which lacks fees),
+      // we filter our master list of clinic doctors which ALREADY has fees.
+      
+      final token = _authViewModel.accessToken;
+      if (token == null) return;
+
+      // 1. Get the list of doctor IDs that belong to this department from the API
+      final doctorsInDept = await _departmentRepository.getDoctorsByDepartment(
+        token: token,
+        departmentId: departmentId,
+      ).timeout(const Duration(seconds: 15));
+
+      if (doctorsInDept != null && doctorsInDept.isNotEmpty) {
+        final deptDoctorIds = doctorsInDept.map((d) => d.userId).toSet();
+        
+        // 2. Filter master list (_allClinicDoctors) which was loaded in initialize() and has FEES
+        _clinicDoctors = _allClinicDoctors.where((d) => 
+          deptDoctorIds.contains(d.userId) || 
+          deptDoctorIds.contains(d.doctorId) ||
+          deptDoctorIds.contains(d.id)
+        ).toList();
+
+        // 3. Fallback: If master list doesn't have them yet, map the department models
+        if (_clinicDoctors.isEmpty) {
+          print('⚠️ Doctors not found in master list, mapping from department response (FEES MAY BE ZERO)');
+          _clinicDoctors = doctorsInDept.map((d) {
+            return ClinicDoctorModel(
+              id: d.id,
+              doctorId: d.userId,
+              firstName: d.firstName,
+              lastName: d.lastName,
+              fullName: '${d.firstName} ${d.lastName}',
+              email: d.email,
+              phone: d.phone,
+              specialization: d.specialization,
+              licenseNumber: d.licenseNumber,
+              isActive: d.isActive,
+            );
+          }).toList();
+        }
+
+        _selectedDoctor = 'Select Doctor';
+        _selectedDoctorId = null;
+        print('✅ Doctors loaded for department: ${_clinicDoctors.length} found');
+      } else {
+        print('⚠️ No doctors found for department: $departmentId');
+        _clinicDoctors = [];
+        _selectedDoctor = 'No doctors available';
+      }
+    } catch (e) {
+      print('❌ Error loading doctors by department: $e');
+      _clinicDoctors = [];
+      _selectedDoctor = 'Error loading doctors';
+    } finally {
+      _isLoadingDoctors = false;
+      _safeNotifyListeners();
+    }
+  }
+
+
   void setDoctor(String doctor) {
     _selectedDoctor = doctor;
-
-    // Reset previously selected slot when doctor changes
-    _selectedSlotId = null;
-    _selectedSlotDetails = null;
-    _selectedTimeSlot = '';
 
     // Find the selected doctor's ID and load their time slots
     try {
@@ -2029,6 +2191,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
           slotType: slotType,
           date: _selectedSlotDate.toString().split(' ')[0], // YYYY-MM-DD
         );
+
+        // ✅ NEW: Fetch consultation fees to ensure they are up to date (FEES FIX)
+        _fetchConsultationFees(selectedDoctor);
 
         // ✅ NEW: Check follow-up status when doctor changes
         checkFollowUpStatusForUI();
@@ -2126,8 +2291,118 @@ class NewAppointmentViewModel extends ChangeNotifier {
     _safeNotifyListeners();
   }
 
+  /// ✅ NEW: Set walk-in mode for a specific session
+  void setWalkInMode(DoctorSlotSession? session) {
+    if (session == null) {
+      _bookingMode = 'slot';
+      _selectedWalkInSession = null;
+    } else {
+      _bookingMode = 'walk_in';
+      _selectedWalkInSession = session;
+      // Clear selected slot if any
+      _selectedTimeSlot = session.startTime ?? '';
+      _selectedSlotId = null;
+      _selectedSlotDetails = null;
+
+      print('');
+      print(
+        '╔════════════════════════════════════════════════════════════════╗',
+      );
+      print(
+        '║     WALK-IN MODE SELECTED                                      ║',
+      );
+      print(
+        '╚════════════════════════════════════════════════════════════════╝',
+      );
+      print('📂 Session: ${session.sessionName}');
+      print('🕐 Proposed Time: ${session.startTime ?? 'N/A'}');
+      print('');
+
+      // ✅ Set default payment method for walk-in (Pay Now)
+      _selectedPaymentMethodEnum = PaymentMethod.payNow;
+      _selectedPaymentType = null;
+    }
+    _safeNotifyListeners();
+  }
+
+  /// ✅ NEW: Set general walk-in mode (no specific session)
+  void setGeneralWalkInMode() {
+    _bookingMode = 'walk_in';
+    _selectedWalkInSession = null;
+    _selectedSlotId = null;
+    _selectedSlotDetails = null;
+
+    print('');
+    print('╔════════════════════════════════════════════════════════════════╗');
+    print('║     GENERAL WALK-IN MODE SELECTED                              ║');
+    print('╚════════════════════════════════════════════════════════════════╝');
+    print('📅 Date: $_selectedSlotDate');
+    print('🕐 Time: Current time');
+
+    // ✅ Set default payment method for walk-in (Pay Now)
+    _selectedPaymentMethodEnum = PaymentMethod.payNow;
+    _selectedPaymentType = null;
+
+    _safeNotifyListeners();
+  }
+
   void setPaymentMethod(String method) {
     _selectedPaymentMethod = method;
+    _safeNotifyListeners();
+  }
+
+  /// ✅ Fetch consultation fees for a specific doctor to ensure they are correct (FEES FIX)
+  Future<void> _fetchConsultationFees(ClinicDoctorModel doctor) async {
+    try {
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+      final clinicDoctorId = doctor.id ?? doctor.linkId;
+
+      if (token == null || clinicId == null || clinicDoctorId == null) {
+        print('⚠️ Missing data to fetch consultation fees');
+        return;
+      }
+
+      print('🔄 Fetching real-time consultation fees for doctor: ${doctor.fullName} (ID: $clinicDoctorId)');
+
+      final fees = await _consultationFeesRepository.getConsultationFees(
+        token: token,
+        clinicId: clinicId,
+        clinicDoctorId: clinicDoctorId,
+      ).timeout(const Duration(seconds: 10));
+
+      if (fees != null) {
+        print('✅ Fees fetched: Offline ₹${fees.consultationFeeOffline}, Online ₹${fees.consultationFeeOnline}');
+        
+        // Update the doctor object in our list with these fees
+        final updatedFees = ClinicSpecificFees(
+          consultationFeeOffline: fees.consultationFeeOffline,
+          consultationFeeOnline: fees.consultationFeeOnline,
+          followUpFee: fees.followUpFee,
+          followUpDays: fees.followUpDays,
+          notes: fees.notes,
+        );
+
+        // Find and update the doctor in our lists
+        final index = _clinicDoctors.indexWhere((d) => d.id == doctor.id);
+        if (index != -1) {
+          _clinicDoctors[index] = _clinicDoctors[index].copyWith(clinicSpecificFees: updatedFees);
+        }
+        
+        final allIndex = _allClinicDoctors.indexWhere((d) => d.id == doctor.id);
+        if (allIndex != -1) {
+          _allClinicDoctors[allIndex] = _allClinicDoctors[allIndex].copyWith(clinicSpecificFees: updatedFees);
+        }
+
+        _safeNotifyListeners(); // Refresh UI to show new fees
+      }
+    } catch (e) {
+      print('❌ Error fetching consultation fees: $e');
+    }
+  }
+
+  void setPatient(ClinicPatient patient) {
+    _selectedClinicPatient = patient;
     _safeNotifyListeners();
   }
 
@@ -2141,6 +2416,16 @@ class NewAppointmentViewModel extends ChangeNotifier {
     _selectedPaymentMethodEnum = method;
     // Reset payment type when method changes
     _selectedPaymentType = null;
+
+    // ✅ Kept Walk-in mode separate from payment selection
+    // This allows selecting 'Pay Later' / 'Pay Now' without resetting Walk-in mode
+    /*
+    if (_bookingMode == 'walk_in') {
+      _bookingMode = 'slot';
+      _selectedWalkInSession = null;
+    }
+    */
+
     _safeNotifyListeners();
   }
 
@@ -2219,6 +2504,24 @@ class NewAppointmentViewModel extends ChangeNotifier {
 
   // ✅ REMOVED: Old selectPatient method (using clinic patients now)
 
+  // ✅ REMOVED: Old selectPatient method (using clinic patients now)
+
+  // Set reschedule appointment ID
+  void setRescheduleAppointmentId(String? id) {
+    _rescheduleAppointmentId = id;
+    print('🔄 Reschedule Appointment ID set to: $id');
+
+    // Reload slots if doctor is already selected
+    if (_selectedDoctorId != null) {
+      print('   Reloading slots with reschedule context...');
+      loadGroupedTimeSlots(
+        doctorId: _selectedDoctorId!,
+        slotType: _getSlotTypeForApi(_selectedConsultationType),
+        date: _selectedSlotDate.toString().split(' ')[0],
+      );
+    }
+  }
+
   // Reset form
   void _resetForm() {
     _selectedConsultationType = 'clinic_visit'; // Default to clinic visit
@@ -2236,7 +2539,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
     _selectedTimeSlot = '09:00 AM';
     _selectedPaymentMethod = 'Pay Now';
     _selectedPaymentMethodEnum =
-        PaymentMethod.payLater; // Reset payment method enum
+        PaymentMethod.payNow; // Reset payment method enum
     _selectedPaymentType = null; // Reset payment type
     _patientNotes = '';
     _searchQuery = '';
@@ -2250,12 +2553,22 @@ class NewAppointmentViewModel extends ChangeNotifier {
   void _setLoading(bool loading) {
     if (_disposed) return;
     _isLoading = loading;
+    if (loading) {
+      LoadingManager.show();
+    } else {
+      LoadingManager.hide();
+    }
     _safeNotifyListeners();
   }
 
   void _setCreating(bool creating) {
     if (_disposed) return;
     _isCreating = creating;
+    if (creating) {
+      LoadingManager.show(message: 'Creating Appointment...');
+    } else {
+      LoadingManager.hide();
+    }
     _safeNotifyListeners();
   }
 
@@ -2279,6 +2592,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
   }) async {
     try {
       _isLoadingSlots = true; // ✅ Use slot-specific loading state
+      LoadingManager.show(message: 'Loading Time Slots...');
       _safeNotifyListeners();
       final token = _authViewModel.accessToken;
       if (token == null) {
@@ -2303,6 +2617,10 @@ class NewAppointmentViewModel extends ChangeNotifier {
       print('📍 Slot Type: $slotType');
       print('📅 Date: $date');
       print('🆔 Appointment ID (reschedule): $appointmentId');
+      print('📅 Date: $date');
+      print(
+        '🆔 Appointment ID (reschedule): ${appointmentId ?? _rescheduleAppointmentId}',
+      );
       print('');
 
       // ✅ Ensure date is always provided - use selected date if not provided
@@ -2322,10 +2640,12 @@ class NewAppointmentViewModel extends ChangeNotifier {
         date:
             dateToQuery, // ✅ Always pass date - API matches recurring slots by weekday
         appointmentId:
-            appointmentId, // ✅ Pass appointmentId to exclude from count
+            appointmentId ??
+            _rescheduleAppointmentId, // ✅ Pass appointmentId to exclude from count
       );
 
-      if (response != null && response.slots.isNotEmpty) {
+      // ✅ Allow response even if slots are empty (to capture walk-in status)
+      if (response != null) {
         print('✅ Loaded ${response.slots.length} slot days');
 
         // ✅ Store full session slots response for UI access
@@ -2349,7 +2669,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
             .map(
               (slot) => DoctorTimeSlotResponse(
                 id: slot.id,
-                doctorId: response.slots.first.doctorId ?? doctorId,
+                doctorId:
+                    (response.slots.isNotEmpty
+                        ? response.slots.first.doctorId
+                        : null) ??
+                    doctorId,
                 clinicId: slot.clinicId ?? clinicId ?? '',
                 date: dateToQuery, // Use the date we queried with
                 slotType: slotType ?? 'clinic_visit',
@@ -2362,6 +2686,8 @@ class NewAppointmentViewModel extends ChangeNotifier {
                     slot.isBookable &&
                     !slot.isBooked &&
                     slot.status == 'available',
+                isBookable: slot.isBookable,
+                displayMessage: slot.displayMessage,
                 status: slot.status,
                 notes: slot.notes,
                 isActive: true,
@@ -2394,6 +2720,11 @@ class NewAppointmentViewModel extends ChangeNotifier {
         }
 
         print('🌆 Afternoon Slots: ${afternoonSlots.length}');
+
+        // ✅ LOG WALK-IN STATUS
+        print('🚶 Walk-in Available: ${response.walkinAvailable}');
+        print('❓ Walk-in Reason: ${response.walkinReason}');
+
         for (var slot in afternoonSlots.take(5)) {
           print(
             '   - ${formatTime12Hour(slot.startTime)} to ${formatTime12Hour(slot.endTime)} | ${slot.isAvailable ? "Available" : "Booked"}',
@@ -2421,7 +2752,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
                 date ?? DateTime.now().toString().split(' ')[0],
               ).weekday,
               slots: convertedSlots,
-              hasSlots: true,
+              hasSlots: convertedSlots.isNotEmpty,
               totalSlots: convertedSlots.length,
               availableSlots: convertedSlots
                   .where((s) => s.availableSpots > 0)
@@ -2470,6 +2801,7 @@ class NewAppointmentViewModel extends ChangeNotifier {
       _setError('Failed to load time slots');
     } finally {
       _isLoadingSlots = false; // ✅ Use slot-specific loading state
+      LoadingManager.hide();
       _safeNotifyListeners();
     }
   }
@@ -2528,11 +2860,34 @@ class NewAppointmentViewModel extends ChangeNotifier {
         return '$hour:$minute';
       }
 
+      // Handle AM/PM format (e.g. "01:28 PM")
+      final upperTime = timeStr.toUpperCase();
+      if (upperTime.contains('PM') || upperTime.contains('AM')) {
+        final parts = timeStr.split(':');
+        if (parts.length >= 2) {
+          var hour = int.tryParse(parts[0]) ?? 0;
+          final minPart = parts[1];
+          // Extract digits from minute part (removes ' PM', 'PM', etc)
+          final minute =
+              int.tryParse(minPart.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+
+          final isPM = upperTime.contains('PM');
+          final isAM = upperTime.contains('AM');
+
+          if (isPM && hour < 12) hour += 12;
+          if (isAM && hour == 12) hour = 0;
+
+          return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+        }
+      }
+
       // Handle HH:MM or HH:MM:SS format
       final parts = timeStr.split(':');
       if (parts.length >= 2) {
         final hour = parts[0].padLeft(2, '0');
-        final minute = parts[1].padLeft(2, '0');
+        // Clean minute of any non-digit chars just in case (e.g. if it has trailing stuff but no AM/PM)
+        final minuteStr = parts[1].split(RegExp(r'[^0-9]')).first;
+        final minute = minuteStr.padLeft(2, '0');
         return '$hour:$minute';
       }
 
@@ -2671,36 +3026,6 @@ class NewAppointmentViewModel extends ChangeNotifier {
   }
 
   // Helper methods for date/time formatting
-  String _formatDateForAPI(String dateString) {
-    // Convert "16, July" to "2024-07-16"
-    final parts = dateString.split(', ');
-    if (parts.length == 2) {
-      final day = int.parse(parts[0]);
-      final monthName = parts[1];
-      final month = _getMonthNumber(monthName);
-      final year = DateTime.now().year;
-      return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
-    }
-    return DateTime.now().toIso8601String().split('T')[0];
-  }
-
-  int _getMonthNumber(String monthName) {
-    const months = {
-      'January': 1,
-      'February': 2,
-      'March': 3,
-      'April': 4,
-      'May': 5,
-      'June': 6,
-      'July': 7,
-      'August': 8,
-      'September': 9,
-      'October': 10,
-      'November': 11,
-      'December': 12,
-    };
-    return months[monthName] ?? 1;
-  }
 
   String _formatTimeForAPI(String timeString) {
     // Convert "04:30 PM" to "16:30:00"
@@ -2745,16 +3070,13 @@ class NewAppointmentViewModel extends ChangeNotifier {
       if (appointmentDetails != null) {
         print('📋 Loading appointment details for reschedule...');
 
-        _appointmentClinicId =
-            appointmentDetails.clinic?.id ?? _authViewModel.user?.clinicId;
-        if (_appointmentClinicId == null || _appointmentClinicId!.isEmpty) {
-          print('⚠️ Clinic ID missing from appointment details.');
-        } else {
-          print('🏥 Appointment Clinic ID: $_appointmentClinicId');
-        }
-
         // Pre-populate form with current appointment data
         // Use flat structure (doctorName) or nested (doctor.name)
+        if (appointmentDetails.consultationType != null) {
+          _selectedConsultationType = appointmentDetails.consultationType!;
+          print('✅ Consultation Type: $_selectedConsultationType');
+        }
+
         final doctorName =
             appointmentDetails.doctorName ?? appointmentDetails.doctor?.name;
 
@@ -2838,15 +3160,19 @@ class NewAppointmentViewModel extends ChangeNotifier {
           _patientNotes = appointmentDetails.notes!;
         }
 
+        // Set reschedule appointment ID for state tracking
+        _rescheduleAppointmentId = appointmentId;
+
         // Load slots for the current doctor and date
         if (_selectedDoctorId != null) {
           print('🔄 Loading slots for doctor (reschedule mode)...');
           await loadGroupedTimeSlots(
             doctorId: _selectedDoctorId!,
-            date: _formatDateForAPI(_selectedDate),
+            date:
+                '${_selectedSlotDate.year}-${_selectedSlotDate.month.toString().padLeft(2, '0')}-${_selectedSlotDate.day.toString().padLeft(2, '0')}',
             slotType: appointmentDetails.consultationType ?? 'clinic_visit',
             appointmentId:
-                appointmentId, // ✅ Pass appointmentId to exclude current from count
+                _rescheduleAppointmentId, // ✅ Pass appointmentId to exclude current from count
           );
 
           // ✅ Auto-select the current appointment's slot after slots are loaded
@@ -2874,11 +3200,14 @@ class NewAppointmentViewModel extends ChangeNotifier {
                 if (slotTimeFormatted == _selectedTimeSlot) {
                   // Found matching slot - AUTO-SELECT IT
                   _selectedSlotId = slot.id;
+                  _originalSlotId = slot
+                      .id; // ✅ Store original slot ID for "Current Booking" logic
                   _selectedSlotDetails = slot;
                   found = true;
 
                   print('✅ Auto-selected current appointment slot:');
                   print('   - Slot ID: ${slot.id}');
+                  print('   - Original ID: $_originalSlotId');
                   print('   - Raw Time: ${slot.startTime}');
                   print('   - Formatted Time: $slotTimeFormatted');
                   print('   - Matched With: $_selectedTimeSlot');
@@ -2948,10 +3277,71 @@ class NewAppointmentViewModel extends ChangeNotifier {
         return false;
       }
 
-      // Format date and time for API
-      final formattedDate = _formatDateForAPI(_selectedDate);
-      final formattedTime =
-          '$formattedDate ${_formatTimeForAPI(_selectedTimeSlot)}';
+      // ✅ Use robust date/time construction for API
+      // Use _selectedSlotDate instead of parsing _selectedDate string (which relies on comma separator)
+      final dateToUse = _selectedSlotDate;
+      final formattedDate =
+          '${dateToUse.year}-${dateToUse.month.toString().padLeft(2, '0')}-${dateToUse.day.toString().padLeft(2, '0')}';
+
+      // Use _selectedSlotDetails.startTime properly
+      String apiTime = '00:00:00';
+      if (_selectedSlotDetails != null) {
+        final rawStart = _selectedSlotDetails!.startTime;
+        print('🕒 Raw Slot Start Time: "$rawStart"');
+
+        try {
+          if (rawStart.contains('T')) {
+            // Handle ISO format
+            final dt = DateTime.parse(rawStart);
+            apiTime =
+                '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:00';
+          } else if (rawStart.toUpperCase().contains('PM') ||
+              rawStart.toUpperCase().contains('AM')) {
+            // Handle 12-hour format "02:30 PM" or "02:30PM"
+            // Ensure space between time and period
+            var normalized = rawStart
+                .replaceAll(RegExp(r'\s+'), ' ')
+                .trim()
+                .toUpperCase();
+            if (!normalized.contains(' ')) {
+              normalized = normalized
+                  .replaceFirst('AM', ' AM')
+                  .replaceFirst('PM', ' PM');
+            }
+            apiTime = _formatTimeForAPI(normalized);
+          } else {
+            // Handle HH:mm or HH:mm:ss
+            final parts = rawStart.split(':');
+            if (parts.length >= 2) {
+              final h = int.parse(parts[0]);
+              // Remove any non-digit chars from minute part just in case
+              final mStr = parts[1].replaceAll(RegExp(r'[^0-9]'), '');
+              final m = int.parse(mStr);
+              apiTime =
+                  '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:00';
+            }
+          }
+        } catch (e) {
+          print('⚠️ Error parsing slot start time: "$rawStart" - $e');
+          // If all else fails, rely on the selected time slot string (extracted from UI)
+          try {
+            // If it's a range like "02:15 PM - 02:20 PM", take the first part
+            final uiTime = _selectedTimeSlot.split('-')[0].trim();
+            apiTime = _formatTimeForAPI(uiTime);
+            print('⚠️ Fallback to UI time: "$uiTime" -> $apiTime');
+          } catch (e2) {
+            print('❌ Fallback failed too: $e2');
+          }
+        }
+      } else {
+        // Fallback if no slot details
+        final uiTime = _selectedTimeSlot.split('-')[0].trim();
+        apiTime = _formatTimeForAPI(uiTime);
+      }
+
+      final formattedTime = '$formattedDate $apiTime';
+
+      print('🚀 Rescheduling to: $formattedTime (UTC/Local depending on API)');
 
       // ✅ Validate appointment is not in the past
       final now = DateTime.now();
@@ -2974,6 +3364,9 @@ class NewAppointmentViewModel extends ChangeNotifier {
         }
 
         // If appointment is today, check time is not in the past
+        // ⚠️ RELAXED VALIDATION: Allow selecting current/past slots for today if backend permits
+        // This fixes issues where server time vs client time causes false negatives
+        /*
         if (appointmentDate.isAtSameMomentAs(today) &&
             appointmentDateTime.isBefore(now)) {
           _setError(
@@ -2981,33 +3374,21 @@ class NewAppointmentViewModel extends ChangeNotifier {
           );
           return false;
         }
+        */
       } catch (e) {
         print('⚠️ Error validating date/time: $e');
         // Continue if date parsing fails (backend will validate)
-      }
-
-      final clinicId = _appointmentClinicId ?? _authViewModel.user?.clinicId;
-      if (clinicId == null || clinicId.isEmpty) {
-        _setError(
-          'Clinic context missing. Please reload the appointment and try again.',
-        );
-        return false;
-      }
-
-      if (_selectedDoctorId == null || _selectedDoctorId!.isEmpty) {
-        _setError('Doctor selection is required before rescheduling.');
-        return false;
       }
 
       final result = await _repository.rescheduleSimpleAppointment(
         token: token,
         appointmentId: appointmentId,
         doctorId: _selectedDoctorId!,
-        clinicId: clinicId,
         individualSlotId: _selectedSlotDetails!.id,
         appointmentDate: formattedDate,
         appointmentTime: formattedTime,
         departmentId: _selectedDepartmentId,
+        consultationType: _selectedConsultationType,
         reason: _patientNotes.isNotEmpty ? _patientNotes : null,
         notes: _patientNotes.isNotEmpty ? _patientNotes : null,
       );
@@ -3223,6 +3604,27 @@ class NewAppointmentViewModel extends ChangeNotifier {
     );
     print('   ⚠️ If backend fails, there might be a data sync issue!');
     print('');
+  }
+
+  // ✅ NEW: Reset form to blank slate after booking
+  void resetForm() {
+    _selectedDepartment = 'Select Department';
+    _selectedDepartmentId = null;
+    _selectedDoctor = 'Select Doctor';
+    _selectedDoctorId = null;
+    _selectedClinicPatient = null;
+    _selectedSlotDetails = null;
+    _selectedSlotId = null;
+    _patientNotes = '';
+    _searchQuery = '';
+    _lastPatientSearchQuery = '';
+    _bookingMode = 'slot';
+    _isFreeFollowUpFromAPI = false;
+    _currentFollowUpStatus = null;
+    
+    _clearError();
+    notifyListeners();
+    print('♻️ New Appointment form has been reset to blank slate');
   }
 
   @override

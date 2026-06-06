@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
 
 /// A horizontal date selector widget showing available dates
 class HorizontalDateSelector extends StatelessWidget {
@@ -19,7 +19,7 @@ class HorizontalDateSelector extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 65 * scaleFactor,
+      height: 70 * scaleFactor,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: viewModel.availableDates.length,
@@ -62,10 +62,14 @@ class HorizontalDateSelector extends StatelessWidget {
   /// Build container decoration for date card with sidebar-style
   BoxDecoration _buildDateContainerDecoration(bool isSelected) {
     return BoxDecoration(
-      color: isSelected ? const Color(0xFF1E293B) : const Color(0xFFF8F9FA),
-      borderRadius: BorderRadius.circular(10),
+      color: isSelected
+          ? const Color(0xFF1E293B)
+          : const Color(0xFFF8FAFC), // Slate 50
+      borderRadius: BorderRadius.circular(5),
       border: Border.all(
-        color: isSelected ? const Color(0xFF1E293B) : const Color(0xFFE5E7EB),
+        color: isSelected
+            ? const Color(0xFF1E293B)
+            : const Color(0xFFE2E8F0), // Slate 200
         width: 1,
       ),
       boxShadow: [
@@ -91,7 +95,7 @@ class HorizontalDateSelector extends StatelessWidget {
       _getDayName(date.weekday),
       style: TextStyle(
         fontSize: 10 * scaleFactor,
-        color: isSelected ? Colors.white : const Color(0xFF666666),
+        color: isSelected ? Colors.white : const Color(0xFF64748B), // Slate 500
         fontWeight: FontWeight.w500,
       ),
     );
@@ -104,7 +108,7 @@ class HorizontalDateSelector extends StatelessWidget {
       style: TextStyle(
         fontSize: 16 * scaleFactor,
         fontWeight: FontWeight.bold,
-        color: isSelected ? Colors.white : const Color(0xFF333333),
+        color: isSelected ? Colors.white : const Color(0xFF334155), // Slate 700
       ),
     );
   }
@@ -117,7 +121,7 @@ class HorizontalDateSelector extends StatelessWidget {
         fontSize: 9 * scaleFactor,
         color: isSelected
             ? Colors.white.withOpacity(0.9)
-            : const Color(0xFF999999),
+            : const Color(0xFF94A3B8), // Slate 400
       ),
     );
   }
@@ -129,7 +133,7 @@ class HorizontalDateSelector extends StatelessWidget {
       width: 3 * scaleFactor,
       height: 3 * scaleFactor,
       decoration: BoxDecoration(
-        color: isSelected ? Colors.white : const Color(0xFF007BFF),
+        color: isSelected ? Colors.white : const Color(0xFF0F766E), // Teal 700
         shape: BoxShape.circle,
       ),
     );

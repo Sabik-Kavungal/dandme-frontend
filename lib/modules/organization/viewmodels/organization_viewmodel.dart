@@ -1,8 +1,8 @@
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/organization/models/organization_model.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/organization/models/organization_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/core/config/service.dart';
+import 'package:drandme/core/config/service.dart';
 
 class OrganizationViewModel extends ChangeNotifier {
   final ServiceRepo _service = ServiceRepo();
@@ -72,18 +72,22 @@ class OrganizationViewModel extends ChangeNotifier {
 
   /// Fetch all organizations from API
   Future<void> fetchOrganizations(BuildContext context) async {
+    final token = await _getAccessToken(context);
+    if (token == null) return;
+    await _fetchOrganizationsWithToken(token, context);
+  }
+
+  /// Internal fetch logic that doesn't rely on Context for token lookup
+  Future<void> _fetchOrganizationsWithToken(
+    String token,
+    BuildContext? context,
+  ) async {
     _setLoading(true);
     _clearError();
 
     try {
-      final token = await _getAccessToken(context);
-      if (token == null) {
-        _setError('Authentication required. Please login again.');
-        return;
-      }
-
       final response = await _service.requist(
-        'organizations/organizations',
+        'organizations',
         method: 'GET',
         useOrgApi: true, // Use organization API
         token: token,
@@ -93,23 +97,31 @@ class OrganizationViewModel extends ChangeNotifier {
       if (response != null) {
         // If response is a List (direct array)
         if (response is List) {
-          _organizations = response
-              .map(
-                (json) =>
-                    OrganizationModel.fromJson(json as Map<String, dynamic>),
-              )
-              .toList();
+          _organizations = response.map((json) {
+            final Map<String, dynamic> data = Map<String, dynamic>.from(
+              json as Map<String, dynamic>,
+            );
+            // Unified ID mapping
+            if (data['id'] == null && data['organization_id'] != null) {
+              data['id'] = data['organization_id'];
+            }
+            return OrganizationModel.fromJson(data);
+          }).toList();
         }
         // If response is a Map with 'data' field
         else if (response is Map<String, dynamic> && response['data'] != null) {
           final List<dynamic> organizationsData =
               response['data'] as List<dynamic>;
-          _organizations = organizationsData
-              .map(
-                (json) =>
-                    OrganizationModel.fromJson(json as Map<String, dynamic>),
-              )
-              .toList();
+          _organizations = organizationsData.map((json) {
+            final Map<String, dynamic> data = Map<String, dynamic>.from(
+              json as Map<String, dynamic>,
+            );
+            // Unified ID mapping
+            if (data['id'] == null && data['organization_id'] != null) {
+              data['id'] = data['organization_id'];
+            }
+            return OrganizationModel.fromJson(data);
+          }).toList();
         } else {
           _setError('Invalid response format');
         }
@@ -139,7 +151,7 @@ class OrganizationViewModel extends ChangeNotifier {
       }
 
       final response = await _service.requist(
-        'organizations/organizations/with-admin',
+        'organizations/with-admin',
         method: 'POST',
         body: organization.toJson(),
         useOrgApi: true, // Use organization API
@@ -147,7 +159,7 @@ class OrganizationViewModel extends ChangeNotifier {
         context: context,
       );
 
-      print('response: $organization.toJson()');
+      print('response: ${organization.toJson()}');
 
       if (response != null) {
         print('response: $response');
@@ -169,6 +181,51 @@ class OrganizationViewModel extends ChangeNotifier {
   /// Clear error state
   void clearError() {
     _clearError();
+  }
+
+  /// Delete an organization
+  Future<bool> deleteOrganization(
+    String organizationId,
+    BuildContext context,
+  ) async {
+    // Get auth view model before the async gap
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+
+    _setLoading(true);
+    _clearError();
+
+    try {
+      final token = authViewModel.accessToken;
+      if (token == null) {
+        _setError('Authentication required. Please login again.');
+        return false;
+      }
+
+      final response = await _service.requist(
+        'organizations/$organizationId',
+        method: 'DELETE',
+        useOrgApi: true,
+        token: token,
+        context: context,
+      );
+
+      print('Organization deletion request for ID: $organizationId');
+
+      if (response != null) {
+        print('Organization deletion response: $response');
+        // Refresh the organizations list using the token we already have
+        await _fetchOrganizationsWithToken(token, context);
+        return true;
+      } else {
+        _setError('Failed to delete organization');
+        return false;
+      }
+    } catch (e) {
+      _setError('Error deleting organization: $e');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
   }
 
   /// Refresh organizations list

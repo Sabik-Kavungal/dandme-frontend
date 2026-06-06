@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
 
 /// Widget to display patient's appointments and follow-ups
 class PatientAppointmentsList extends StatelessWidget {

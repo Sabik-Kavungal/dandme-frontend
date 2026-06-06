@@ -219,7 +219,7 @@ If you have any deep links, bookmarks, or hardcoded routes using `/appointment`,
 
 1. ✅ Run `flutter clean`
 2. ✅ Run `flutter pub get`
-3. ✅ Run `flutter pub run build_runner build --delete-conflicting-outputs`
+3. ✅ Run `dart run build_runner build`
 4. ✅ Run `flutter analyze` to verify no errors
 5. ✅ Test the application thoroughly
 6. ✅ Update any documentation or API references

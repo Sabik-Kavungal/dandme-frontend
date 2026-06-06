@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
-import 'package:a/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/country_code_dropdown.dart';
 
 /// Add Patient Dialog matching the Edit Information design
 class AddPatientDialog extends StatefulWidget {
@@ -20,6 +20,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _ageController = TextEditingController();
+  final _addressController = TextEditingController();
 
   CountryCode _selectedCountryCode = defaultCountryCode;
   String _selectedGender = 'Male';
@@ -32,6 +33,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
     _phoneController.dispose();
     _emailController.dispose();
     _ageController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -234,6 +236,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
           ],
         ),
         const SizedBox(height: 16),
+
         // First row: First Name & Last Name
         Row(
           children: [
@@ -241,7 +244,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
               child: _buildTextField(
                 controller: _firstNameController,
                 label: 'First Name *',
-                onChanged: (value) => setState(() {}),
+                onChanged: (v) => setState(() {}),
               ),
             ),
             const SizedBox(width: 16),
@@ -249,7 +252,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
               child: _buildTextField(
                 controller: _lastNameController,
                 label: 'Last Name *',
-                onChanged: (value) => setState(() {}),
+                onChanged: (v) => setState(() {}),
               ),
             ),
           ],
@@ -424,6 +427,14 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
             const Expanded(child: SizedBox()), // Empty space
           ],
         ),
+        const SizedBox(height: 16),
+
+        // Address row
+        _buildTextField(
+          controller: _addressController,
+          label: 'Address',
+          hintText: '',
+        ),
       ],
     );
   }
@@ -432,6 +443,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
+    String? hintText,
     TextInputType? keyboardType,
     void Function(String?)? onChanged,
   }) {
@@ -478,6 +490,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+              hintText: hintText,
               hintStyle: TextStyle(color: Colors.grey.shade400),
             ),
           ),
@@ -526,7 +539,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: '7069452035',
+                    hintText: '',
                     hintStyle: TextStyle(color: Colors.grey.shade400),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
@@ -683,6 +696,7 @@ class _AddPatientDialogState extends State<AddPatientDialog> {
             ? null
             : int.tryParse(_ageController.text),
         gender: _selectedGender,
+        address: _addressController.text.trim(),
         dateOfBirth: _selectedDateOfBirth?.toIso8601String(),
       );
 

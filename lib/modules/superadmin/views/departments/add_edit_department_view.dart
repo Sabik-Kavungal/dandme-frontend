@@ -1,6 +1,6 @@
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/superadmin/models/department_model.dart';
-import 'package:a/modules/superadmin/viewmodels/department_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/superadmin/models/department_model.dart';
+import 'package:drandme/modules/superadmin/viewmodels/department_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -479,9 +479,7 @@ class _AddEditDepartmentViewState extends State<AddEditDepartmentView>
                                                   ? null
                                                   : () => _submitForm(context),
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(
-                                                  0xFF3B82F6,
-                                                ),
+                                                backgroundColor: Colors.black,
                                                 foregroundColor: Colors.white,
                                                 padding: EdgeInsets.symmetric(
                                                   vertical: isMobile ? 14 : 16,
@@ -648,7 +646,6 @@ class _AddEditDepartmentViewState extends State<AddEditDepartmentView>
         isActive: _isActive,
       );
       success = await departmentVM.updateDepartment(
-        context,
         widget.department!.id,
         input,
       );
@@ -671,7 +668,7 @@ class _AddEditDepartmentViewState extends State<AddEditDepartmentView>
             ? null
             : _descriptionController.text.trim(),
       );
-      success = await departmentVM.createDepartment(context, input);
+      success = await departmentVM.createDepartment(input);
     }
 
     if (mounted) {

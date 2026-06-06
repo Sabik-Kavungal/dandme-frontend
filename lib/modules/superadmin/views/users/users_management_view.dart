@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:a/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
-import 'package:a/modules/superadmin/views/clinics/clinic_doctor_links_list_view.dart';
-import 'package:a/modules/superadmin/views/users/users_list_view.dart';
-import 'package:a/modules/superadmin/views/roles/roles_list_view.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/superadmin/views/clinics/add_clinic_doctor_link_view.dart';
+import 'package:drandme/modules/superadmin/views/clinics/clinic_doctor_links_list_view.dart';
+import 'package:drandme/modules/superadmin/views/users/users_list_view.dart';
+import 'package:drandme/modules/superadmin/views/roles/roles_list_view.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
 
 class UsersManagementScreen extends StatelessWidget {
   const UsersManagementScreen({super.key});

@@ -5,7 +5,7 @@ part '../gen/department_model.g.dart';
 
 // Department Response Model
 @freezed
-class DepartmentModel with _$DepartmentModel {
+abstract class DepartmentModel with _$DepartmentModel {
   const factory DepartmentModel({
     required String id,
     @JsonKey(name: "clinic_id") required String clinicId,
@@ -23,7 +23,7 @@ class DepartmentModel with _$DepartmentModel {
 
 // Create Department Input Model
 @freezed
-class CreateDepartmentInput with _$CreateDepartmentInput {
+abstract class CreateDepartmentInput with _$CreateDepartmentInput {
   const factory CreateDepartmentInput({
     @JsonKey(name: "clinic_id") required String clinicId,
     required String name,
@@ -36,7 +36,7 @@ class CreateDepartmentInput with _$CreateDepartmentInput {
 
 // Update Department Input Model
 @freezed
-class UpdateDepartmentInput with _$UpdateDepartmentInput {
+abstract class UpdateDepartmentInput with _$UpdateDepartmentInput {
   const factory UpdateDepartmentInput({
     String? name,
     String? description,
@@ -49,7 +49,7 @@ class UpdateDepartmentInput with _$UpdateDepartmentInput {
 
 // Doctor in Department Model
 @freezed
-class DoctorInDepartment with _$DoctorInDepartment {
+abstract class DoctorInDepartment with _$DoctorInDepartment {
   const factory DoctorInDepartment({
     required String id,
     @JsonKey(name: "user_id") required String userId,
@@ -73,7 +73,7 @@ class DoctorInDepartment with _$DoctorInDepartment {
 
 // Department List Response
 @freezed
-class DepartmentListResponse with _$DepartmentListResponse {
+abstract class DepartmentListResponse with _$DepartmentListResponse {
   const factory DepartmentListResponse({
     required List<DepartmentModel> departments,
     @JsonKey(name: "total_count") required int totalCount,
@@ -85,7 +85,7 @@ class DepartmentListResponse with _$DepartmentListResponse {
 
 // Doctors by Department Response
 @freezed
-class DoctorsByDepartmentResponse with _$DoctorsByDepartmentResponse {
+abstract class DoctorsByDepartmentResponse with _$DoctorsByDepartmentResponse {
   const factory DoctorsByDepartmentResponse({
     @JsonKey(name: "department_id") required String departmentId,
     required List<DoctorInDepartment> doctors,

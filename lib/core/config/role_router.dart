@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/superadmin/views/super_admin_module_view.dart';
-import 'package:a/modules/organization/views/organization_admin_module_view.dart';
-import 'package:a/modules/patient/views/patient_module_view.dart';
-import 'package:a/modules/doctor/views/doctor_module_view.dart';
-import 'package:a/modules/patient/views/pharmacist_module_view.dart';
+import 'package:drandme/modules/superadmin/views/super_admin_module_view.dart';
+import 'package:drandme/modules/organization/views/organization_admin_module_view.dart';
+import 'package:drandme/modules/patient/views/patient_module_view.dart';
+import 'package:drandme/modules/doctor/views/doctor_module_view.dart';
+import 'package:drandme/modules/patient/views/pharmacist_module_view.dart';
 
-import 'package:a/modules/clinic/views/clinic_module_view.dart';
-import 'package:a/core/constants/app_constants.dart';
-import 'package:a/core/config/app_router.dart';
+import 'package:drandme/modules/clinic/views/clinic_module_view.dart';
+import 'package:drandme/core/constants/app_constants.dart';
+import 'package:drandme/core/config/app_router.dart';
 
 class RoleRouter {
   static Widget getDashboardByRole(String? role) {

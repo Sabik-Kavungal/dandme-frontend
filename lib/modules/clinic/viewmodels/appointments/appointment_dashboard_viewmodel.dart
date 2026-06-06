@@ -1,11 +1,14 @@
-import 'package:a/modules/clinic/models/appointment_model.dart';
-import 'package:a/modules/clinic/models/appointment_list_item_model.dart';
-import 'package:a/modules/clinic/models/clinic_doctors_model.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/core/utils/loading_manager.dart';
+import 'package:drandme/modules/clinic/models/appointment_model.dart';
+import 'package:drandme/modules/clinic/models/appointment_list_item_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_doctors_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_dashboard_model.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:a/core/config/service.dart';
+import 'package:drandme/core/config/service.dart';
 
-import 'package:a/modules/clinic/repositories/clinic_appointment_repository.dart';
+import 'package:drandme/modules/clinic/repositories/clinic_appointment_repository.dart';
 
 class AppointmentDashboardViewModel extends ChangeNotifier {
   final ClinicAppointmentRepository _repository;
@@ -19,9 +22,12 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   // State variables
   bool _isLoading = false;
   bool _isLoadingMore = false;
+  bool _isInitialized = false; // ✅ Track if dashboard has been initialized
   bool _disposed = false;
   String _error = '';
   AppointmentSummary? _summary;
+  ClinicDashboardData? _clinicDashboardData; // ✅ New dashboard data
+  Map<String, dynamic>? _collectionsData; // ✅ New collections data
   List<Appointment> _appointments = [];
   List<AppointmentListItem> _simpleAppointments = []; // New simple list
   int _currentPage = 1;
@@ -35,6 +41,14 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   int _currentSimplePage = 1;
   final int _itemsPerPage = 10;
 
+  // Registered clinic patients list
+  List<ClinicPatient> _clinicPatients = [];
+  
+  bool _isLoadingPatients = false;
+
+  List<ClinicPatient> get clinicPatients => _clinicPatients;
+  bool get isLoadingPatients => _isLoadingPatients;
+
   // Filter and search state
   int _selectedTab = 0; // 0: All, 1: Patients, 2: Doctors
   String _searchQuery = '';
@@ -42,17 +56,27 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   String? _selectedDepartment;
   String?
   _selectedDoctor; // Doctor ID for simple appointments filter (null or "all" = all doctors)
+  String? _selectedPatientId; // Patient ID for simple appointments filter (null = all patients)
+  String? _selectedBookingMode; // New: 'walk_in', 'slot', or null (All)
   bool _isListView = true;
 
   // ✅ Clinic doctors list for filter dropdown
   List<ClinicDoctorModel> _clinicDoctors = [];
   bool _isLoadingDoctors = false;
 
+  // ✅ Dashboard date range (for ClinicAdminDashboard top-level card)
+  String? _dashboardStartDate;
+  String? _dashboardEndDate;
+  String? _dashboardRangeLabel; // e.g. "Today", "Last 7 Days"
+
   // Getters
   bool get isLoading => _isLoading;
   bool get isLoadingMore => _isLoadingMore;
+  bool get isInitialized => _isInitialized; // ✅ New getter
   String get error => _error;
   AppointmentSummary? get summary => _summary;
+  ClinicDashboardData? get clinicDashboardData =>
+      _clinicDashboardData; // ✅ New getter
   List<Appointment> get appointments => _appointments;
   List<AppointmentListItem> get simpleAppointments =>
       _simpleAppointments; // New getter
@@ -61,7 +85,13 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   String? get selectedStatus => _selectedStatus;
   String? get selectedDepartment => _selectedDepartment;
   String? get selectedDoctor => _selectedDoctor;
+  String? get selectedPatientId => _selectedPatientId;
+  String? get selectedBookingMode => _selectedBookingMode; // New getter
   String? get selectedDate => _selectedDate; // New getter
+  // Dashboard date range getters
+  String? get dashboardStartDate => _dashboardStartDate;
+  String? get dashboardEndDate => _dashboardEndDate;
+  String? get dashboardRangeLabel => _dashboardRangeLabel;
   bool get isListView => _isListView;
   bool get hasMoreData => _hasMoreData;
 
@@ -73,15 +103,47 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   int get currentSimplePage => _currentSimplePage;
   int get itemsPerPage => _itemsPerPage;
 
-  /// Get filtered appointments based on selected status
+  /// Get filtered appointments based on selected status, booking mode, and patient
   List<AppointmentListItem> get _filteredSimpleAppointments {
-    if (_selectedStatus == null || _selectedStatus!.isEmpty) {
-      return _simpleAppointments;
+    List<AppointmentListItem> filtered = _simpleAppointments;
+
+    // Filter by status
+    if (_selectedStatus != null && _selectedStatus!.isNotEmpty) {
+      final statusLower = _selectedStatus!.toLowerCase();
+      filtered = filtered
+          .where((a) => a.status.toLowerCase() == statusLower)
+          .toList();
     }
-    final statusLower = _selectedStatus!.toLowerCase();
-    return _simpleAppointments
-        .where((a) => a.status.toLowerCase() == statusLower)
-        .toList();
+
+    // Filter by booking mode
+    if (_selectedBookingMode != null && _selectedBookingMode!.isNotEmpty) {
+      final modeLower = _selectedBookingMode!.toLowerCase();
+      filtered = filtered
+          .where((a) => (a.bookingMode ?? 'slot').toLowerCase() == modeLower)
+          .toList();
+    }
+
+    // Filter by patient ID
+    if (_selectedPatientId != null && _selectedPatientId!.isNotEmpty) {
+      filtered = filtered
+          .where((a) => a.clinicPatientId == _selectedPatientId || a.patientId == _selectedPatientId)
+          .toList();
+    }
+
+    // Filter by search query (patient name, phone number, MO ID, doctor name, token number)
+    if (_searchQuery.isNotEmpty) {
+      final queryLower = _searchQuery.toLowerCase();
+      filtered = filtered
+          .where((a) =>
+              a.patientName.toLowerCase().contains(queryLower) ||
+              (a.patientNumber ?? '').toLowerCase().contains(queryLower) ||
+              (a.moId ?? '').toLowerCase().contains(queryLower) ||
+              a.doctorName.toLowerCase().contains(queryLower) ||
+              (a.tokenNumber ?? '').toLowerCase().contains(queryLower))
+          .toList();
+    }
+
+    return filtered;
   }
 
   List<AppointmentListItem> get paginatedSimpleAppointments {
@@ -123,7 +185,171 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     // If we have simple list loaded (even if zero), trust it
     if (_simpleAppointments.isNotEmpty) return cancelled + noShow;
     // Otherwise, fallback to summary when simple list not available
-    return (_summary?.cancelledAppointments ?? 0);
+    return (_summary?.counts?.cancelled ?? 0) + (_summary?.counts?.noShow ?? 0);
+  }
+
+  AppointmentSummaryCounts? get _summaryCounts => _summary?.counts;
+
+  int get summaryTotalAppointments {
+    // If filtering by doctor, use the list count to reflect the filter
+    if (_selectedDoctor != null && _selectedDoctor != 'all') {
+      return _fallbackTotalAppointments;
+    }
+    // If summary API has data, use it
+    if (_summaryCounts?.total != null && _summaryCounts!.total! > 0) {
+      return _summaryCounts!.total!;
+    }
+    // Fallback to list count (e.g. if API summary is 0 but list has items)
+    return _fallbackTotalAppointments;
+  }
+
+  int get summaryArrivedAppointments {
+    // Logic: Arrived means "Patients who have arrived at the clinic"
+    // This includes: Arrived (Waiting) + In Consultation + Completed
+    // It should NOT decrement when a patient moves to Completed.
+
+    // 1. If filtering by doctor, calculate from local list
+    if (_selectedDoctor != null && _selectedDoctor != 'all') {
+      return _cumulativeArrivedFromList;
+    }
+
+    // 2. If API summary is available
+    if (_summaryCounts != null) {
+      // ✅ Use the 'arrived' count from backend as-is.
+      // The backend already sums arrived + in_consultation + completed.
+      return _summaryCounts!.arrived ?? 0;
+    }
+
+    // 3. Fallback to list calculation
+    return _cumulativeArrivedFromList;
+  }
+
+  /// Helper to calculate cumulative arrived patients from the local list
+  int get _cumulativeArrivedFromList {
+    if (_simpleAppointments.isEmpty) return 0;
+    return _simpleAppointments.where((a) {
+      final s = a.status.toLowerCase();
+      return s == 'arrived' || s == 'in_consultation' || s == 'completed';
+    }).length;
+  }
+
+  int get summaryCompletedAppointments {
+    if (_selectedDoctor != null && _selectedDoctor != 'all') {
+      return completedCount;
+    }
+    if (_summaryCounts?.completed != null && _summaryCounts!.completed! > 0) {
+      return _summaryCounts!.completed!;
+    }
+    return completedCount;
+  }
+
+  int get summaryCancelledCount {
+    if (_selectedDoctor != null && _selectedDoctor != 'all') {
+      return cancelledCount;
+    }
+    if (_summaryCounts?.cancelled != null && _summaryCounts!.cancelled! > 0) {
+      return _summaryCounts!.cancelled!;
+    }
+    return cancelledCount;
+  }
+
+  int get summaryNoShowCount {
+    if (_selectedDoctor != null && _selectedDoctor != 'all') {
+      return noShowCount;
+    }
+    if (_summaryCounts?.noShow != null && _summaryCounts!.noShow! > 0) {
+      return _summaryCounts!.noShow!;
+    }
+    return noShowCount;
+  }
+
+  int get summaryCancelledOrNoShowCount =>
+      summaryCancelledCount + summaryNoShowCount;
+
+  /// Get collections breakdown (UPI, Cash, Card, Total) for today
+  double get paymentTotal {
+    if (_collectionsData != null && _collectionsData!['total_collection'] != null) {
+      return (_collectionsData!['total_collection'] as num).toDouble();
+    }
+    final payments = ClinicAppointmentRepository.latestPayments;
+    if (payments != null && payments['total'] != null) {
+      return (payments['total'] as num).toDouble();
+    }
+    // Fallback: sum feeAmount from simple list where paymentStatus is paid
+    if (_simpleAppointments.isNotEmpty) {
+      return _simpleAppointments
+          .where((a) => a.paymentStatus.toLowerCase() == 'paid')
+          .map((a) => a.feeAmount ?? 0.0)
+          .fold(0.0, (sum, item) => sum + item);
+    }
+    return 0.0;
+  }
+
+  double get paymentCash {
+    if (_collectionsData != null && _collectionsData!['cash_total'] != null) {
+      return (_collectionsData!['cash_total'] as num).toDouble();
+    }
+    final payments = ClinicAppointmentRepository.latestPayments;
+    if (payments != null && payments['cash'] != null) {
+      return (payments['cash'] as num).toDouble();
+    }
+    // Fallback: sum from local appointments list by payment mode
+    if (_simpleAppointments.isNotEmpty) {
+      return _simpleAppointments
+          .where((a) =>
+              a.paymentStatus.toLowerCase() == 'paid' &&
+              (a.paymentMode?.toLowerCase() == 'cash'))
+          .map((a) => a.feeAmount ?? 0.0)
+          .fold(0.0, (sum, item) => sum + item);
+    }
+    return 0.0;
+  }
+
+  double get paymentCard {
+    if (_collectionsData != null && _collectionsData!['card_total'] != null) {
+      return (_collectionsData!['card_total'] as num).toDouble();
+    }
+    final payments = ClinicAppointmentRepository.latestPayments;
+    if (payments != null && payments['card'] != null) {
+      return (payments['card'] as num).toDouble();
+    }
+    // Fallback: sum from local appointments list by payment mode
+    if (_simpleAppointments.isNotEmpty) {
+      return _simpleAppointments
+          .where((a) =>
+              a.paymentStatus.toLowerCase() == 'paid' &&
+              (a.paymentMode?.toLowerCase() == 'card'))
+          .map((a) => a.feeAmount ?? 0.0)
+          .fold(0.0, (sum, item) => sum + item);
+    }
+    return 0.0;
+  }
+
+  double get paymentUpi {
+    if (_collectionsData != null && _collectionsData!['upi_total'] != null) {
+      return (_collectionsData!['upi_total'] as num).toDouble();
+    }
+    final payments = ClinicAppointmentRepository.latestPayments;
+    if (payments != null && payments['upi'] != null) {
+      return (payments['upi'] as num).toDouble();
+    }
+    // Fallback: sum from local appointments list by payment mode
+    if (_simpleAppointments.isNotEmpty) {
+      return _simpleAppointments
+          .where((a) =>
+              a.paymentStatus.toLowerCase() == 'paid' &&
+              (a.paymentMode?.toLowerCase() == 'upi'))
+          .map((a) => a.feeAmount ?? 0.0)
+          .fold(0.0, (sum, item) => sum + item);
+    }
+    return 0.0;
+  }
+
+  int get _fallbackTotalAppointments {
+    // Calculate total from all loaded appointments for the day
+    // This includes all statuses except maybe cancelled/noshow depending on how "total" is defined
+    // Usually Total = All appointments scheduled for the day
+    return _simpleAppointments.length;
   }
 
   /// Total pages for filtered appointments
@@ -139,29 +365,110 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
 
   // Initialize dashboard with simple API
   Future<void> initializeSimpleDashboard() async {
-    // ✅ Set internal filter to today, but keep selectedDate null (button not highlighted)
-    final now = DateTime.now();
-    _selectedDate = null; // Keep null so date button doesn't show as selected
-    _currentFilterDate =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    if (_isInitialized || _isLoading) return; // ✅ Prevent double loading
+    
+    try {
+      _setLoading(true); // ✅ Start loading once for the whole batch
+      
+      // ✅ Automatically select today's current date and auto load
+      final now = DateTime.now();
+      _selectedDate = _formatDate(now); 
+      _currentFilterDate = _formatDate(now);
 
-    print(
-      '📅 Dashboard initialized with today\'s date filter: $_currentFilterDate',
-    );
-    print('   Date button state: ${_selectedDate ?? "Not highlighted"}');
+      print('📅 Dashboard initialization started...');
 
-    // ✅ Load clinic doctors for filter dropdown
-    await Future.wait([
-      loadSummary(),
-      loadClinicDoctors(),
-      loadSimpleAppointments(),
-    ]);
+      // ✅ Run all data loads in parallel
+      await Future.wait([
+        loadSummary(skipLoadingState: true),
+        loadClinicDashboard(skipLoadingState: true),
+        loadClinicDoctors(skipLoadingState: true),
+        loadClinicPatients(skipLoadingState: true),
+        loadSimpleAppointments(refresh: true, skipLoadingState: true),
+        loadCollections(skipLoadingState: true),
+      ]);
+      
+      print('✅ Dashboard initialization complete');
+      _isInitialized = true; // ✅ Mark as initialized
+    } catch (e) {
+      _setError('Initialization failed: $e');
+    } finally {
+      _setLoading(false); // ✅ Stop loading once after everything is done
+    }
+  }
+
+  // Load new clinic dashboard API
+  Future<void> loadClinicDashboard({bool skipLoadingState = false}) async {
+    try {
+      if (!skipLoadingState) _setLoading(true);
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null || clinicId == null) {
+        return;
+      }
+
+      // ✅ Use dashboard date range if set, otherwise fall back to single date
+      final dateToUse = _selectedDate ?? _currentFilterDate;
+
+      final response = await _repository.getClinicDashboard(
+        token: token,
+        clinicId: clinicId,
+        startDate: _dashboardStartDate,
+        endDate: _dashboardEndDate,
+        date: (_dashboardStartDate == null) ? dateToUse : null,
+      ).timeout(const Duration(seconds: 15));
+
+      if (response != null && response.success) {
+        _clinicDashboardData = response.data;
+        _safeNotifyListeners();
+      }
+    } catch (e) {
+      print('Error loading clinic dashboard: $e');
+    } finally {
+      if (!skipLoadingState) _setLoading(false);
+    }
+  }
+
+  // Load collections summary from API
+  Future<void> loadCollections({bool skipLoadingState = false}) async {
+    try {
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null || clinicId == null) {
+        return;
+      }
+
+      final dateToUse = _selectedDate ?? _currentFilterDate;
+      final doctorIdToUse =
+          (_selectedDoctor != null &&
+              _selectedDoctor!.isNotEmpty &&
+              _selectedDoctor != 'all')
+          ? _selectedDoctor
+          : null;
+
+      final data = await _repository.getCollections(
+        token: token,
+        clinicId: clinicId,
+        date: dateToUse,
+        doctorId: doctorIdToUse,
+      );
+
+      if (data != null) {
+        _collectionsData = data;
+        _safeNotifyListeners();
+      }
+    } catch (e) {
+      print('Error loading collections: $e');
+    }
   }
 
   // Load appointment summary
-  Future<void> loadSummary() async {
+  Future<void> loadSummary({bool skipLoadingState = false}) async {
     try {
-      _setLoading(true);
+      if (!skipLoadingState) _setLoading(true);
       _clearError();
 
       final token = _authViewModel.accessToken;
@@ -170,7 +477,26 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
         return;
       }
 
-      final summary = await _repository.getAppointmentSummary(token);
+      final clinicId = _authViewModel.user?.clinicId;
+      if (clinicId == null || clinicId.isEmpty) {
+        _setError('Clinic ID not found');
+        return;
+      }
+
+      final dateToUse = _resolveSummaryDate();
+
+      final summary = await _repository.getAppointmentSummary(
+        token: token,
+        clinicId: clinicId,
+        date: dateToUse,
+        doctorId: (_selectedDoctor != null && _selectedDoctor != 'all')
+            ? _selectedDoctor
+            : null,
+        status: (_selectedStatus != null && _selectedStatus != 'all')
+            ? _selectedStatus
+            : null,
+      ).timeout(const Duration(seconds: 15));
+
       if (summary != null) {
         _summary = summary;
         _safeNotifyListeners();
@@ -183,7 +509,7 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     } catch (e) {
       _setError('Error loading summary: $e');
     } finally {
-      _setLoading(false);
+      if (!skipLoadingState) _setLoading(false);
     }
   }
 
@@ -274,12 +600,21 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   }
 
   // Load simple appointments (optimized for table display)
-  Future<void> loadSimpleAppointments({bool refresh = false}) async {
+  Future<void> loadSimpleAppointments({
+    bool refresh = false,
+    bool skipLoadingState = false,
+  }) async {
     try {
       if (refresh) {
-        _setLoading(true);
-      } else {
-        _setLoadingMore(true);
+        loadClinicPatients(skipLoadingState: true);
+      }
+
+      if (!skipLoadingState) {
+        if (refresh) {
+          _setLoading(true);
+        } else {
+          _setLoadingMore(true);
+        }
       }
 
       _clearError();
@@ -317,7 +652,7 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
         clinicId: clinicId,
         date: dateToUse,
         doctorId: doctorIdToUse, // ✅ Pass doctor filter
-      );
+      ).timeout(const Duration(seconds: 15));
 
       if (response != null) {
         _simpleAppointments = response.appointments;
@@ -329,8 +664,10 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     } catch (e) {
       _setError('Error loading appointments: $e');
     } finally {
-      _setLoading(false);
-      _setLoadingMore(false);
+      if (!skipLoadingState) {
+        _setLoading(false);
+        _setLoadingMore(false);
+      }
     }
   }
 
@@ -338,8 +675,7 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   Future<void> loadTodaySimpleAppointments() async {
     // ✅ Set today's date filter
     final now = DateTime.now();
-    _selectedDate =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    _selectedDate = _formatDate(now);
 
     print('📅 Loading today\'s appointments: $_selectedDate');
 
@@ -383,8 +719,12 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   void setDateFilter(String? date) {
     if (_selectedDate != date) {
       _selectedDate = date;
+      _selectedPatientId = null; // Clear patient filter when date changes
       loadSimpleAppointments(refresh: true);
-      notifyListeners();
+      loadSummary();
+      loadClinicDashboard(); // ✅ Reload new dashboard API
+      loadCollections(); // ✅ Reload collections API
+      _safeNotifyListeners();
     }
   }
 
@@ -393,10 +733,34 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     setDateFilter(null);
   }
 
+  /// Set a date range for the clinic admin dashboard stats (not the appointments list)
+  void setDashboardDateRange({
+    required String startDate,
+    required String endDate,
+    required String label,
+  }) {
+    _dashboardStartDate = startDate;
+    _dashboardEndDate = endDate;
+    _dashboardRangeLabel = label;
+    loadClinicDashboard();
+    _safeNotifyListeners();
+  }
+
+  /// Clear dashboard date range (back to today)
+  void clearDashboardDateRange() {
+    _dashboardStartDate = null;
+    _dashboardEndDate = null;
+    _dashboardRangeLabel = null;
+    loadClinicDashboard();
+    _safeNotifyListeners();
+  }
+
+
   // Refresh simple appointments
   Future<void> refreshSimpleAppointments() async {
     await loadSimpleAppointments(refresh: true);
     await loadSummary();
+    await loadCollections();
   }
 
   // Pagination methods for simple appointments
@@ -438,7 +802,7 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   void setSearchQuery(String query) {
     if (_searchQuery != query) {
       _searchQuery = query;
-      loadAppointments(refresh: true);
+      resetSimplePagination();
       notifyListeners();
     }
   }
@@ -472,15 +836,71 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   void setDoctorFilter(String? doctorId) {
     if (_selectedDoctor != doctorId) {
       _selectedDoctor = doctorId;
-      loadSimpleAppointments(
-        refresh: true,
-      ); // ✅ Use simple appointments instead
+      _selectedPatientId = null; // Clear patient filter when doctor changes
+      loadSimpleAppointments(refresh: true); // ✅ Use simple appointments instead
+      loadSummary(); // Reload summary as well
+      loadCollections(); // Reload collections
+      notifyListeners();
+    }
+  }
+
+  // Set patient filter
+  void setPatientFilter(String? patientId) {
+    if (_selectedPatientId != patientId) {
+      _selectedPatientId = patientId;
+      resetSimplePagination();
+      notifyListeners();
+    }
+  }
+
+  /// Get unique patients from loaded simple appointments list OR registered clinic patients
+  List<Map<String, String>> get uniquePatientsInAppointments {
+    final Map<String, Map<String, String>> patientsMap = {};
+
+    // 1. First add all registered clinic patients
+    for (final p in _clinicPatients) {
+      if (p.id.isNotEmpty) {
+        patientsMap[p.id] = {
+          'name': p.fullName,
+          'number': p.phone,
+        };
+      }
+    }
+
+    // 2. Fallback/merge with loaded simple appointments patients
+    for (final a in _simpleAppointments) {
+      final id = a.clinicPatientId ?? a.patientId;
+      if (id != null && id.isNotEmpty) {
+        if (!patientsMap.containsKey(id)) {
+          patientsMap[id] = {
+            'name': a.patientName,
+            'number': a.patientNumber ?? '',
+          };
+        }
+      }
+    }
+
+    return patientsMap.entries
+        .map((e) => {
+              'id': e.key,
+              'name': e.value['name']!.isEmpty ? 'Unknown' : e.value['name']!,
+              'number': e.value['number']!,
+            })
+        .toList()
+      ..sort((a, b) => a['name']!.toLowerCase().compareTo(b['name']!.toLowerCase()));
+  }
+
+  // Set booking mode filter
+  void setBookingModeFilter(String? mode) {
+    if (_selectedBookingMode != mode) {
+      _selectedBookingMode = mode;
+      resetSimplePagination(); // Reset to page 1 when filter changes
       notifyListeners();
     }
   }
 
   // ✅ Load clinic doctors for filter dropdown
-  Future<void> loadClinicDoctors() async {
+  Future<void> loadClinicDoctors({bool skipLoadingState = false}) async {
     try {
       _isLoadingDoctors = true;
       _clearError();
@@ -501,15 +921,23 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
       print('👨‍⚕️ Loading clinic doctors for filter dropdown...');
 
       final response = await _serviceRepo.requist(
-        'organizations/doctors/clinic/$clinicId',
+        'doctors/clinic/$clinicId',
         method: 'GET',
         useOrgApi: true,
         token: token,
-      );
+      ).timeout(const Duration(seconds: 15));
 
       if (response != null && response is Map<String, dynamic>) {
-        final clinicDoctorsResponse = ClinicDoctorsResponse.fromJson(response);
-        _clinicDoctors = clinicDoctorsResponse.doctors;
+        final rawDoctorsList = response['doctors'] as List<dynamic>?;
+        if (rawDoctorsList != null) {
+          _clinicDoctors = rawDoctorsList.map((d) {
+            final Map<String, dynamic> doctorJson = d as Map<String, dynamic>;
+            final transformed = _transformDoctorData(doctorJson);
+            return ClinicDoctorModel.fromJson(transformed);
+          }).toList();
+        } else {
+          _clinicDoctors = [];
+        }
         print('✅ Loaded ${_clinicDoctors.length} doctors for filter');
         _safeNotifyListeners();
       } else {
@@ -523,6 +951,159 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
       _setError('Error loading doctors: $e');
     } finally {
       _isLoadingDoctors = false;
+      _safeNotifyListeners();
+    }
+  }
+
+  /// Transforms nested doctor data (e.g. from clinic-doctor link) to flat model
+  Map<String, dynamic> _transformDoctorData(Map<String, dynamic> json) {
+    final Map<String, dynamic> result = Map.from(json);
+
+    // 1. If data is nested under 'doctor' key
+    if (json.containsKey('doctor') && json['doctor'] is Map<String, dynamic>) {
+      final docData = json['doctor'] as Map<String, dynamic>;
+
+      final fieldsToCopy = [
+        'doctor_id',
+        'doctor_code',
+        'first_name',
+        'last_name',
+        'specialization',
+        'license_number',
+        'profile_image',
+        'qualification',
+        'experience_years',
+        'bio',
+        'profile_pic',
+        'image',
+        'avatar',
+        'email',
+        'username',
+        'phone',
+      ];
+
+      for (var field in fieldsToCopy) {
+        if (result[field] == null) {
+          result[field] = docData[field];
+        }
+      }
+
+      // Deeper nesting in 'user' object inside 'doctor'
+      if (docData.containsKey('user') &&
+          docData['user'] is Map<String, dynamic>) {
+        final userData = docData['user'] as Map<String, dynamic>;
+        final userFields = [
+          'user_id',
+          'first_name',
+          'last_name',
+          'email',
+          'username',
+          'phone',
+          'profile_image',
+          'profile_pic',
+          'image',
+          'avatar',
+        ];
+
+        for (var field in userFields) {
+          if (result[field] == null) {
+            result[field] = userData[field];
+          }
+        }
+      }
+    }
+
+    // 2. Secondary Check: If top-level user object exists
+    if (json.containsKey('user') && json['user'] is Map<String, dynamic>) {
+      final userData = json['user'] as Map<String, dynamic>;
+      final userFields = [
+        'user_id',
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        'phone',
+        'profile_image',
+        'image',
+      ];
+      for (var field in userFields) {
+        if (result[field] == null) {
+          result[field] = userData[field];
+        }
+      }
+    }
+
+    // 3. Normalize Image Field from any source
+    if (result['profile_image'] == null) {
+      result['profile_image'] =
+          result['profile_pic'] ??
+          result['image'] ??
+          result['avatar'] ??
+          result['logo'] ??
+          result['user_image'] ??
+          result['picture'] ??
+          result['photo'] ??
+          result['profile_url'];
+    }
+
+    // 4. Normalize IDs
+    final idFields = [
+      'id',
+      'doctor_id',
+      'user_id',
+      'link_id',
+      'organization_id',
+      'clinic_id',
+    ];
+    for (var key in idFields) {
+      if (result[key] != null && result[key] is! String) {
+        result[key] = result[key].toString();
+      }
+    }
+
+    return result;
+  }
+
+  // ✅ Load clinic patients for filter dropdown
+  Future<void> loadClinicPatients({bool skipLoadingState = false}) async {
+    try {
+      if (!skipLoadingState) {
+        _isLoadingPatients = true;
+      }
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      final clinicId = _authViewModel.user?.clinicId;
+
+      if (token == null || clinicId == null) {
+        return;
+      }
+
+      print('👤 Loading clinic patients for filter dropdown...');
+
+      final response = await _serviceRepo.requist(
+        'clinic-specific-patients?clinic_id=$clinicId',
+        method: 'GET',
+        useOrgApi: true,
+        token: token,
+      ).timeout(const Duration(seconds: 15));
+
+      if (response != null && response is Map<String, dynamic>) {
+        final listResponse = ListClinicPatientsResponse.fromJson(response);
+        _clinicPatients = listResponse.patients;
+        print('✅ Loaded ${_clinicPatients.length} patients for filter');
+        _safeNotifyListeners();
+      } else {
+        print('❌ Failed to load clinic patients');
+        _clinicPatients = [];
+        _safeNotifyListeners();
+      }
+    } catch (e) {
+      print('❌ Error loading clinic patients: $e');
+      _clinicPatients = [];
+    } finally {
+      _isLoadingPatients = false;
+      _safeNotifyListeners();
     }
   }
 
@@ -554,8 +1135,12 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
         return false;
       }
 
-      final success = await _repository.cancelAppointment(appointmentId, token);
-      if (success) {
+      final response = await _repository.cancelAppointment(
+        token: token,
+        appointmentId: appointmentId,
+      );
+
+      if (response != null) {
         // Remove from local list
         _appointments.removeWhere(
           (appointment) => appointment.id == appointmentId,
@@ -576,10 +1161,81 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
     }
   }
 
+  /// ✅ New: Record payment for an existing appointment
+  Future<bool> confirmExistingPayment({
+    required String appointmentId,
+    required String paymentMethod,
+    required double paidAmount,
+  }) async {
+    try {
+      _setLoading(true);
+      _clearError();
+
+      final token = _authViewModel.accessToken;
+      if (token == null) {
+        _setError('Authentication required');
+        return false;
+      }
+
+      print('💳 Recording payment for appointment: $appointmentId');
+      print('   Method: $paymentMethod | Amount: $paidAmount');
+
+      final success = await _repository.recordPayment(
+        token: token,
+        appointmentId: appointmentId,
+        paymentMethod: paymentMethod,
+        paidAmount: paidAmount,
+      );
+
+      if (success) {
+        print('✅ Payment recorded successfully');
+        // Refresh all relevant dashboard data to update financial stats and lists
+        await Future.wait([
+          loadSummary(skipLoadingState: true),
+          loadClinicDashboard(skipLoadingState: true),
+          loadSimpleAppointments(refresh: true, skipLoadingState: true),
+          loadCollections(skipLoadingState: true),
+        ]);
+        return true;
+      } else {
+        _setError('Failed to record payment');
+        return false;
+      }
+    } catch (e) {
+      print('❌ Error recording payment: $e');
+      _setError('Error: $e');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   // Private helper methods
+  String _formatDate(DateTime date) {
+    final year = date.year;
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  String _resolveSummaryDate() {
+    if (_selectedDate != null && _selectedDate!.isNotEmpty) {
+      return _selectedDate!;
+    }
+    if (_currentFilterDate != null && _currentFilterDate!.isNotEmpty) {
+      return _currentFilterDate!;
+    }
+    return _formatDate(DateTime.now());
+  }
+
   void _setLoading(bool loading) {
     if (_disposed) return;
     _isLoading = loading;
+    if (loading) {
+      LoadingManager.show();
+    } else {
+      LoadingManager.hide();
+    }
     _safeNotifyListeners();
   }
 
@@ -609,10 +1265,18 @@ class AppointmentDashboardViewModel extends ChangeNotifier {
   // Demo data methods for when API is unavailable
   AppointmentSummary _getDemoSummary() {
     return AppointmentSummary(
-      todayAppointments: 0,
-      upcomingAppointments: 0,
-      completedAppointments: 0,
-      cancelledAppointments: 0,
+      success: true,
+      clinicId: _authViewModel.user?.clinicId,
+      date: _formatDate(DateTime.now()),
+      counts: const AppointmentSummaryCounts(
+        total: 0,
+        confirmed: 0,
+        arrived: 0,
+        completed: 0,
+        cancelled: 0,
+        noShow: 0,
+        pending: 0,
+      ),
     );
   }
 

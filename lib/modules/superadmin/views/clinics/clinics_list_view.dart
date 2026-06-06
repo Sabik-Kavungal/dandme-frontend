@@ -1,9 +1,22 @@
-import 'package:a/modules/clinic/models/clinic_model.dart';
-import 'package:a/modules/clinic/viewmodels/clinic_viewmodel.dart';
-import 'package:a/modules/superadmin/views/clinics/add_clinic_new_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:drandme/core/widgets/app_loader.dart';
+import 'package:drandme/core/utils/app_helpers.dart';
+import 'package:drandme/modules/clinic/models/clinic_model.dart';
+import 'package:drandme/modules/clinic/viewmodels/clinic_viewmodel.dart';
+import 'package:drandme/modules/superadmin/views/clinics/add_clinic_new_view.dart';
+import 'package:drandme/modules/clinic/views/appointments/widgets/impressive_appointment_container.dart';
+import 'dart:async';
+
+// --- VISUAL CONSTANTS (Elite Healthcare Aesthetic) ---
+const kBgColor = Color(0xFFF8FAFC); // Very Light Slate
+const kCardBg = Colors.white;
+const kPrimaryText = Color(0xFF0F172A); // Slate 900
+const kSecondaryText = Color(0xFF64748B); // Slate 500
+const kAccentColor = Color(0xFF0F172A); // Deep Executive Navy
+const kMedicalRed = Color(0xFFE11D48); // Rose 600 - Medical Accent
+const kBorderColor = Color(0xFFE2E8F0); // Slate 200
 
 class ClinicsListScreen extends StatefulWidget {
   const ClinicsListScreen({super.key});
@@ -13,13 +26,13 @@ class ClinicsListScreen extends StatefulWidget {
 }
 
 class _ClinicsListScreenState extends State<ClinicsListScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  // Local state for filtering
   String _searchQuery = '';
+  String _selectedFilter = 'All Clinics';
 
   @override
   void initState() {
     super.initState();
-    // Fetch clinics when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final clinicViewModel = Provider.of<ClinicViewModel>(
         context,
@@ -29,117 +42,293 @@ class _ClinicsListScreenState extends State<ClinicsListScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void _onSearchChanged(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
   }
 
-  List<ClinicModel> get _filteredClinics {
-    final clinicViewModel = Provider.of<ClinicViewModel>(context);
-    if (_searchQuery.isEmpty) {
-      return clinicViewModel.clinics;
+  void _onFilterChanged(String? filter) {
+    if (filter != null) {
+      setState(() {
+        _selectedFilter = filter;
+      });
     }
-    return clinicViewModel.clinics.where((clinic) {
-      return clinic.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          clinic.clinicCode.toLowerCase().contains(
-            _searchQuery.toLowerCase(),
-          ) ||
-          (clinic.email?.toLowerCase().contains(_searchQuery.toLowerCase()) ??
-              false) ||
-          (clinic.licenseNumber?.toLowerCase().contains(
-                _searchQuery.toLowerCase(),
-              ) ??
-              false);
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Consumer<ClinicViewModel>(
-        builder: (context, clinicViewModel, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final isMobile = constraints.maxWidth < 480;
-
-              return Column(
-                children: [
-                  // Header
-                  _buildHeader(isMobile),
-                  // Search Bar
-                  _buildSearchBar(isMobile),
-                  // Error Display
-                  if (clinicViewModel.error != null)
-                    _buildErrorWidget(clinicViewModel.error!),
-                  // Clinics List
-                  Expanded(
-                    child: clinicViewModel.isLoading
-                        ? _buildLoadingWidget()
-                        : _filteredClinics.isEmpty
-                        ? _buildEmptyState(isMobile)
-                        : ListView.builder(
-                            padding: EdgeInsets.all(isMobile ? 16 : 24),
-                            itemCount: _filteredClinics.length,
-                            itemBuilder: (context, index) {
-                              final clinic = _filteredClinics[index];
-                              return _buildClinicModelCard(clinic, isMobile);
-                            },
-                          ),
+      backgroundColor: kBgColor,
+      body: SafeArea(
+        bottom: false,
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ImpressiveAppointmentContainer(
+                  child: _ClinicsContent(
+                    searchQuery: _searchQuery,
+                    selectedFilter: _selectedFilter,
+                    onSearchChanged: _onSearchChanged,
+                    onFilterChanged: _onFilterChanged,
                   ),
-                ],
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel: MaterialLocalizations.of(
-              context,
-            ).modalBarrierDismissLabel,
-            barrierColor: Colors.black.withValues(alpha: 0.5),
-            transitionDuration: const Duration(milliseconds: 300),
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return const AddClinicScreen();
-            },
-          ).then((_) {
-            // Refresh clinics list after adding
-            final clinicViewModel = Provider.of<ClinicViewModel>(
-              context,
-              listen: false,
-            );
-            clinicViewModel.fetchClinics(context);
-          });
-        },
-        backgroundColor: const Color(0xFF3B82F6),
-        child: const Icon(Icons.add, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(bool isMobile) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 16 : 24,
-        vertical: 16,
-      ),
-      child: Row(
-        children: [
-          Text(
-            'Clinics',
-            style: TextStyle(
-              fontSize: isMobile ? 20 : 24,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1A1A1A),
+class _ClinicsContent extends StatelessWidget {
+  final String searchQuery;
+  final String selectedFilter;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String?> onFilterChanged;
+
+  const _ClinicsContent({
+    required this.searchQuery,
+    required this.selectedFilter,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        const SliverPadding(padding: EdgeInsets.only(top: 4)),
+
+        // Controls
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: RepaintBoundary(
+              child: _ControlsPanel(
+                selectedFilter: selectedFilter,
+                onSearchChanged: onSearchChanged,
+                onFilterChanged: onFilterChanged,
+              ),
             ),
           ),
-          const Spacer(),
+        ),
+
+        const SliverPadding(padding: EdgeInsets.only(top: 4)),
+
+        // Content
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          sliver: Consumer<ClinicViewModel>(
+            builder: (context, viewModel, _) {
+              if (viewModel.isLoading) {
+                return const SliverFillRemaining(
+                  child: Center(child: AppLoader(size: 50, strokeWidth: 3)),
+                );
+              }
+
+              if (viewModel.error != null) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Error: ${viewModel.error}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => viewModel.fetchClinics(context),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return _FilteredClinicsGrid(
+                clinics: viewModel.clinics,
+                searchQuery: searchQuery,
+                selectedFilter: selectedFilter,
+              );
+            },
+          ),
+        ),
+
+        const SliverPadding(padding: EdgeInsets.only(bottom: 2)),
+      ],
+    );
+  }
+}
+
+class _FilteredClinicsGrid extends StatelessWidget {
+  final List<ClinicModel> clinics;
+  final String searchQuery;
+  final String selectedFilter;
+
+  const _FilteredClinicsGrid({
+    required this.clinics,
+    required this.searchQuery,
+    required this.selectedFilter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredClinics = clinics.where((clinic) {
+      final query = searchQuery.toLowerCase();
+      final name = clinic.name.toLowerCase();
+      final code = (clinic.clinicCode ?? '').toLowerCase();
+      final email = (clinic.email ?? '').toLowerCase();
+
+      bool matchesFilter = true;
+      if (selectedFilter == 'Active') {
+        matchesFilter = clinic.isActive == true;
+      } else if (selectedFilter == 'Inactive') {
+        matchesFilter = clinic.isActive != true;
+      }
+
+      return matchesFilter &&
+          (name.contains(query) ||
+              code.contains(query) ||
+              email.contains(query));
+    }).toList();
+
+    if (filteredClinics.isEmpty) {
+      return const SliverToBoxAdapter(child: _EmptyState());
+    }
+
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        // High-density grid matching clinic views
+        int crossAxisCount = 7;
+        if (constraints.crossAxisExtent < 600) {
+          crossAxisCount = 2;
+        } else if (constraints.crossAxisExtent < 900) {
+          crossAxisCount = 3;
+        } else if (constraints.crossAxisExtent < 1200) {
+          crossAxisCount = 5;
+        } else if (constraints.crossAxisExtent < 1600) {
+          crossAxisCount = 6;
+        }
+
+        double aspectRatio = 0.95; // Shorter vertical height for clinics
+        if (constraints.crossAxisExtent < 600) aspectRatio = 0.85;
+
+        return SliverGrid(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: aspectRatio,
+          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final clinic = filteredClinics[index];
+            return _ClassicClinicCard(
+              clinic: clinic,
+              onTap: () {
+                context.go('/superadmin/clinic-details/${clinic.id ?? ''}');
+              },
+              onEditTap: () {
+                showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: MaterialLocalizations.of(
+                    context,
+                  ).modalBarrierDismissLabel,
+                  barrierColor: Colors.black.withValues(alpha: 0.5),
+                  transitionDuration: const Duration(milliseconds: 300),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return AddClinicScreen(editClinic: clinic);
+                  },
+                ).then((_) {
+                  if (!context.mounted) return;
+                  Provider.of<ClinicViewModel>(
+                    context,
+                    listen: false,
+                  ).fetchClinics(context);
+                });
+              },
+            );
+          }, childCount: filteredClinics.length),
+        );
+      },
+    );
+  }
+}
+
+class _ControlsPanel extends StatelessWidget {
+  final String selectedFilter;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String?> onFilterChanged;
+
+  const _ControlsPanel({
+    required this.selectedFilter,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Search - Debounced
+          Expanded(
+            flex: 2,
+            child: _DebouncedSearchBar(onChanged: onSearchChanged),
+          ),
+          const SizedBox(width: 4),
+
+          // Filter Dropdown
+          Container(
+            height: 40,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: kBorderColor),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedFilter,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: kSecondaryText,
+                ),
+                style: const TextStyle(
+                  color: kPrimaryText,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'All Clinics',
+                    child: Text('All Clinics'),
+                  ),
+                  DropdownMenuItem(value: 'Active', child: Text('Active')),
+                  DropdownMenuItem(value: 'Inactive', child: Text('Inactive')),
+                ],
+                onChanged: onFilterChanged,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+
+          // Add Button
           ElevatedButton.icon(
             onPressed: () {
               showGeneralDialog(
@@ -154,342 +343,451 @@ class _ClinicsListScreenState extends State<ClinicsListScreen> {
                   return const AddClinicScreen();
                 },
               ).then((_) {
-                // Refresh clinics list after adding
-                final clinicViewModel = Provider.of<ClinicViewModel>(
+                if (!context.mounted) return;
+                final clinicVM = Provider.of<ClinicViewModel>(
                   context,
                   listen: false,
                 );
-                clinicViewModel.fetchClinics(context);
+                clinicVM.fetchClinics(context);
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3B82F6),
+              backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               elevation: 0,
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 12 : 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              fixedSize: const Size.fromHeight(40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             icon: const Icon(Icons.add, size: 16),
-            label: Text(
-              'New Clinic',
-              style: TextStyle(
-                fontSize: isMobile ? 12 : 14,
-                fontWeight: FontWeight.w600,
-              ),
+            label: const Text(
+              "New",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSearchBar(bool isMobile) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        isMobile ? 16 : 24,
-        16,
-        isMobile ? 16 : 24,
-        0,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search clinics...',
-          hintStyle: TextStyle(
-            color: const Color(0xFF999999),
-            fontSize: isMobile ? 13 : 14,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: Color(0xFF666666),
-            size: 20,
-          ),
-          suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_searchQuery.isNotEmpty)
-                IconButton(
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchQuery = '';
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.clear,
-                    color: Color(0xFF666666),
-                    size: 20,
-                  ),
-                ),
-              IconButton(
-                onPressed: () {
-                  final clinicViewModel = Provider.of<ClinicViewModel>(
-                    context,
-                    listen: false,
-                  );
-                  clinicViewModel.fetchClinics(context);
-                },
-                icon: const Icon(
-                  Icons.refresh,
-                  color: Color(0xFF666666),
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: isMobile ? 12 : 16,
-          ),
-        ),
-      ),
-    );
+class _DebouncedSearchBar extends StatefulWidget {
+  final ValueChanged<String> onChanged;
+  const _DebouncedSearchBar({required this.onChanged});
+
+  @override
+  State<_DebouncedSearchBar> createState() => _DebouncedSearchBarState();
+}
+
+class _DebouncedSearchBarState extends State<_DebouncedSearchBar> {
+  Timer? _debounce;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
   }
 
-  Widget _buildErrorWidget(String error) {
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      widget.onChanged(query);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      height: 40,
       decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        border: Border.all(color: Colors.red.shade200),
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: kBorderColor),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
         children: [
-          Icon(Icons.error_outline, color: Colors.red.shade600),
-          const SizedBox(width: 12),
+          const Icon(Icons.search, color: kSecondaryText, size: 18),
+          const SizedBox(width: 4),
           Expanded(
-            child: Text(
-              error,
-              style: TextStyle(
-                color: Colors.red.shade700,
-                fontWeight: FontWeight.w500,
+            child: TextField(
+              controller: _controller,
+              onChanged: _onSearchChanged,
+              style: const TextStyle(fontSize: 12, color: kPrimaryText),
+              decoration: const InputDecoration(
+                hintText: "Search clinics by name or code...",
+                hintStyle: TextStyle(fontSize: 12, color: kSecondaryText),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
               ),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              final clinicViewModel = Provider.of<ClinicViewModel>(
-                context,
-                listen: false,
-              );
-              clinicViewModel.clearError();
-            },
-            icon: const Icon(Icons.close, color: Colors.red),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildLoadingWidget() {
-    return const Center(
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 60, bottom: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(),
+        children: const [
+          Icon(Icons.local_hospital_outlined, size: 48, color: kSecondaryText),
           SizedBox(height: 16),
           Text(
-            'Loading clinics...',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            "No clinics found matching your criteria",
+            style: TextStyle(
+              fontSize: 14,
+              color: kSecondaryText,
+              fontFamily: 'Inter',
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildClinicModelCard(ClinicModel clinic, bool isMobile) {
-    return Container(
-      margin: EdgeInsets.only(bottom: isMobile ? 12 : 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+class _ClassicClinicCard extends StatefulWidget {
+  final ClinicModel clinic;
+  final VoidCallback onTap;
+  final VoidCallback onEditTap;
+
+  const _ClassicClinicCard({
+    required this.clinic,
+    required this.onTap,
+    required this.onEditTap,
+  });
+
+  @override
+  State<_ClassicClinicCard> createState() => _ClassicClinicCardState();
+}
+
+class _ClassicClinicCardState extends State<_ClassicClinicCard> {
+  bool _isHovered = false;
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ],
-      ),
-      child: InkWell(
-        onTap: () {
-          // Navigate to clinic details
-          context.go('/superadmin/clinic-details/${clinic.id ?? ''}');
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: EdgeInsets.all(isMobile ? 16 : 20),
-          child: Column(
+          title: const Text(
+            "Confirm Deletion",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row
-              Row(
-                children: [
-                  // Clinic Code Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      clinic.clinicCode,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF3B82F6),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  // Status Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      'Active',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                "Are you sure you want to delete '${widget.clinic.name}'?",
+                style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 12),
-
-              // Clinic Name
-              Text(
-                clinic.name,
+              const Text(
+                "This action is permanent and will delete all associated staff, schedules, and data.",
                 style: TextStyle(
-                  fontSize: isMobile ? 16 : 18,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1A1A1A),
+                  fontSize: 12,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 8),
-
-              // Contact Info
-              if (clinic.email != null) ...[
-                _buildInfoRow(Icons.email_outlined, clinic.email!, isMobile),
-                const SizedBox(height: 4),
-              ],
-              if (clinic.phone != null) ...[
-                _buildInfoRow(Icons.phone_outlined, clinic.phone!, isMobile),
-                const SizedBox(height: 4),
-              ],
-              if (clinic.address != null) ...[
-                _buildInfoRow(
-                  Icons.location_on_outlined,
-                  clinic.address!,
-                  isMobile,
-                ),
-                const SizedBox(height: 4),
-              ],
-              if (clinic.licenseNumber != null) ...[
-                _buildInfoRow(
-                  Icons.verified_outlined,
-                  'License: ${clinic.licenseNumber}',
-                  isMobile,
-                ),
-              ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String text, bool isMobile) {
-    return Row(
-      children: [
-        Icon(icon, size: isMobile ? 14 : 16, color: const Color(0xFF666666)),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: isMobile ? 13 : 14,
-              color: const Color(0xFF666666),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmptyState(bool isMobile) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: kSecondaryText),
               ),
-              shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.local_hospital,
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+                final clinicVM = Provider.of<ClinicViewModel>(
+                  context,
+                  listen: false,
+                );
+                final success = await clinicVM.deleteClinic(
+                  widget.clinic.id ?? '',
+                  context,
+                );
+                if (success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Clinic deleted successfully"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        clinicVM.error ?? "Failed to delete clinic",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color _getDefaultColor(String name) {
+    final colors = [
+      const Color(0xFF6366F1), // Indigo
+      const Color(0xFFEC4899), // Pink
+      const Color(0xFFF59E0B), // Amber
+      const Color(0xFF10B981), // Emerald
+      const Color(0xFF3B82F6), // Blue
+    ];
+    return colors[name.length % colors.length];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final name = widget.clinic.name;
+    final code = widget.clinic.clinicCode ?? "No Code";
+    final isActive = widget.clinic.isActive ?? false;
+    final themeColor = _getDefaultColor(name);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
               color: Colors.white,
-              size: 40,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: _isHovered
+                    ? kMedicalRed.withValues(alpha: 0.5)
+                    : kBorderColor,
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: _isHovered ? 12 : 6,
+                  offset: Offset(0, _isHovered ? 6 : 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 1. Clean Clinic Header
+                Expanded(
+                  flex: 10,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: themeColor.withValues(alpha: 0.04),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(8),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        // Simple Status Indicator
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isActive
+                                      ? const Color(0xFF10B981)
+                                      : Colors.grey[400],
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                isActive ? 'Active' : 'Inactive',
+                                style: const TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w600,
+                                  color: kSecondaryText,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Center(
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 3),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child:
+                                  widget.clinic.logo != null &&
+                                      widget.clinic.logo!.isNotEmpty
+                                  ? Image.network(
+                                      AppHelpers.ensureImageUrl(
+                                        widget.clinic.logo!,
+                                      ),
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                                color: themeColor.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                child: Icon(
+                                                  Icons.local_hospital_rounded,
+                                                  color: themeColor,
+                                                  size: 32,
+                                                ),
+                                              ),
+                                    )
+                                  : Container(
+                                      color: themeColor.withValues(alpha: 0.1),
+                                      child: Icon(
+                                        Icons.local_hospital_rounded,
+                                        color: themeColor,
+                                        size: 32,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // 2. Simple Information Section
+                Expanded(
+                  flex: 9,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          name.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: kPrimaryText,
+                            fontFamily: 'Inter',
+                            letterSpacing: 0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          code.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: kSecondaryText,
+                            fontFamily: 'Inter',
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _confirmDelete(context),
+                              child: Icon(
+                                Icons.delete_outline_rounded,
+                                size: 16,
+                                color: _isHovered
+                                    ? Colors.red
+                                    : kSecondaryText.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: widget.onEditTap,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Edit Profile",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: _isHovered
+                                          ? kMedicalRed
+                                          : kPrimaryText,
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.arrow_forward_rounded,
+                                    size: 10,
+                                    color: _isHovered
+                                        ? kMedicalRed
+                                        : kSecondaryText,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          Text(
-            'No clinics found',
-            style: TextStyle(
-              fontSize: isMobile ? 16 : 18,
-              color: const Color(0xFF333333),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Add your first clinic to get started',
-            style: TextStyle(
-              fontSize: isMobile ? 13 : 14,
-              color: const Color(0xFF666666),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

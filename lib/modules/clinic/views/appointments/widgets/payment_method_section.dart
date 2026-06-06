@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
 import 'section_container.dart';
 import 'section_header.dart';
 import 'payment_method_selector.dart';

@@ -5,7 +5,7 @@ part '../gen/clinic_doctors_model.g.dart';
 
 // Clinic-specific fees model
 @freezed
-class ClinicSpecificFees with _$ClinicSpecificFees {
+abstract class ClinicSpecificFees with _$ClinicSpecificFees {
   const factory ClinicSpecificFees({
     @JsonKey(name: "consultation_fee_offline") double? consultationFeeOffline,
     @JsonKey(name: "consultation_fee_online") double? consultationFeeOnline,
@@ -20,7 +20,7 @@ class ClinicSpecificFees with _$ClinicSpecificFees {
 
 // Default fees model
 @freezed
-class DefaultFees with _$DefaultFees {
+abstract class DefaultFees with _$DefaultFees {
   const factory DefaultFees({
     @JsonKey(name: "consultation_fee") double? consultationFee,
     @JsonKey(name: "follow_up_fee") double? followUpFee,
@@ -33,7 +33,7 @@ class DefaultFees with _$DefaultFees {
 
 // Clinic Doctor model
 @freezed
-class ClinicDoctorModel with _$ClinicDoctorModel {
+abstract class ClinicDoctorModel with _$ClinicDoctorModel {
   const factory ClinicDoctorModel({
     String? id, // Add direct id field
     @JsonKey(name: "link_id") String? linkId,
@@ -49,6 +49,10 @@ class ClinicDoctorModel with _$ClinicDoctorModel {
     String? username,
     String? phone,
     @JsonKey(name: "is_active") @Default(true) bool isActive,
+    @JsonKey(name: "profile_image") String? profileImage,
+    @JsonKey(name: "qualification") String? qualification,
+    @JsonKey(name: "experience_years") int? experienceYears,
+    @JsonKey(name: "bio") String? bio,
     @JsonKey(name: "clinic_specific_fees")
     ClinicSpecificFees? clinicSpecificFees,
     @JsonKey(name: "default_fees") DefaultFees? defaultFees,
@@ -60,7 +64,7 @@ class ClinicDoctorModel with _$ClinicDoctorModel {
 
 // Clinic Doctors Response
 @freezed
-class ClinicDoctorsResponse with _$ClinicDoctorsResponse {
+abstract class ClinicDoctorsResponse with _$ClinicDoctorsResponse {
   const factory ClinicDoctorsResponse({
     @JsonKey(name: "clinic_id") String? clinicId, // Changed to nullable
     required List<ClinicDoctorModel> doctors,

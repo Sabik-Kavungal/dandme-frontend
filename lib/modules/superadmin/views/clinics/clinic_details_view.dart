@@ -1,6 +1,6 @@
-import 'package:a/modules/clinic/models/clinic_model.dart';
+import 'package:drandme/modules/clinic/models/clinic_model.dart';
 import 'package:flutter/material.dart';
-import 'package:a/core/config/navigation_helper.dart';
+import 'package:drandme/core/config/navigation_helper.dart';
 
 class ClinicDetailsScreen extends StatelessWidget {
   final ClinicModel clinic;
@@ -74,32 +74,71 @@ class ClinicDetailsScreen extends StatelessWidget {
           children: [
             Row(
               children: [
+                // Clinic Logo
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
+                  width: 60,
+                  height: 60,
+                  margin: const EdgeInsets.only(right: 16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    clinic.clinicCode,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF3B82F6),
+                    color: const Color(0xFFF3F4F6),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFFE5E7EB),
+                      width: 1,
                     ),
                   ),
+                  child: clinic.logo != null && clinic.logo!.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            clinic.logo!,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                                  Icons.business,
+                                  size: 32,
+                                  color: Color(0xFF9CA3AF),
+                                ),
+                          ),
+                        )
+                      : const Icon(
+                          Icons.business,
+                          size: 32,
+                          color: Color(0xFF9CA3AF),
+                        ),
                 ),
-                const Spacer(),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          clinic.clinicCode ?? 'N/A',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF3B82F6),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: Colors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(

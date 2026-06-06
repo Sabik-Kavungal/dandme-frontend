@@ -8,7 +8,7 @@ part '../gen/doctor_time_slot_model.g.dart';
 // ============================================================================
 
 @freezed
-class DoctorTimeSlotResponse with _$DoctorTimeSlotResponse {
+abstract class DoctorTimeSlotResponse with _$DoctorTimeSlotResponse {
   const factory DoctorTimeSlotResponse({
     required String id,
     @JsonKey(name: 'doctor_id') required String doctorId,
@@ -35,6 +35,9 @@ class DoctorTimeSlotResponse with _$DoctorTimeSlotResponse {
     @JsonKey(name: 'display_message')
     @Default('Available')
     String displayMessage, // NEW: for past slots message
+    @JsonKey(name: 'start_datetime')
+    String? startDateTime, // NEW: Full ISO 8601
+    @JsonKey(name: 'end_datetime') String? endDateTime, // NEW: Full ISO 8601
     String? notes,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
@@ -45,7 +48,7 @@ class DoctorTimeSlotResponse with _$DoctorTimeSlotResponse {
 }
 
 @freezed
-class TimeSlotDefinition with _$TimeSlotDefinition {
+abstract class TimeSlotDefinition with _$TimeSlotDefinition {
   const factory TimeSlotDefinition({
     @JsonKey(name: 'start_time') required String startTime,
     @JsonKey(name: 'end_time') required String endTime,
@@ -58,7 +61,7 @@ class TimeSlotDefinition with _$TimeSlotDefinition {
 }
 
 @freezed
-class CreateDoctorTimeSlotInput with _$CreateDoctorTimeSlotInput {
+abstract class CreateDoctorTimeSlotInput with _$CreateDoctorTimeSlotInput {
   const factory CreateDoctorTimeSlotInput({
     @JsonKey(name: 'doctor_id') required String doctorId,
     @JsonKey(name: 'clinic_id') required String clinicId,
@@ -72,7 +75,7 @@ class CreateDoctorTimeSlotInput with _$CreateDoctorTimeSlotInput {
 }
 
 @freezed
-class BulkCreateDoctorTimeSlotsResponse
+abstract class BulkCreateDoctorTimeSlotsResponse
     with _$BulkCreateDoctorTimeSlotsResponse {
   const factory BulkCreateDoctorTimeSlotsResponse({
     required String message,
@@ -90,7 +93,7 @@ class BulkCreateDoctorTimeSlotsResponse
 }
 
 @freezed
-class AvailableSlot with _$AvailableSlot {
+abstract class AvailableSlot with _$AvailableSlot {
   const factory AvailableSlot({
     required String id,
     @JsonKey(name: 'clinic_id') required String clinicId,
@@ -109,7 +112,7 @@ class AvailableSlot with _$AvailableSlot {
 }
 
 @freezed
-class DoctorTimeSlotsResponse with _$DoctorTimeSlotsResponse {
+abstract class DoctorTimeSlotsResponse with _$DoctorTimeSlotsResponse {
   const factory DoctorTimeSlotsResponse({
     @JsonKey(name: 'available_slots')
     required List<AvailableSlot> availableSlots,
@@ -121,7 +124,7 @@ class DoctorTimeSlotsResponse with _$DoctorTimeSlotsResponse {
 
 // Grouped time slots response
 @freezed
-class DaySlotGroup with _$DaySlotGroup {
+abstract class DaySlotGroup with _$DaySlotGroup {
   const factory DaySlotGroup({
     @JsonKey(name: 'day_name') required String dayName,
     @JsonKey(name: 'day_of_week') required int dayOfWeek,
@@ -138,7 +141,7 @@ class DaySlotGroup with _$DaySlotGroup {
 }
 
 @freezed
-class GroupedTimeSlotsResponse with _$GroupedTimeSlotsResponse {
+abstract class GroupedTimeSlotsResponse with _$GroupedTimeSlotsResponse {
   const factory GroupedTimeSlotsResponse({
     @JsonKey(name: 'doctor_id') required String doctorId,
     @JsonKey(name: 'clinic_id') String? clinicId,
@@ -153,7 +156,7 @@ class GroupedTimeSlotsResponse with _$GroupedTimeSlotsResponse {
 
 // List time slots response (flat structure)
 @freezed
-class ListTimeSlotsResponse with _$ListTimeSlotsResponse {
+abstract class ListTimeSlotsResponse with _$ListTimeSlotsResponse {
   const factory ListTimeSlotsResponse({
     @JsonKey(name: 'doctor_id') required String doctorId,
     @JsonKey(name: 'clinic_id') String? clinicId,
@@ -169,7 +172,7 @@ class ListTimeSlotsResponse with _$ListTimeSlotsResponse {
 
 // New API models matching Go backend exactly
 @freezed
-class CreateDateSpecificSlotsInput with _$CreateDateSpecificSlotsInput {
+abstract class CreateDateSpecificSlotsInput with _$CreateDateSpecificSlotsInput {
   const factory CreateDateSpecificSlotsInput({
     @JsonKey(name: 'doctor_id') required String doctorId,
     @JsonKey(name: 'clinic_id') required String clinicId,
@@ -186,7 +189,7 @@ class CreateDateSpecificSlotsInput with _$CreateDateSpecificSlotsInput {
 }
 
 @freezed
-class SimpleTimeSlot with _$SimpleTimeSlot {
+abstract class SimpleTimeSlot with _$SimpleTimeSlot {
   const factory SimpleTimeSlot({
     @JsonKey(name: 'start_time') required String startTime,
     @JsonKey(name: 'end_time') required String endTime,
@@ -200,7 +203,7 @@ class SimpleTimeSlot with _$SimpleTimeSlot {
 }
 
 @freezed
-class DateSpecificSlotResponse with _$DateSpecificSlotResponse {
+abstract class DateSpecificSlotResponse with _$DateSpecificSlotResponse {
   const factory DateSpecificSlotResponse({
     required String id,
     @JsonKey(name: 'doctor_id') required String doctorId,
@@ -225,7 +228,7 @@ class DateSpecificSlotResponse with _$DateSpecificSlotResponse {
 }
 
 @freezed
-class CreateSlotsResponse with _$CreateSlotsResponse {
+abstract class CreateSlotsResponse with _$CreateSlotsResponse {
   const factory CreateSlotsResponse({
     required String message,
     @JsonKey(name: 'created_slots')
@@ -243,7 +246,7 @@ class CreateSlotsResponse with _$CreateSlotsResponse {
 }
 
 @freezed
-class ListSlotsResponse with _$ListSlotsResponse {
+abstract class ListSlotsResponse with _$ListSlotsResponse {
   const factory ListSlotsResponse({
     @Default([]) List<DateSpecificSlotResponse> slots,
     @Default(0) int total,
@@ -251,6 +254,8 @@ class ListSlotsResponse with _$ListSlotsResponse {
     @JsonKey(name: 'clinic_id') String? clinicId,
     @JsonKey(name: 'slot_type') String? slotType,
     String? date,
+    @JsonKey(name: 'walkin_available') @Default(false) bool walkinAvailable,
+    @JsonKey(name: 'walkin_reason') String? walkinReason,
   }) = _ListSlotsResponse;
 
   factory ListSlotsResponse.fromJson(Map<String, dynamic> json) =>

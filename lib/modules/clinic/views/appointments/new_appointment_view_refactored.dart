@@ -1,8 +1,9 @@
-import 'package:a/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
-import 'package:a/modules/auth/viewmodels/auth_viewmodel.dart';
-import 'package:a/modules/clinic/models/clinic_patient_model.dart'; // For extension methods
-import 'package:a/modules/clinic/models/payment_method_model.dart';
+import 'package:drandme/modules/clinic/viewmodels/appointments/new_appointment_viewmodel.dart';
+import 'package:drandme/modules/auth/viewmodels/auth_viewmodel.dart';
+import 'package:drandme/modules/clinic/models/clinic_patient_model.dart'; // For extension methods
+import 'package:drandme/modules/clinic/models/payment_method_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // Widgets
@@ -10,7 +11,7 @@ import 'widgets/consultation_details_section.dart';
 import 'widgets/available_slots_section.dart';
 import 'widgets/patient_search_section.dart';
 import 'widgets/payment_method_section.dart';
-import 'widgets/unified_button.dart';
+import 'widgets/custom_button.dart';
 import 'widgets/impressive_appointment_container.dart';
 import 'widgets/auto_expanding_notes_field.dart';
 
@@ -23,8 +24,10 @@ import 'helpers/appointment_helpers.dart';
 import 'constants/appointment_constants.dart';
 
 /// Main appointment booking screen with responsive web and mobile layouts
+/// Refactored for Web Performance & Production Optimizations
 class NewAppointmentScreen extends StatefulWidget {
-  const NewAppointmentScreen({super.key});
+  final Function(String)? onNavigate;
+  const NewAppointmentScreen({super.key, this.onNavigate});
 
   @override
   State<NewAppointmentScreen> createState() => _NewAppointmentScreenState();
@@ -33,213 +36,119 @@ class NewAppointmentScreen extends StatefulWidget {
 class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
   late NewAppointmentViewModel _viewModel;
   final TextEditingController searchController = TextEditingController();
+  
+  // ✅ Focus Nodes for keyboard navigation
+  final FocusNode searchFocusNode = FocusNode();
+  final FocusNode notesFocusNode = FocusNode();
+  final FocusNode bookNowFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    // Initialize ViewModel once
     _viewModel = NewAppointmentViewModel(
       Provider.of<AuthViewModel>(context, listen: false),
     );
+    _viewModel.onNavigateCallback = widget.onNavigate; // ✅ Set the callback
     _viewModel.initialize();
   }
 
   @override
+  void dispose() {
+    _viewModel.dispose();
+    searchController.dispose();
+    // ✅ Clean up focus nodes
+    searchFocusNode.dispose();
+    notesFocusNode.dispose();
+    bookNowFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Optimization: Removed top-level Consumer to prevent full page rebuilds.
+    // Using ChangeNotifierProvider.value to pass the existing VM instance.
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<NewAppointmentViewModel>(
-        builder: (context, viewModel, child) {
-          return Scaffold(
-            backgroundColor: AppointmentConstants.backgroundColor,
-            body: LayoutBuilder(
-              builder: (context, constraints) {
-                // Enhanced responsive breakpoints
-                final isMobile = constraints.maxWidth < 600;
-                final isTablet =
-                    constraints.maxWidth >= 600 && constraints.maxWidth < 1024;
-                final isDesktop = constraints.maxWidth >= 1024;
-
-                // Scale factor for very large screens
-                final scaleFactor = constraints.maxWidth > 1400 ? 0.9 : 1.0;
-
-                if (isMobile) {
-                  return _buildMobileLayout(viewModel, scaleFactor);
-                } else if (isTablet) {
-                  return _buildTabletLayout(viewModel, scaleFactor);
-                } else {
-                  return _buildWebLayout(viewModel, scaleFactor, isDesktop);
-                }
-              },
-            ),
-          );
+      child: Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.enter): const _SubmitIntent(),
+          LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey.keyS): const _FocusSearchIntent(),
+          LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey.keyN): const _FocusNotesIntent(),
         },
-      ),
-    );
-  }
-
-  /// Build mobile layout (vertical scrolling)
-  Widget _buildMobileLayout(
-    NewAppointmentViewModel viewModel,
-    double scaleFactor,
-  ) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTitle('New Appointments', scaleFactor, isMobile: true),
-          SizedBox(height: 6 * scaleFactor),
-
-          // Consultation Details Section
-          ConsultationDetailsSection(
-            viewModel: viewModel,
-            scaleFactor: scaleFactor,
-            isMobile: true,
-          ),
-          SizedBox(height: 6 * scaleFactor),
-
-          // Available Slots Section
-          AvailableSlotsSection(
-            viewModel: viewModel,
-            scaleFactor: scaleFactor,
-            isMobile: true,
-            onPickDatePressed: () => _showDatePickerDialog(viewModel),
-          ),
-          SizedBox(height: 6 * scaleFactor),
-
-          // Search Patient Section
-          PatientSearchSection(
-            viewModel: viewModel,
-            searchController: searchController,
-            scaleFactor: scaleFactor,
-            isMobile: true,
-            onAddNewPatient: () =>
-                showQuickPatientRegistrationDialog(context, viewModel),
-          ),
-          SizedBox(height: 6 * scaleFactor),
-
-          // Notes/Reason Section
-          AutoExpandingNotesField(
-            label: 'Reason or Add Notes',
-            hint:
-                'Add patient notes, reason for visit, or any additional information...',
-            scaleFactor: scaleFactor,
-            value: viewModel.patientNotes,
-            onChanged: (value) => viewModel.setPatientNotes(value),
-            isMobile: true,
-          ),
-          SizedBox(height: 6 * scaleFactor),
-
-          // Payment Method Section (conditional) - moved closer to Book Now button
-          if (_shouldShowPayment(viewModel)) ...[
-            PaymentMethodSection(
-              viewModel: viewModel,
-              scaleFactor: scaleFactor,
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            _SubmitIntent: CallbackAction<_SubmitIntent>(
+              onInvoke: (_) => _handleBookNow(context, _viewModel, _viewModel.onNavigateCallback),
             ),
-            SizedBox(height: 6 * scaleFactor),
-          ],
-
-          // Book Now Button using unified button
-          UnifiedButton.bookNow(
-            onPressed: () => _handleBookNow(viewModel),
-            scaleFactor: scaleFactor,
-            isLoading: viewModel.isCreating,
-          ),
-          SizedBox(height: 8 * scaleFactor),
-
-          // Footer
-          _buildFooter(),
-        ],
-      ),
-    );
-  }
-
-  /// Build tablet layout (optimized for tablets)
-  Widget _buildTabletLayout(
-    NewAppointmentViewModel viewModel,
-    double scaleFactor,
-  ) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(12 * scaleFactor),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 900),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle('New Appointments', scaleFactor, isMobile: false),
-            SizedBox(height: 8 * scaleFactor),
-
-            // Consultation Details Section
-            ConsultationDetailsSection(
-              viewModel: viewModel,
-              scaleFactor: scaleFactor,
-              isMobile: false,
+            _FocusSearchIntent: CallbackAction<_FocusSearchIntent>(
+              onInvoke: (_) => searchFocusNode.requestFocus(),
             ),
-            SizedBox(height: 8 * scaleFactor),
-
-            // Available Slots Section
-            AvailableSlotsSection(
-              viewModel: viewModel,
-              scaleFactor: scaleFactor,
-              isMobile: false,
-              onPickDatePressed: () => _showDatePickerDialog(viewModel),
+            _FocusNotesIntent: CallbackAction<_FocusNotesIntent>(
+              onInvoke: (_) => notesFocusNode.requestFocus(),
             ),
-            SizedBox(height: 8 * scaleFactor),
-
-            // Search Patient Section
-            PatientSearchSection(
-              viewModel: viewModel,
-              searchController: searchController,
-              scaleFactor: scaleFactor,
-              isMobile: false,
-              onAddNewPatient: () =>
-                  showQuickPatientRegistrationDialog(context, viewModel),
-            ),
-            SizedBox(height: 8 * scaleFactor),
-
-            // Notes/Reason Section
-            AutoExpandingNotesField(
-              label: 'Reason or Add Notes',
-              hint:
-                  'Add patient notes, reason for visit, or any additional information...',
-              scaleFactor: scaleFactor,
-              value: viewModel.patientNotes,
-              onChanged: (value) => viewModel.setPatientNotes(value),
-              isMobile: false,
-            ),
-            SizedBox(height: 8 * scaleFactor),
-
-            // Payment Method Section (conditional)
-            if (_shouldShowPayment(viewModel)) ...[
-              PaymentMethodSection(
-                viewModel: viewModel,
-                scaleFactor: scaleFactor,
+          },
+          child: Focus(
+            autofocus: true,
+            child: Container(
+              color: const Color(0xFFF1F5F9), // Slate 100
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Responsive logic
+                  final isLargeScreen = constraints.maxWidth > 1200;
+                  final isMobile = constraints.maxWidth < 600;
+                  final scaleFactor = isLargeScreen ? 0.9 : 1.0;
+      
+                  if (isMobile) {
+                    return _MobileLayout(
+                      viewModel: _viewModel,
+                      searchController: searchController,
+                      scaleFactor: scaleFactor,
+                      searchFocusNode: searchFocusNode,
+                      notesFocusNode: notesFocusNode,
+                    );
+                  } else {
+                    return _WebLayout(
+                      viewModel: _viewModel,
+                      searchController: searchController,
+                      scaleFactor: scaleFactor,
+                      searchFocusNode: searchFocusNode,
+                      notesFocusNode: notesFocusNode,
+                    );
+                  }
+                },
               ),
-              SizedBox(height: 8 * scaleFactor),
-            ],
-
-            // Book Now Button using unified button
-            UnifiedButton.bookNow(
-              onPressed: () => _handleBookNow(viewModel),
-              scaleFactor: scaleFactor,
-              isLoading: viewModel.isCreating,
             ),
-            SizedBox(height: 10 * scaleFactor),
-
-            // Footer
-            _buildFooter(),
-          ],
+          ),
         ),
       ),
     );
   }
+}
 
-  /// Build web layout (horizontal sections with impressive container)
-  Widget _buildWebLayout(
-    NewAppointmentViewModel viewModel,
-    double scaleFactor,
-    bool isDesktop,
-  ) {
+// ✅ Intents for keyboard shortcuts
+class _SubmitIntent extends Intent { const _SubmitIntent(); }
+class _FocusSearchIntent extends Intent { const _FocusSearchIntent(); }
+class _FocusNotesIntent extends Intent { const _FocusNotesIntent(); }
+
+/// Web Layout Structure
+class _WebLayout extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final TextEditingController searchController;
+  final double scaleFactor;
+  final FocusNode searchFocusNode;
+  final FocusNode notesFocusNode;
+
+  const _WebLayout({
+    required this.viewModel,
+    required this.searchController,
+    required this.scaleFactor,
+    required this.searchFocusNode,
+    required this.notesFocusNode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(10 * scaleFactor),
       child: ImpressiveAppointmentContainer(
@@ -247,131 +156,337 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTitle('New Appointments', scaleFactor),
-            SizedBox(height: 6 * scaleFactor),
-
-            // Consultation Details Section
-            ConsultationDetailsSection(
+            // Optimized Sections with scoped rebuilds
+            _ConsultationWrapper(
               viewModel: viewModel,
               scaleFactor: scaleFactor,
             ),
             SizedBox(height: 6 * scaleFactor),
 
-            // Available Slots Section
-            AvailableSlotsSection(
-              viewModel: viewModel,
-              scaleFactor: scaleFactor,
-              onPickDatePressed: () => _showDatePickerDialog(viewModel),
-            ),
+            _SlotsWrapper(viewModel: viewModel, scaleFactor: scaleFactor),
             SizedBox(height: 6 * scaleFactor),
 
-            // Search Patient Section
-            PatientSearchSection(
+            _PatientSearchWrapper(
               viewModel: viewModel,
               searchController: searchController,
               scaleFactor: scaleFactor,
-              onAddNewPatient: () =>
-                  showQuickPatientRegistrationDialog(context, viewModel),
+              searchFocusNode: searchFocusNode,
             ),
             SizedBox(height: 6 * scaleFactor),
 
-            // Notes/Reason Section
-            AutoExpandingNotesField(
-              label: 'Reason or Add Notes',
-              hint:
-                  'Add patient notes, reason for visit, or any additional information...',
+            _NotesWrapper(
+              viewModel: viewModel, 
               scaleFactor: scaleFactor,
-              value: viewModel.patientNotes,
-              onChanged: (value) => viewModel.setPatientNotes(value),
-              isMobile: false,
+              focusNode: notesFocusNode,
             ),
             SizedBox(height: 6 * scaleFactor),
 
-            // Payment Method Section (conditional) - moved closer to Book Now button
-            if (_shouldShowPayment(viewModel)) ...[
-              PaymentMethodSection(
-                viewModel: viewModel,
-                scaleFactor: scaleFactor,
-              ),
-              SizedBox(height: 6 * scaleFactor),
-            ],
+            _PaymentWrapper(viewModel: viewModel, scaleFactor: scaleFactor),
+            SizedBox(height: 6 * scaleFactor),
 
-            // Book Now Button using unified button
+            // Book Now Button
             Align(
               alignment: Alignment.centerLeft,
-              child: UnifiedButton.bookNow(
-                onPressed: () => _handleBookNow(viewModel),
+              child: _BookButtonWrapper(
+                viewModel: viewModel,
                 scaleFactor: scaleFactor,
-                isLoading: viewModel.isCreating,
+                onNavigate: viewModel.onNavigateCallback ?? (context.findAncestorWidgetOfExactType<NewAppointmentScreen>()?.onNavigate),
               ),
             ),
             SizedBox(height: 8 * scaleFactor),
 
-            // Footer
-            _buildFooter(),
+            _Footer(scaleFactor: scaleFactor),
           ],
         ),
       ),
     );
   }
+}
 
-  /// Build page title with impressive minimal styling
-  Widget _buildTitle(
-    String title,
-    double scaleFactor, {
-    bool isMobile = false,
-  }) {
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: (isMobile ? 22 : 28) * scaleFactor,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFEF4444),
-                Color(0xFFDC2626),
-              ], // Changed from purple to red
-            ),
-            borderRadius: BorderRadius.circular(2),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(
-                  0xFFEF4444,
-                ).withOpacity(0.4), // Changed from purple to red
-                blurRadius: 8,
-                spreadRadius: 1,
-              ),
-            ],
+/// Mobile Layout Structure
+class _MobileLayout extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final TextEditingController searchController;
+  final double scaleFactor;
+  final FocusNode searchFocusNode;
+  final FocusNode notesFocusNode;
+
+  const _MobileLayout({
+    required this.viewModel,
+    required this.searchController,
+    required this.scaleFactor,
+    required this.searchFocusNode,
+    required this.notesFocusNode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ConsultationWrapper(
+            viewModel: viewModel,
+            scaleFactor: scaleFactor,
+            isMobile: true,
           ),
-        ),
-        SizedBox(width: 10 * scaleFactor),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: (isMobile ? 18 : 24) * scaleFactor,
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFF0F172A),
-            letterSpacing: 0.8,
-            shadows: [
-              Shadow(
-                color: const Color(
-                  0xFFEF4444,
-                ).withOpacity(0.2), // Changed from purple to red
-                offset: const Offset(0, 2),
-                blurRadius: 4,
-              ),
-            ],
+          SizedBox(height: 6 * scaleFactor),
+
+          _SlotsWrapper(
+            viewModel: viewModel,
+            scaleFactor: scaleFactor,
+            isMobile: true,
           ),
-        ),
-      ],
+          SizedBox(height: 6 * scaleFactor),
+
+          _PatientSearchWrapper(
+            viewModel: viewModel,
+            searchController: searchController,
+            scaleFactor: scaleFactor,
+            isMobile: true,
+            searchFocusNode: searchFocusNode,
+          ),
+          SizedBox(height: 6 * scaleFactor),
+
+          _NotesWrapper(
+            viewModel: viewModel,
+            scaleFactor: scaleFactor,
+            isMobile: true,
+            focusNode: notesFocusNode,
+          ),
+          SizedBox(height: 6 * scaleFactor),
+
+          _PaymentWrapper(viewModel: viewModel, scaleFactor: scaleFactor),
+          SizedBox(height: 6 * scaleFactor),
+
+          _BookButtonWrapper(
+            viewModel: viewModel,
+            scaleFactor: scaleFactor,
+            onNavigate: viewModel.onNavigateCallback ?? (context.findAncestorWidgetOfExactType<NewAppointmentScreen>()?.onNavigate),
+          ),
+          SizedBox(height: 8 * scaleFactor),
+
+          _Footer(scaleFactor: scaleFactor),
+        ],
+      ),
     );
   }
+}
 
-  /// Build footer
-  Widget _buildFooter() {
+// -----------------------------------------------------------------------------
+// PERFORMANCE WRAPPERS (Scoped Rebuilds)
+// -----------------------------------------------------------------------------
+
+class _ConsultationWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final double scaleFactor;
+  final bool isMobile;
+
+  const _ConsultationWrapper({
+    required this.viewModel, // used for event callbacks
+    required this.scaleFactor,
+    this.isMobile = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Select only fields affecting consultation details UI
+    context.select(
+      (NewAppointmentViewModel vm) => (
+        vm.selectedConsultationType,
+        vm.selectedDepartmentId,
+        vm.selectedDoctorObject,
+        vm.clinicDoctors,
+        vm.departments,
+        vm.consultationTypesList,
+        vm.isLoadingDoctors, // Rebuild when doctor loading state changes
+        vm.noDepartmentSelectedYet, // Rebuild when first department is selected
+      ),
+    );
+
+    return ConsultationDetailsSection(
+      viewModel: viewModel,
+      scaleFactor: scaleFactor,
+      isMobile: isMobile,
+    );
+  }
+}
+
+class _SlotsWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final double scaleFactor;
+  final bool isMobile;
+
+  const _SlotsWrapper({
+    required this.viewModel,
+    required this.scaleFactor,
+    this.isMobile = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Rebuild only when slots data or loading state changes
+    context.select(
+      (NewAppointmentViewModel vm) => (
+        vm.isLoadingSlots,
+        vm.groupedTimeSlots,
+        vm.sessionSlotsResponse,
+        vm.selectedSlotDate,
+        vm.selectedSlotDetails,
+        vm.isWalkIn, // Listen for walk-in mode toggle status
+      ),
+    );
+
+    return AvailableSlotsSection(
+      viewModel: viewModel,
+      scaleFactor: scaleFactor,
+      isMobile: isMobile,
+      onPickDatePressed: () => _showDatePickerDialog(context, viewModel),
+    );
+  }
+}
+
+class _PatientSearchWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final TextEditingController searchController;
+  final double scaleFactor;
+  final bool isMobile;
+  final FocusNode searchFocusNode;
+
+  const _PatientSearchWrapper({
+    required this.viewModel,
+    required this.searchController,
+    required this.scaleFactor,
+    this.isMobile = false,
+    required this.searchFocusNode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Rebuild on search results or selections
+    context.select(
+      (NewAppointmentViewModel vm) => (
+        vm.clinicPatientSearchResults,
+        vm.selectedClinicPatient,
+        vm.searchType,
+        vm.selectedCountryCode,
+      ),
+    );
+
+    return PatientSearchSection(
+      viewModel: viewModel,
+      searchController: searchController,
+      scaleFactor: scaleFactor,
+      isMobile: isMobile,
+      searchFocusNode: searchFocusNode,
+      onAddNewPatient: () =>
+          showQuickPatientRegistrationDialog(context, viewModel),
+    );
+  }
+}
+
+class _NotesWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final double scaleFactor;
+  final bool isMobile;
+  final FocusNode focusNode;
+
+  const _NotesWrapper({
+    required this.viewModel,
+    required this.scaleFactor,
+    this.isMobile = false,
+    required this.focusNode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Optimized: Rebuild ONLY when notes string changes from external source
+    // (though usually internal typing, but this keeps it consistent)
+    final notes = context.select(
+      (NewAppointmentViewModel vm) => vm.patientNotes,
+    );
+
+    return AutoExpandingNotesField(
+      label: 'Reason or Add Notes',
+      hint:
+          'Add patient notes, reason for visit, or any additional information...',
+      scaleFactor: scaleFactor,
+      value: notes,
+      onChanged: (value) => viewModel.setPatientNotes(value),
+      isMobile: isMobile,
+      focusNode: focusNode,
+    );
+  }
+}
+
+class _PaymentWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final double scaleFactor;
+
+  const _PaymentWrapper({required this.viewModel, required this.scaleFactor});
+
+  @override
+  Widget build(BuildContext context) {
+    // Select data needed for visibility logic and payment UI
+    final paymentData = context.select(
+      (NewAppointmentViewModel vm) => (
+        vm.selectedConsultationType,
+        vm.selectedClinicPatient,
+        vm.selectedDoctorObject,
+        vm.selectedPaymentMethodEnum,
+        vm.selectedDepartmentId,
+        vm.isWalkIn, // Listen for walk-in mode for dynamic payment visibility
+      ),
+    );
+
+    // Visibility Logic Logic
+    final shouldShow = _shouldShowPayment(
+      paymentData.$1, // type
+      paymentData.$2, // patient
+      paymentData.$3, // doctor
+      paymentData.$5, // departmentId
+    );
+
+    if (!shouldShow) return const SizedBox.shrink();
+
+    return PaymentMethodSection(viewModel: viewModel, scaleFactor: scaleFactor);
+  }
+}
+
+class _BookButtonWrapper extends StatelessWidget {
+  final NewAppointmentViewModel viewModel;
+  final double scaleFactor;
+  final Function(String)? onNavigate;
+
+  const _BookButtonWrapper({
+    required this.viewModel,
+    required this.scaleFactor,
+    this.onNavigate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Rebuild only when loading state changes
+    final isCreating = context.select(
+      (NewAppointmentViewModel vm) => vm.isCreating,
+    );
+
+    return CustomButton(
+      text: 'Book Now',
+      onPressed: () => _handleBookNow(context, viewModel, onNavigate),
+      isLoading: isCreating,
+      scaleFactor: scaleFactor,
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  final double scaleFactor;
+  const _Footer({required this.scaleFactor});
+
+  @override
+  Widget build(BuildContext context) {
     return const Center(
       child: Text(
         AppointmentConstants.footerText,
@@ -382,128 +497,144 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
       ),
     );
   }
+}
 
-  /// Check if payment section should be shown
-  /// Hide payment only for FREE follow-ups (in eligible_follow_ups array)
-  bool _shouldShowPayment(NewAppointmentViewModel viewModel) {
-    if (!viewModel.selectedConsultationType.startsWith('follow-up')) {
-      return true; // Always show for regular appointments
-    }
+// -----------------------------------------------------------------------------
+// HELPER METHODS
+// -----------------------------------------------------------------------------
 
-    if (viewModel.selectedClinicPatient == null ||
-        viewModel.selectedDoctorObject == null) {
-      return true; // Show if patient or doctor not selected yet
-    }
+// Logic extracted for static access
+bool _shouldShowPayment(
+  String type,
+  ClinicPatient? patient,
+  dynamic doctor,
+  String? departmentId,
+) {
+  if (!type.startsWith('follow-up')) return true;
+  if (patient == null || doctor == null) return true;
+  // Note: Using extension method from library
+  return !patient.isEligibleFor(
+    doctorId: (doctor.doctorId as String?) ?? '',
+    departmentId: departmentId, // Null enables doctor-only matching if needed
+  );
+}
 
-    // Check if patient is eligible for free follow-up
-    final isEligible = viewModel.selectedClinicPatient!.isEligibleFor(
-      doctorId: viewModel.selectedDoctorObject!.doctorId!,
-      departmentId: viewModel.selectedDepartmentId,
-    );
+Future<void> _handleBookNow(
+  BuildContext context,
+  NewAppointmentViewModel viewModel,
+  Function(String)? onNavigate,
+) async {
+  if (!_validateBooking(context, viewModel)) return;
 
-    return !isEligible; // Hide payment only if truly eligible
+  final isFreeFollowUp = !_shouldShowPayment(
+    viewModel.selectedConsultationType,
+    viewModel.selectedClinicPatient,
+    viewModel.selectedDoctorObject,
+    viewModel.selectedDepartmentId,
+  );
+
+  if (isFreeFollowUp) {
+    await _createAppointment(context, viewModel, onNavigate: onNavigate, isFreeFollowUp: true);
+    return;
   }
 
-  /// Handle book now button press
-  Future<void> _handleBookNow(NewAppointmentViewModel viewModel) async {
-    // Validate required selections
-    if (!_validateBooking(viewModel)) {
-      return;
-    }
+  // ALWAYS show the confirmation popup for all paid methods (Pay Now, Pay Later, Way Off)
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => PaymentConfirmationPopup(
+      viewModel: viewModel,
+      onNavigate: onNavigate,
+      parentContext: context, // ✅ Use the screen's context
+    ),
+  );
+}
 
-    // Check if FREE follow-up (no payment needed)
-    final isFreeFollowUp =
-        viewModel.selectedConsultationType.startsWith('follow-up') &&
-        (viewModel.selectedClinicPatient?.followUpEligibility?.isFree ?? false);
-
-    // For FREE follow-up, create directly (no payment required)
-    if (isFreeFollowUp) {
-      await _createAppointment(viewModel, isFreeFollowUp: true);
-      return;
-    }
-
-    // For Pay Later and Way Off, create appointment directly (no popup)
-    if (viewModel.selectedPaymentMethodEnum == PaymentMethod.payLater ||
-        viewModel.selectedPaymentMethodEnum == PaymentMethod.wayOff) {
-      await _createAppointment(viewModel);
-      return;
-    }
-
-    // For Pay Now, show payment confirmation popup
-    showDialog(
-      context: context,
-      builder: (context) => PaymentConfirmationPopup(viewModel: viewModel),
+bool _validateBooking(BuildContext context, NewAppointmentViewModel viewModel) {
+  if (viewModel.selectedClinicPatient == null) {
+    AppointmentHelpers.showErrorSnackbar(
+      context,
+      AppointmentConstants.selectPatientError,
     );
+    return false;
   }
-
-  /// Validate booking requirements
-  bool _validateBooking(NewAppointmentViewModel viewModel) {
-    if (viewModel.selectedClinicPatient == null) {
-      AppointmentHelpers.showErrorSnackbar(
-        context,
-        AppointmentConstants.selectPatientError,
-      );
-      return false;
-    }
-
-    if (viewModel.selectedDoctor.isEmpty) {
-      AppointmentHelpers.showErrorSnackbar(
-        context,
-        AppointmentConstants.selectDoctorError,
-      );
-      return false;
-    }
-
-    if (viewModel.selectedSlotDetails == null) {
-      AppointmentHelpers.showErrorSnackbar(
-        context,
-        AppointmentConstants.selectSlotError,
-      );
-      return false;
-    }
-
+  if (viewModel.selectedDepartment == 'Select Department' || 
+      viewModel.selectedDepartmentId == null) {
+    AppointmentHelpers.showErrorSnackbar(
+      context,
+      'Please select a Department',
+    );
+    return false;
+  }
+  if (viewModel.selectedDoctor == 'Select Doctor' || 
+      viewModel.selectedDoctor.isEmpty) {
+    AppointmentHelpers.showErrorSnackbar(
+      context,
+      AppointmentConstants.selectDoctorError,
+    );
+    return false;
+  }
+  // ✅ CRITICAL FIX: Skip slot validation if Walk-in mode is active OR available
+  // If actively in Walk-in mode, skip validation
+  if (viewModel.isWalkIn) {
     return true;
   }
 
-  /// Create appointment and show result
-  Future<void> _createAppointment(
-    NewAppointmentViewModel viewModel, {
-    bool isFreeFollowUp = false,
-  }) async {
-    final result = await viewModel.createSimpleAppointment();
-
-    if (result != null && mounted) {
-      final message = isFreeFollowUp
-          ? '${AppointmentConstants.followUpCreatedSuccess}${result.appointment.tokenNumber}'
-          : '${AppointmentConstants.appointmentCreatedSuccess}${result.appointment.tokenNumber}';
-
-      AppointmentHelpers.showSuccessSnackbar(context, message);
-    } else if (viewModel.error.isNotEmpty && mounted) {
-      AppointmentHelpers.showErrorSnackbar(context, '❌ ${viewModel.error}');
+  if (viewModel.selectedSlotDetails == null) {
+    // If walk-in is available, let it pass so ViewModel can handle the auto-switch to Walk-in
+    if (viewModel.walkinAvailable) {
+      return true;
     }
-  }
 
-  /// Show date picker dialog
-  Future<void> _showDatePickerDialog(NewAppointmentViewModel viewModel) async {
-    final picked = await AppointmentHelpers.showDatePickerDialog(
-      context: context,
-      initialDate: viewModel.selectedSlotDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(
-        const Duration(days: AppointmentConstants.maxDateRangeInDays),
-      ),
+    AppointmentHelpers.showErrorSnackbar(
+      context,
+      AppointmentConstants.selectSlotError,
     );
-
-    if (picked != null) {
-      viewModel.navigateToMonth(picked);
-      viewModel.selectSlotDate(picked);
-    }
+    return false;
   }
+  return true;
+}
 
-  @override
-  void dispose() {
-    _viewModel.dispose();
-    searchController.dispose();
-    super.dispose();
+Future<void> _createAppointment(
+  BuildContext context,
+  NewAppointmentViewModel viewModel, {
+  bool isFreeFollowUp = false,
+  Function(String)? onNavigate,
+}) async {
+  final result = await viewModel.createSimpleAppointment();
+  if (result != null && context.mounted) {
+    final message = isFreeFollowUp
+        ? '${AppointmentConstants.followUpCreatedSuccess}${result.appointment.tokenNumber}'
+        : '${AppointmentConstants.appointmentCreatedSuccess}${result.appointment.tokenNumber}';
+    AppointmentHelpers.showSuccessSnackbar(context, message);
+    
+    // ✅ RESET FORM TO BLANK SLATE
+    viewModel.resetForm();
+
+    // REDIRECT TO LISTING PAGE
+    if (onNavigate != null) {
+      onNavigate('appointments_list');
+    }
+  } else if (viewModel.error.isNotEmpty && context.mounted) {
+    AppointmentHelpers.showErrorSnackbar(context, '❌ ${viewModel.error}');
+  }
+}
+
+Future<void> _showDatePickerDialog(
+  BuildContext context,
+  NewAppointmentViewModel viewModel,
+) async {
+  final picked = await AppointmentHelpers.showDatePickerDialog(
+    context: context,
+    initialDate: viewModel.selectedSlotDate,
+    firstDate: DateTime.now(),
+    lastDate: DateTime.now().add(
+      const Duration(days: AppointmentConstants.maxDateRangeInDays),
+    ),
+  );
+
+  if (picked != null) {
+    viewModel.navigateToMonth(picked);
+    viewModel.selectSlotDate(picked);
   }
 }
